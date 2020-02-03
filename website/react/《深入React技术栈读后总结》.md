@@ -1,4 +1,4 @@
-#《深入React技术栈》读后总结
+# 《深入React技术栈》读后总结
 近期读书计划中有《深入React技术栈》，同时在之前的工作中也做过大概几个月的React开发，当时看了官方文档后就参与开发，有些比较好的特性又暂且没有用到。
 在阅读《深入React技术栈》和查阅React&Redux官方文档之后，根据自己的理解对一些常用的知识做一下汇总和分析。<br/>
 持续更新...
@@ -7,7 +7,7 @@
 ### 1.数据流:
 1.state<br/>
 2.props(组件间交互,类似参数)，propType:Js是非强类型语言,定义propTypes可以在传入非指定参数时让浏览器给出一个错误提示。<br/>
-```
+```renderscript
 static propTypes = {
 	className: React.PropTypes.string,
 	activeIndex: React.PropTypes.number,
@@ -40,7 +40,7 @@ const ref = React.createRef();
 React为了提高开发效率，自动对px做添加，不过在多数情况下使用Css Module的方案
 ### 2.使用composes来组合样式
 在之前的开发中，我对公用的一些样式定义了一个叫./Global.css的文件，然后个别的样式再单独定义,在使用时类似如下:<br/>
-```
+```renderscript
 /* Global.css */
 .common-style {
 	width: 10px;
@@ -60,7 +60,7 @@ const btnB = <Button className="normal-style"/>
 ```
 可以发现，缺点就是明明normal中有部分与common是重复的,却得重写。<br/>
 compose就可以处理:
-```
+```renderscript
 /* Global.css */
 .common-style {
 	/* 全局样式 */
@@ -86,7 +86,7 @@ compose就可以处理:
 ### 3.跨级组件通信(孙子组件?): context<br/>
 前面两个都比较熟悉了,context倒是没用过,而之前是直接props一层层往里面传的,处理起来相对复杂。<br/>
 没用用到context:
-```
+```html
 class App extends React.Component {
   render() {
     return <Toolbar theme="dark" />;
@@ -111,7 +111,7 @@ class ThemedButton extends React.Component {
 }
 ```
 用到context:
-```
+```html
 // Context 可以让我们无须明确地传遍每一个组件，就能将值深入传递进组件树。
 // 为当前的 theme 创建一个 context（“light”为默认值）。
 const ThemeContext = React.createContext('light');
@@ -152,7 +152,7 @@ context类似全局变量，大部分情况下貌似不建议使用(给组件带
 
 #### 4.没有嵌套关系的组件通信(即是无任何关系的组件?): EventEmitter
 借用node.js的Events模块的浏览器版实现
-```
+```html
 // 首先创建一个EventEmitter的单例:
 import {EventEmitter} from 'events';
 export defulalt new EventEmitter();
@@ -178,7 +178,7 @@ componentWillUnmount() {
 #### 1.CommentList 需要订阅 DataSource，用于评论渲染
 #### 2.Blog 需要订阅 DataSource，用于订阅单个blog的帖子
 他们就存在共同的行为逻辑(监听，取消监听，对监听事件响应)，设为withSubscription:
-```$xslt
+```html
 // 此函数接收一个组件...
 function withSubscription(WrappedComponent, selectData) {
   // ...并返回另一个组件...
@@ -215,7 +215,7 @@ function withSubscription(WrappedComponent, selectData) {
 }
 ```
 共同的订阅和取消订阅行为就交由 withSubscription 来处理了
-```$xslt
+```html
 const CommentListWithSubscription = withSubscription(
   CommentList,
   (DataSource) => DataSource.getComments()
@@ -238,16 +238,16 @@ const BlogPostWithSubscription = withSubscription(
 
 #### 1.Action
 action实质上就是一个js对象，约定用type字段来表示要执行的操作,如: 
-```$xslt
+```html
 {
-    type: DO_SOME_THING, 
-    person: someone, 
+    type: "DO_SOME_THING", 
+    person: "someone"
 }
 ```
 #### 2.Reducer
 reducer指定了应用状态的变化，如何响应action并发送到store的。记住action只描述了有事情发生这一事实，并未描述如何更新state。<br/>
 在我看来，redux的action更像是一个 object & do_flag ，reducer才是真正执行action的地方。<br/>
-```$xslt
+```html
 // reducer实际上执行的过程
 (preState, action) => newState
 ```
@@ -256,7 +256,7 @@ reducer指定了应用状态的变化，如何响应action并发送到store的�
 1.2 不执行有副作用的函数，如API请求或者路由转跳（那API请求的操作怎么处理呢？）<br/>
 1.3 不要调用非纯函数（符合原则）<br/>
 1.4 在default的情况下要返回旧的state（符合上式，应该是避免特殊情况，导致store被覆盖）<br/>
-```$xslt
+```html
 // 更加详细的reducer
 export default (preState, action) => {
     switch (action.type) {
