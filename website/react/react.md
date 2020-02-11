@@ -1,11 +1,45 @@
 # React & Redux相关笔记
 近期读书计划中有《深入React技术栈》，同时在之前的工作中也做过大概几个月的React开发，当时看了官方文档后就参与开发，有些比较好的特性又暂且没有用到。
 在阅读《深入React技术栈》和查阅React & Redux官方文档之后，根据自己的理解对一些常用的知识做一下笔记。<br/>
-（暂未实战检验,持续更新）...<br/>
+（暂未实战检验，后面会有项目涉及相应会修改，持续更新）...<br/>
 
 link:<br/>
 [react中文文档](http://caibaojian.com/react/)<br/>
 [redux中文文档](https://www.redux.org.cn/)
+
+## 目录
+- [React & Redux相关笔记](#react---redux----)
+  * [一.基础部分](#-----)
+    + [1.数据流](#1---)
+    + [2.组件生命周期](#2------)
+    + [3.refs](#3refs)
+  * [二.样式相关](#-----)
+    + [1.简化样式设置](#1------)
+    + [2.使用composes来组合样式](#2--composes-----)
+  * [三.组件间通信](#------)
+    + [1.父组件向子组件通信](#1---------)
+    + [2.子组件向父组件通信](#2---------)
+    + [3.跨级组件通信(孙子组件?)](#3-------------)
+    + [4.没有嵌套关系的组件通信(即是无任何关系的组件?)](#4------------------------)
+  * [四.组件间抽象<br/>](#-------br--)
+    + [1.高阶组件](#1----)
+      - [1.1 CommentList 需要订阅 DataSource，用于评论渲染](#11-commentlist------datasource-------)
+      - [1.2 Blog 需要订阅 DataSource，用于订阅单个blog的帖子](#12-blog------datasource-------blog---)
+  * [五.Redux应用框架](#-redux----)
+    + [1.Redux三大原则](#1redux----)
+      - [1.1 单一数据源](#11------)
+      - [1.2 状态是只读的](#12-------)
+      - [1.3 状态修改均由纯函数完成](#13------------)
+    + [2.Redux基础组成](#2redux----)
+      - [2.1 Action](#21-action)
+      - [2.2 Reducer](#22-reducer)
+      - [2.3 store](#23-store)
+      - [2.4 结合到react(connect函数)](#24----react-connect---)
+    + [3.middleware](#3middleware)
+      - [3.1 middleware的实现](#31-middleware---)
+      - [3.2 记录日志的例子](#32--------)
+    + [4.异步处理](#4----)
+
 
 ## 一.基础部分
 ### 1.数据流
@@ -191,7 +225,7 @@ componentWillUnmount() {
 高阶组件的用法类似一种代理的效果，对组件的功能进行增强，例如:<br/> 
 #### 1.1 CommentList 需要订阅 DataSource，用于评论渲染
 #### 1.2 Blog 需要订阅 DataSource，用于订阅单个blog的帖子
-他们就存在共同的行为逻辑(监听，取消监听，对监听事件响应)，设为withSubscription:
+他们就存在共同的**行为逻辑**(如监听，取消监听，对监听事件响应)，设为withSubscription:
 ```renderscript
 // 此函数接收一个组件...
 function withSubscription(WrappedComponent, selectData) {
@@ -334,7 +368,26 @@ function App() {
     );
 }
 ```
-#### 2.4 connect函数
+#### 2.4 结合到react(connect函数)
+Redux 的 React 绑定库是 基于**容器组件**和**展示组件**相分离 的开发思想。<br/>
+
+两种组件的不同点：
+
+| |**展示组件** |**容器组件** |
+|:---|:---|:---|
+|**作用**|描述如何展现（骨架、样式）|描述如何运行（数据获取、状态更新）|
+|**直接使用Redux**|否|是|
+|**数据来源**|props|监听 Redux state|
+|**数据修改**|从 props 调用回调函数|向 Redux 派发 actions|
+|**调用方式**|手动|通常由 React Redux 生成|
+
+而connect()在我看来它就是类似于利用高级组件(HOC)的设计思路，将展示组件包装成容器组件。<br/>
+将原本不依赖Redux的react展示组件，通过connect来配置一些动态的映射(mapStateToProps,mapDispatchToProps)，生成一固定的代码(store.subscribe())来简化开发。<br/>
+```renderscript
+connect(mapStateToProps,mapDispatchToProps)(Component)
+```
+**mapStateToProps**：来指定如何把当前 Redux store state 映射到展示组件的 props 中。<br/>
+**mapDispatchToProps**：接收 dispatch() 方法并返回期望注入到展示组件的 props 中的回调方法。<br/>
 
 ### 3.middleware
 一开始是并不太理解，实际上它的作用也类似于高阶组件，但是作用于redux中(包装store的dispatch)，用于增强其功能。<br/>
@@ -425,9 +478,9 @@ const crashReporter = store => next => action => {
 ```renderscript
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 
-let todoApp = combineReducers(reducers)
+
 let store = createStore(
-  reducers,
+  combineReducers(reducers),
   // applyMiddleware() 告诉 createStore() 如何处理中间件
   applyMiddleware(logger, crashReporter)
 ```
@@ -438,3 +491,15 @@ let store = createStore(
 1.action 创建函数除了返回 action 对象外还可以返回函数。<br/>
 2.这个函数并不需要保持纯净；它还可以带有副作用，包括执行异步 API 请求。<br/>
 3.这个函数还可以 dispatch action，就像 dispatch 前面定义的同步 action 一样。<br/>
+
+#### 4.1 thunk的配置
+跟其他中间件一样，在设置store时，放到参数中即可
+```renderscript
+import {thunk} from 'redux-thunk';
+
+let store = createStore(
+    combineReducers(reducers),
+    initState,
+    applyMiddleware(logger, crashReporter)
+);
+```
