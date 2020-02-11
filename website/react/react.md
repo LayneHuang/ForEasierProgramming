@@ -1,10 +1,14 @@
-# 《深入React技术栈》读后总结
+# React & Redux相关笔记
 近期读书计划中有《深入React技术栈》，同时在之前的工作中也做过大概几个月的React开发，当时看了官方文档后就参与开发，有些比较好的特性又暂且没有用到。
-在阅读《深入React技术栈》和查阅React&Redux官方文档之后，根据自己的理解对一些常用的知识做一下汇总和分析。<br/>
-持续更新...
+在阅读《深入React技术栈》和查阅React & Redux官方文档之后，根据自己的理解对一些常用的知识做一下笔记。<br/>
+（暂未实战检验,持续更新）...<br/>
+
+link:<br/>
+[react中文文档](http://caibaojian.com/react/)<br/>
+[redux中文文档](https://www.redux.org.cn/)
 
 ## 一.基础部分
-### 1.数据流:
+### 1.数据流
 1.state<br/>
 2.props(组件间交互,类似参数)，propType:Js是非强类型语言,定义propTypes可以在传入非指定参数时让浏览器给出一个错误提示。<br/>
 ```renderscript
@@ -18,8 +22,16 @@ static propTypes = {
 	]),
 }
 ```
+### 2.组件生命周期
+对于生命周期的话，从广义上分为三个阶段：挂载、渲染、卸载。对下面这个流程图有印象就好了<br/>
+常用的几个拦截方法: <br/>
+1.componentWillMount<br/>
+2.componentDidMount<br/>
+3.componentWillReceiveProps<br/>
+4.componentWillUnmount<br/>
+![生命周期图](./pic_react_life_cycle.jpg)
 
-### 2.refs
+### 3.refs
 refs类似对象引用，它指向某个实例。某些组件接收ref，并将其向下传递给子组件。<br/>
 React中文官网的一个demo:
 ```
@@ -81,12 +93,14 @@ compose就可以处理:
 ```
 
 ## 三.组件间通信
-### 1.父组件向子组件通信: props
-### 2.子组件向父组件通信: onChange 回调<br/>
-### 3.跨级组件通信(孙子组件?): context<br/>
-前面两个都比较熟悉了,context倒是没用过,而之前是直接props一层层往里面传的,处理起来相对复杂。<br/>
+### 1.父组件向子组件通信
+props
+### 2.子组件向父组件通信 
+onChange 回调
+### 3.跨级组件通信(孙子组件?) 
+context，前面两个都比较熟悉了，context倒是没用过，而之前是直接props一层层往里面传的，处理起来相对复杂。<br/>
 没用用到context:
-```html
+```renderscript
 class App extends React.Component {
   render() {
     return <Toolbar theme="dark" />;
@@ -111,7 +125,7 @@ class ThemedButton extends React.Component {
 }
 ```
 用到context:
-```html
+```renderscript
 // Context 可以让我们无须明确地传遍每一个组件，就能将值深入传递进组件树。
 // 为当前的 theme 创建一个 context（“light”为默认值）。
 const ThemeContext = React.createContext('light');
@@ -150,9 +164,9 @@ class ThemedButton extends React.Component {
 ```
 context类似全局变量，大部分情况下貌似不建议使用(给组件带来了外部依赖)，在一些不变的全局信息可以用(用户信息等)。<br/>
 
-#### 4.没有嵌套关系的组件通信(即是无任何关系的组件?): EventEmitter
-借用node.js的Events模块的浏览器版实现
-```html
+### 4.没有嵌套关系的组件通信(即是无任何关系的组件?)
+EventEmitter，借用node.js的Events模块的浏览器版实现
+```renderscript
 // 首先创建一个EventEmitter的单例:
 import {EventEmitter} from 'events';
 export defulalt new EventEmitter();
@@ -175,10 +189,10 @@ componentWillUnmount() {
 ## 四.组件间抽象<br/>
 ### 1.高阶组件
 高阶组件的用法类似一种代理的效果，对组件的功能进行增强，例如:<br/> 
-#### 1.CommentList 需要订阅 DataSource，用于评论渲染
-#### 2.Blog 需要订阅 DataSource，用于订阅单个blog的帖子
+#### 1.1 CommentList 需要订阅 DataSource，用于评论渲染
+#### 1.2 Blog 需要订阅 DataSource，用于订阅单个blog的帖子
 他们就存在共同的行为逻辑(监听，取消监听，对监听事件响应)，设为withSubscription:
-```html
+```renderscript
 // 此函数接收一个组件...
 function withSubscription(WrappedComponent, selectData) {
   // ...并返回另一个组件...
@@ -215,7 +229,7 @@ function withSubscription(WrappedComponent, selectData) {
 }
 ```
 共同的订阅和取消订阅行为就交由 withSubscription 来处理了
-```html
+```renderscript
 const CommentListWithSubscription = withSubscription(
   CommentList,
   (DataSource) => DataSource.getComments()
@@ -226,37 +240,44 @@ const BlogPostWithSubscription = withSubscription(
   (DataSource, props) => DataSource.getBlogPost(props.id)
 );
 ```
-## 五.Redux应用框架
-### 1.Redux三大原则
-#### 1.单一数据源
-一个对象管理，称为store，它实质上是最外层组件的state对象，然后向下传递到各组件的props中
-#### 2.状态是只读的
-只有getter，没有setter的意思咯，数据修改就交给dispatch发起
-#### 3.状态修改均由纯函数完成
-对于给定的相同输入，输出都是相同的。（Math.rand()这些就不是纯函数了）
-### 2.Redux基础组成
 
-#### 1.Action
+## 五.Redux应用框架
+
+### 1.Redux三大原则
+#### 1.1 单一数据源
+一个对象管理，称为store，它实质上是最外层组件的state对象，然后向下传递到各组件的props中
+#### 1.2 状态是只读的
+只有getter，没有setter的意思咯，数据修改就交给dispatch发起
+#### 1.3 状态修改均由纯函数完成
+对于给定的相同输入，输出都是相同的。（Math.rand()这些就不是纯函数了）
+
+### 2.Redux基础组成
+#### 2.1 Action
 action实质上就是一个js对象，约定用type字段来表示要执行的操作,如: 
-```html
+```renderscript
 {
     type: "DO_SOME_THING", 
     person: "someone"
 }
 ```
-#### 2.Reducer
+#### 2.2 Reducer
 reducer指定了应用状态的变化，如何响应action并发送到store的。记住action只描述了有事情发生这一事实，并未描述如何更新state。<br/>
 在我看来，redux的action更像是一个 object & do_flag ，reducer才是真正执行action的地方。<br/>
-```html
+```renderscript
 // reducer实际上执行的过程
-(preState, action) => newState
+// (preState, action) => newState
+(preState, action) => {
+    return Object.assign({}, preState, {
+        newParams: 'abcd'
+    })
+}
 ```
-**1.官网文档还提示到有几个要注意到的点:**<br/>
-1.1 不要修改传入的参数preState(??)<br/>
-1.2 不执行有副作用的函数，如API请求或者路由转跳（那API请求的操作怎么处理呢？）<br/>
-1.3 不要调用非纯函数（符合原则）<br/>
-1.4 在default的情况下要返回旧的state（符合上式，应该是避免特殊情况，导致store被覆盖）<br/>
-```html
+**2.2.1 官网文档还提示到有几个要注意到的点:**<br/>
+1.不要修改传入的参数preState(??)<br/>
+2.不执行有副作用的函数，如API请求或者路由转跳（那API请求的操作怎么处理呢？）<br/>
+3.不要调用非纯函数（符合原则）<br/>
+4.在default的情况下要返回旧的state（符合上式，应该是避免特殊情况，导致store被覆盖）<br/>
+```renderscript
 // 更加详细的reducer
 export default (preState, action) => {
     switch (action.type) {
@@ -277,5 +298,143 @@ export default (preState, action) => {
     }
 }
 ```
-**2.拆分reducer**<br/>
+**2.2.2 拆分reducer**<br/>
 Redux提供了一个combineReducers()工具类去组合多个reducers,对于不同独立功能reducer就可以放在不同的文件中。
+
+#### 2.3 store
+redux应用中只有一个单一的store<br/>
+
+**2.3.1 store的职责:**<br/>
+1.维持应用的 state<br/>
+2.提供 getState() 方法获取 state<br/>
+3.提供 dispatch(action) 方法更新 state<br/>
+4.通过 subscribe(listener) 注册监听器<br/>
+5.通过 subscribe(listener) 返回的函数注销监听器<br/>
+```renderscript
+unsubsribe = subscribe(listener)
+```
+
+**2.3.2 store的配置:**<br/>
+```renderscript
+// initState: 用于设置 state 初始状态
+let store = createStore(reducers, initState)
+```
+
+通过redux提供的provider，嵌套在应用最外层，存放state
+```renderscript
+// app.js 
+import {Provider} from 'redux';
+import {store} from '../xxx';
+
+function App() {
+    return (
+        <Privider store={store}>
+            <Component/>
+        <Privider/>
+    );
+}
+```
+#### 2.4 connect函数
+
+### 3.middleware
+一开始是并不太理解，实际上它的作用也类似于高阶组件，但是作用于redux中(包装store的dispatch)，用于增强其功能。<br/>
+
+官方文档解释：middleware 是指可以被嵌入在框架**接收请求到产生响应**过程之中的代码。<br/>
+它提供的是位于 action 被发起之后，到达 reducer 之前的扩展点。<br/> 
+你可以利用 Redux middleware 来进行日志记录、创建崩溃报告、调用异步接口或者路由等等。
+
+#### 3.1 middleware的实现
+middleware的实质就是通过包装store的dispatch函数来处理其 接收请求到产生响应 过程之中代码。(事实上也没那么神秘) <br/>
+其组合多个middleware的方法类似这样(实质上redux内有实现，直接Import其api即可):
+```renderscript
+function applyMiddleware(store, middlewares) {
+  middlewares = middlewares.slice()
+  middlewares.reverse()
+
+  let dispatch = store.dispatch
+  middlewares.forEach(middleware =>
+    dispatch = middleware(store)(dispatch)
+  )
+
+  return Object.assign({}, store, { dispatch })
+}
+```
+
+#### 3.2 记录日志的例子
+目的：输出每次调用前的action和调用后的newState<br/>
+最直接的写法:
+```renderscript
+function dispatchAndLog(store, action) {
+  console.log('dispatching', action)
+  store.dispatch(action)
+  console.log('next state', store.getState())
+}
+// 然后用 dispatchAndLog() 函数去代替store.dispatch()
+```
+但是每次都要导入一个外部方法总归还是不太方便。于是就直接替换掉dispatch函数。
+```renderscript
+let next = store.dispatch
+store.dispatch = function dispatchAndLog(action) {
+  console.log('dispatching', action)
+  let result = next(action)
+  console.log('next state', store.getState())
+  return result
+}
+```
+为了组合多个middleware，需要通过链式调用去不断包装dispatch(因为函数function在js中可以作为函数的返回值，它实际上就是一个递归封装)。<br/>
+让 middleware 以方法参数的形式接收一个 next() 方法，而不是通过 store 的实例去获取。
+```renderscript
+function logger(store) {
+  return function wrapDispatchToAddLogging(next) {
+    return function dispatchAndLog(action) {
+      console.log('dispatching', action)
+      let result = next(action)
+      console.log('next state', store.getState())
+      return result
+    }
+  }
+}
+```
+结合ES6的箭头函数,实际上就是这样：
+```renderscript
+const logger = store => next => action => {
+  console.log('dispatching', action)
+  let result = next(action)
+  console.log('next state', store.getState())
+  return result
+}
+```
+同理它还可能需要处理别的功能（比如说是异常获取）
+```renderscript
+const crashReporter = store => next => action => {
+  try {
+    return next(action)
+  } catch (err) {
+    console.error('Caught an exception!', err)
+    Raven.captureException(err, {
+      extra: {
+        action,
+        state: store.getState()
+      }
+    })
+    throw err
+  }
+}
+```
+最后将它们引用到 Redux store 中：
+```renderscript
+import { createStore, combineReducers, applyMiddleware } from 'redux'
+
+let todoApp = combineReducers(reducers)
+let store = createStore(
+  reducers,
+  // applyMiddleware() 告诉 createStore() 如何处理中间件
+  applyMiddleware(logger, crashReporter)
+```
+
+### 4.异步处理
+理解了middleware之后，redux中有一个redux-thunk库来处理异步请求。<br/>
+**thunk可以达到一些目的：**<br/>
+1.action 创建函数除了返回 action 对象外还可以返回函数。<br/>
+2.这个函数并不需要保持纯净；它还可以带有副作用，包括执行异步 API 请求。<br/>
+3.这个函数还可以 dispatch action，就像 dispatch 前面定义的同步 action 一样。<br/>
