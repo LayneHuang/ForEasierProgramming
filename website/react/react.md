@@ -8,38 +8,39 @@ link:<br/>
 [redux中文文档](https://www.redux.org.cn/)
 
 ## 目录
-- [React & Redux相关笔记](#react---redux----)
-  * [一.基础部分](#-----)
-    + [1.数据流](#1---)
-    + [2.组件生命周期](#2------)
-    + [3.refs](#3refs)
-  * [二.样式相关](#-----)
-    + [1.简化样式设置](#1------)
-    + [2.使用composes来组合样式](#2--composes-----)
-  * [三.组件间通信](#------)
-    + [1.父组件向子组件通信](#1---------)
-    + [2.子组件向父组件通信](#2---------)
-    + [3.跨级组件通信(孙子组件?)](#3-------------)
-    + [4.没有嵌套关系的组件通信(即是无任何关系的组件?)](#4------------------------)
-  * [四.组件间抽象<br/>](#-------br--)
-    + [1.高阶组件](#1----)
-      - [1.1 CommentList 需要订阅 DataSource，用于评论渲染](#11-commentlist------datasource-------)
-      - [1.2 Blog 需要订阅 DataSource，用于订阅单个blog的帖子](#12-blog------datasource-------blog---)
-  * [五.Redux应用框架](#-redux----)
-    + [1.Redux三大原则](#1redux----)
-      - [1.1 单一数据源](#11------)
-      - [1.2 状态是只读的](#12-------)
-      - [1.3 状态修改均由纯函数完成](#13------------)
-    + [2.Redux基础组成](#2redux----)
-      - [2.1 Action](#21-action)
-      - [2.2 Reducer](#22-reducer)
-      - [2.3 store](#23-store)
-      - [2.4 结合到react(connect函数)](#24----react-connect---)
-    + [3.middleware](#3middleware)
-      - [3.1 middleware的实现](#31-middleware---)
-      - [3.2 记录日志的例子](#32--------)
-    + [4.异步处理](#4----)
-
+- [React & Redux相关笔记](#React-&-Redux相关笔记)
+    - [一.基础部分](#一.基础部分)
+        - [1.数据流](#1.数据流)
+        - [2.组件生命周期](#2.组件生命周期)
+        - [3.refs](#3.refs)
+    - [二.样式相关](#二.样式相关)
+        - [1.简化样式设置](#1.简化样式设置)
+        - [2.使用composes来组合样式](#2.使用composes来组合样式)
+    - [三.组件间通信](#三.组件间通信)
+        - [1.父组件向子组件通信](#1.父组件向子组件通信)
+        - [2.子组件向父组件通信](#2.子组件向父组件通信)
+        - [3.跨级组件通信(孙子组件?)](#3.跨级组件通信(孙子组件?))
+        - [4.没有嵌套关系的组件通信(即是无任何关系的组件?)](#4.没有嵌套关系的组件通信(即是无任何关系的组件?))
+    - [四.组件间抽象<br/>](#四.组件间抽象<br/>)
+        - [1.高阶组件](#1.高阶组件)
+            - [1.1 CommentList 需要订阅 DataSource，用于评论渲染](#1.1-CommentList-需要订阅-DataSource，用于评论渲染)
+            - [1.2 Blog 需要订阅 DataSource，用于订阅单个blog的帖子](#1.2-Blog-需要订阅-DataSource，用于订阅单个blog的帖子)
+    - [五.Redux应用框架](#五.Redux应用框架)
+        - [1.Redux三大原则](#1.Redux三大原则)
+            - [1.1 单一数据源](#1.1-单一数据源)
+            - [1.2 状态是只读的](#1.2-状态是只读的)
+            - [1.3 状态修改均由纯函数完成](#1.3-状态修改均由纯函数完成)
+        - [2.Redux基础组成](#2.Redux基础组成)
+            - [2.1 Action](#2.1-Action)
+            - [2.2 Reducer](#2.2-Reducer)
+            - [2.3 store](#2.3-store)
+            - [2.4 结合到react(connect函数)](#2.4-结合到react(connect函数))
+        - [3.middleware](#3.middleware)
+            - [3.1 middleware的实现](#3.1-middleware的实现)
+            - [3.2 记录日志的例子](#3.2-记录日志的例子)
+        - [4.异步处理](#4.异步处理)
+            - [4.1 thunk的配置](#4.1-thunk的配置)
+            - [4.2 thunk的原理](#4.2-thunk的原理)
 
 ## 一.基础部分
 ### 1.数据流
@@ -63,7 +64,7 @@ static propTypes = {
 2.componentDidMount<br/>
 3.componentWillReceiveProps<br/>
 4.componentWillUnmount<br/>
-![生命周期图](./pic_react_life_cycle.jpg)
+![生命周期图](../../images/pic_react_life_cycle.jpg)
 
 ### 3.refs
 refs类似对象引用，它指向某个实例。某些组件接收ref，并将其向下传递给子组件。<br/>
@@ -503,3 +504,21 @@ let store = createStore(
     applyMiddleware(logger, crashReporter)
 );
 ```
+
+#### 4.2 thunk的原理
+实际上thunk的原理看起来挺简单的<br/>
+1.非function,不处理，将action 传给下一个中间件<br/>
+2.function类型的action，自动触发函数，并且将store.dispatch传入<br/>
+```renderscript
+function createThunkMiddleware(extraArgument) {
+  return ({ dispatch, getState }) => next => action => {
+    if (typeof action === 'function') {
+      return action(dispatch, getState, extraArgument);
+    }
+
+    return next(action);
+  };
+}
+```
+
+
