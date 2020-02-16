@@ -1,7 +1,7 @@
 # ForEasyCode
 
 ## 前端
-### [1.React & Redux](./react/react.md)
+### [1.React & Redux](https://github.com/LayneHuang/ForEasyCode/blob/master/website/react/react.md)
 
 ## Java后台
 
