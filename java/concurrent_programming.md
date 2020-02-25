@@ -105,4 +105,31 @@ class Account {
 另一方面，target这个对象并没有保护到，它可被随时修改，有并发问题。<br/>
 实际上它们需要使用同一把锁，如果使用同一个object，或者类锁，都会串行所有的转账操作，效率极低，不可行。
 
-#### 3.4 
+### 4.死锁问题
+
+#### 4.1 死锁的例子
+对于上面那个问题，实际上我们可以直接去锁定两个对象去提高并行度。
+```java
+class Account {
+    private int balance;
+    // 转账
+    void transfer(
+        Account target, int amt){
+    	synchronized(this) {
+    		synchronized(target) {
+				if (this.balance > amt) {
+            		this.balance -= amt;
+            		target.balance += amt;
+        		}
+    		}
+    	}
+    } 
+}
+```
+但是会存在一种情况，就是（1）A要转账给B，（2）B也要转账给A，同时发生。<br/>
+假设是线程1去完成（1）操作，线程2去完成（2）操作<br/>
+同一时间，线程1占有了A的锁，线程2占有了B的锁。然后互相都拥塞在第二个同步上了，出现了死锁。
+
+#### 4.2 如何预防死锁
+一个叫Coffman的人提出，只有下列4个条件同时出现的时候才会出现死锁：
+1.互斥，共享资源X和Y
