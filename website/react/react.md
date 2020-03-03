@@ -277,6 +277,8 @@ const BlogPostWithSubscription = withSubscription(
 ```
 
 ## 五.Redux应用框架
+随着前端应用开发变得复杂，JavaScript要管理更多的state（状态）。管理不断变化的state非常困难。state在什么时候，由于什么原因，如何变化已不受控制。<br/>
+而Redux试图让state的变化变得可预测。
 
 ### 1.Redux三大原则
 #### 1.1 单一数据源
