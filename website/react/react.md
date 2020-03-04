@@ -82,6 +82,13 @@ const ref = React.createRef();
 <FancyButton ref={ref}>Click me!</FancyButton>;
 ```
 
+### 4.DOM
+在传统的开发模式中，每次需要更新页面，都需要手动操作DOM来更新(DOM操作对性能消耗大)。<br/>
+React把真实的DOM树转化成JavaScript对象树(Virsul DOM)。<br/>
+每次数据更新后，重新计算Virsul DOM，并和上一次生成的Virsul DOM做对比（Diff算法），对发生变化部分做批量更新（不会马上生成真实的DOM,对一些A->B,B->A的变化吗，会被优化掉）。
+
+
+
 ## 二.样式相关
 ### 1.简化样式设置
 React为了提高开发效率，自动对px做添加，不过在多数情况下使用Css Module的方案
