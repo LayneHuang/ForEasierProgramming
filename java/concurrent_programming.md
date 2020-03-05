@@ -1,16 +1,20 @@
 # Java并发编程
 阅读笔记，记录自极客时间《Java并发编程实战》
+
 ## 一.并发编程基础
+
 ### 1.可见性、原子性和有序性
 CPU、内存和IO设备的处理能力的不一致，使得我们要通过一些策略去更加高效利用上层资源(处理能力较快的设备)。<br/>
 1.CPU增加缓存，以均衡与内存的速度差异。<br/>
 2.操作系统增加进程、线程，来分时复用CPU。进而均衡CPU与IO设备的速度差异。<br/>
 3.编译程序优化指令执行次序，似的缓存能够得到更加合理的利用。(如JAVA虚拟机的指令排序)<br/>
+
 #### 1.1 可见性
 一个线程对共享资源变量的修改，另外一个线程能否立即看到，称为可见性。<br/>
 在多核的情况下，线程占用的是不同的CPU资源。
 <br/>
 <img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program1.png" width="500"><br/>
+
 #### 1.2 原子性
 我们把一个或者多个操作在CPU执行的过程中不被中断的特性成为原子性。
 其实在我的理解中是一段连续的操作（内部的资源）只能被单个线程所占用。
@@ -27,6 +31,7 @@ CPU、内存和IO设备的处理能力的不一致，使得我们要通过一些
 ### 2.Java内存模型，解决可见性和有序性问题
 导致可见性的原因是缓存，导致有序性的原因是编译优化，但是通过直接禁用的方式去解决问题，就会影响程序的性能。所以要按需禁用。<br/>
 Java内存模型规范了JVM如何提供按需禁用缓存和编译优化的方法。具体来说，这些方法包括**volatile**、**synchronized**和**final**3个关键字、以及6项**Happens-Before规则**。<br/>
+
 #### 2.1 volatile
 它的意义就是禁用CPU缓存。例如声明了一个对象 volatile int x = 0; 它的表达意义是：告诉编译器，对这个变量的读写必须从内存中读取或者写入。
 
@@ -45,6 +50,7 @@ final修饰变量时，就告诉编译器，这个变量生而不变，可以进
 跟我之前所理解的是一样，**一段连续的操作（内部的资源）只能被单个线程所占用**。<br/>
 synchronized就是java所提供的锁技术。<br/>
 **当修饰静态方法的时候，锁定的就是当前类的Class对象。当修饰非静态方法时，锁定的是当前实例对象this。**
+
 #### 3.1 锁和受保护资源的关系
 锁和受保护资源的关系是N：1的关系。（一个相同的资源不能被多把锁保护）<br/>
 ```java
@@ -250,3 +256,36 @@ public class BlockedQueue<T> {
 2.Hoare模型，T2通知完T1之后,T2阻塞，然后在执行T1，T1执行完唤醒T2，也能保证同一时刻只有一个线程执行。但比Hasen模型多一次阻塞唤醒操作。<br/>
 3.MESA，T2通知完T1之后，T2继续执行，T1并不立即执行，仅仅从条件变量等待队列进入到入口等待队列中。这样notify()不用放到代码最后，T2也没有多余的阻塞唤醒操作。<br/>
 
+### 8.Java线程
+
+#### 8.1 生命周期
+// todo: pic
+
+Java语言中线程共有6种状态<br/>
+```java
+// 来自Thread.java类
+public enum State {
+    NEW,            // 初始化状态
+    RUNNABLE,       // 可运行状态
+    BLOCKED,        // 阻塞状态
+    WAITING,        // 无时限等待状态
+    TIMED_WAITING,  // 有时限等待状态
+    TERMINATED;     // 终止状态
+}
+```
+在操作系统层面，Java线程的BLOCKED、WAITING、TIME_WAITING是一种状态，即休眠状态。只要JAVA线程处于这三种状态之一，那么这个线程就永远没有CPU的使用权。<br/>
+可简化图:<br/>
+// Todo : picture
+
+
+**1.RUNNABLE与BLOCKED的状态转换**<br/>
+只有一种场景会触发这种转换，synchronized的隐式锁（那并发工具里面的lock那些呢），代码块同一时刻只允许一个线程执行。等待的线程就会从RUNNABLE转换到BLOCKED状态。而等待线程获取到锁就从BLOCKED转换到RUNNABLE状态。<br/>
+如果熟悉操作系统生命周期的话，可能有个疑问：线程调用阻塞式API时，是否会转到BLOCKED状态？在**系统层面**线程是会转到休眠状态的，但是在JVM层面，JAVA线程状态不会变化，依然保持RUNNABLE状态。**JVM层面不关心操作系统调度相关的状态**，在JVM看来，等待CPU使用权与等到I/O没有区别，都是在等待某个资源，所以都归入RUNNABLE状态。（所以说，JVM层阻塞跟系统层的阻塞大有不同的）
+
+**2.RUNNABLE与WAITTING的状态转换**<br/>
+总体来说有3种场景<br/>
+1.获取synchronized隐式锁的线程调用Object.wait()方法。<br/>
+2.Thread.join(),其中join()是一种线程同步方法，例如有一个线程对象Thread A，当前Thread B调用 A.join()的时候，Thread B会等待Thread A执行完，Thread B的状态会从RUNNABLE转换到WAITING,当Thread A执行完，Thread B状态会从WAITING转换到RUNNABLE。<br/>
+3.调用LockSupport.park()方法。其实并发包中的锁，都是基于LockSupport实现的。调用LockSupport.park()方法，当前线程会阻塞，调用调用LockSupport.unpark(Thread thread)可唤醒目标线程。<br/>
+
+**3.RUNNABLE与TIMED_WAITTING的状态转换**<br/>
