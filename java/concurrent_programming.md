@@ -289,3 +289,36 @@ public enum State {
 3.调用LockSupport.park()方法。其实并发包中的锁，都是基于LockSupport实现的。调用LockSupport.park()方法，当前线程会阻塞，调用调用LockSupport.unpark(Thread thread)可唤醒目标线程。<br/>
 
 **3.RUNNABLE与TIMED_WAITTING的状态转换**<br/>
+这类状态转换通常就是上一类的函数中带个时间参数。<br/>
+1.Thread.sleep(long millis)。<br/>
+2.synchronized隐式锁的线程调用Object.wait(long timeout)方法。<br/>
+3.等等。。。。<br/>
+
+**4.NEW与RUNNABLE的状态转换**<br/>
+其实就是调用Thread类的start()函数，正式被系统调度。<br/>
+
+**5.RUNNABLE与TERMINATED的状态转换**<br/>
+1.run()运行结束<br/>
+2.调用stop()、interrupt()。(stop方法会令线程强制终止，可能导致一些它持有的锁资源未被释放，已被废弃)<br/>
+
+**被interrupt的线程是如何收到通知的呢?**<br/>
+1.异常，当线程A处于 WAITING,TIMED_WAITING 状态时，如果其他线程调用线程A的interrupt()方法，会使线程A返回RUNNABLE状态（蛮奇怪的），同时线程A的代码会触发 InterruptedException 异常。
+2.主动检测，当线程A处于 RUNNABLE 状态时，并且阻塞在java.nio.chnnels.InterruptibleChannel上时，如果其他线程调用线程A的interrput()方法，线程A会触发java.nio.channels.ClosedByInterruptException这个异常；而阻塞在java.nio.channels.Selector上时，如果其他线程调用线程A的interrupt()，线程A的java.nio.channels.Selector会立即返回。（虽然这样说，其实我也不知道是什么实际情况才用到）。
+
+思考:
+```java
+Thread th = Thread.currentThread();
+while(true) {
+    if( th.isInterrupted() ) {
+        break;
+    }
+    try {
+        Thread.sleep(100);
+    } catch( InterruptedException e ) {
+        e.printStackTrace();
+    }
+}
+
+```
+
+#### 8.2 创建多少线程才是合适的？
