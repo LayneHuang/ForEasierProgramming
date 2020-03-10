@@ -40,3 +40,150 @@
 你不用去担心过去或者是未来
 ```
 附上:[Dear Basketball](https://www.bilibili.com/video/av16997700?from=search&seid=1465929823314277301)
+
+
+# 重构第二版
+
+## 一.第一个示例
+
+重构前：
+```javascript
+function statement(invoice, plays) {
+    let totalAmount = 0;
+    let volumeCredits = 0;
+    let result = `Statement for ${invoice.customer}\n`;
+    const format = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2
+    }).format;
+    for (let perf of invoice.performances) {
+        const play = plays[perf.playID];
+        let thisAmount = 0;
+        switch (play.type) {
+            case "tragedy":
+                thisAmount = 40000;
+                if (perf.audience > 30) {
+                    thisAmount += 1000 * (perf.audience - 30);
+                }
+                break;
+            case "comedy":
+                thisAmount = 30000;
+                if (perf.audience > 20) {
+                    thisAmount += 10000 + 500 * (perf.audience - 20);
+                }
+                thisAmount += 300 * perf.audience;
+                break;
+            default:
+                throw new Error(`unknown type: ${play.type}`);
+        }
+
+        // add volume credits
+        volumeCredits += Math.max(perf.audience - 30, 0);
+        // add extra credit for every ten comedy attendees
+        if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
+        // print line for this order
+        result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+        totalAmount += thisAmount;
+    }
+    result += `Amount owed is ${format(totalAmount / 100)}\n`;
+    result += `You earned ${volumeCredits} credits\n`;
+    return result;
+}
+
+```
+
+重构后:
+```javascript
+export default function createStatementData(invoice, plays) {
+    const result = {};
+    result.customer = invoice.customer;
+    result.performances = invoice.performances.map(enrichPerformance);
+    result.totalAmount = totalAmount(result);
+    result.totalVolumeCredits = totalVolumeCredits(result);
+    return result;
+
+    function enrichPerformance(aPerformance) {
+        const calculator = createPerformanceCalculator(aPerformance, playFor(aPerforma
+        nce
+    ))
+        ;const result = Object.assign({}, aPerformance);
+        result.play = calculator.play;
+        result.amount = calculator.amount;
+        result.volumeCredits = calculator.volumeCredits;
+        return result;
+    }
+
+    function playFor(aPerformance) {
+        return plays[aPerformance.playID]
+    }
+
+    function totalAmount(data) {
+        return data.performances.reduce((total, p) = > total + p.amount, 0);
+    }
+
+    function totalVolumeCredits(data) {
+        return data.performances.reduce((total, p) = > total + p.volumeCredits, 0);
+    }
+}
+
+function createPerformanceCalculator(aPerformance, aPlay) {
+    switch (aPlay.type) {
+        case "tragedy":
+            return new TragedyCalculator(aPerformance, aPlay);
+        case "comedy" :
+            return new ComedyCalculator(aPerformance, aPlay);
+        default:
+            throw new Error(`unknown type: ${aPlay.type}`);
+    }
+}
+
+class PerformanceCalculator {
+    constructor(aPerformance, aPlay) {
+        this.performance = aPerformance;
+        this.play = aPlay;
+    }
+
+    get amount() {
+        throw new Error('subclass responsibility');
+    }
+
+    get volumeCredits() {
+        return Math.max(this.performance.audience - 30, 0);
+    }
+}
+
+class TragedyCalculator extends PerformanceCalculator {
+    get amount() {
+        let result = 40000;
+        if (this.performance.audience > 30) {
+            result += 1000 * (this.performance.audience - 30);
+        }
+        return result;
+    }
+}
+
+class ComedyCalculator extends PerformanceCalculator {
+    get amount() {
+        let result = 30000;
+        if (this.performance.audience > 20) {
+            result += 10000 + 500 * (this.performance.audience - 20);
+        }
+        result += 300 * this.performance.audience;
+        return result;
+    }
+
+    get volumeCredits() {
+        return super.volumeCredits + Math.floor(this.performance.audience / 5);
+    }
+}
+```
+
+感觉有点像《设计模式之美》里面所说的一种是面向过程编程，一种是面向对象编程。
+
+### 1.函数单一职责（提炼函数）
+### 2.内联变量
+### 3.搬移函数
+### 4.以多态取代条件表达式
+
+## 二.重构的原则
