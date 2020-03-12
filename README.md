@@ -102,29 +102,27 @@ export default function createStatementData(invoice, plays) {
     result.totalAmount = totalAmount(result);
     result.totalVolumeCredits = totalVolumeCredits(result);
     return result;
+}
 
-    function enrichPerformance(aPerformance) {
-        const calculator = createPerformanceCalculator(aPerformance, playFor(aPerforma
-        nce
-    ))
-        ;const result = Object.assign({}, aPerformance);
-        result.play = calculator.play;
-        result.amount = calculator.amount;
-        result.volumeCredits = calculator.volumeCredits;
-        return result;
-    }
+function enrichPerformance(aPerformance) {
+    const calculator = createPerformanceCalculator(aPerformance, playFor(aPerformance));
+    const result = Object.assign({}, aPerformance);
+    result.play = calculator.play;
+    result.amount = calculator.amount;
+    result.volumeCredits = calculator.volumeCredits;
+    return result;
+}
 
-    function playFor(aPerformance) {
-        return plays[aPerformance.playID]
-    }
+function playFor(aPerformance) {
+    return plays[aPerformance.playID];
+}
 
-    function totalAmount(data) {
-        return data.performances.reduce((total, p) = > total + p.amount, 0);
-    }
+function totalAmount(data) {
+    return data.performances.reduce((total, p) = > total + p.amount, 0);
+}
 
-    function totalVolumeCredits(data) {
-        return data.performances.reduce((total, p) = > total + p.volumeCredits, 0);
-    }
+function totalVolumeCredits(data) {
+    return data.performances.reduce((total, p) = > total + p.volumeCredits, 0);
 }
 
 function createPerformanceCalculator(aPerformance, aPlay) {
@@ -144,17 +142,17 @@ class PerformanceCalculator {
         this.play = aPlay;
     }
 
-    get amount() {
+    getAmount() {
         throw new Error('subclass responsibility');
     }
 
-    get volumeCredits() {
+    getVolumeCredits() {
         return Math.max(this.performance.audience - 30, 0);
     }
 }
 
 class TragedyCalculator extends PerformanceCalculator {
-    get amount() {
+    getAmount() {
         let result = 40000;
         if (this.performance.audience > 30) {
             result += 1000 * (this.performance.audience - 30);
@@ -164,7 +162,7 @@ class TragedyCalculator extends PerformanceCalculator {
 }
 
 class ComedyCalculator extends PerformanceCalculator {
-    get amount() {
+    getAmount() {
         let result = 30000;
         if (this.performance.audience > 20) {
             result += 10000 + 500 * (this.performance.audience - 20);
@@ -173,7 +171,7 @@ class ComedyCalculator extends PerformanceCalculator {
         return result;
     }
 
-    get volumeCredits() {
+    getVolumeCredits() {
         return super.volumeCredits + Math.floor(this.performance.audience / 5);
     }
 }
@@ -201,3 +199,4 @@ class ComedyCalculator extends PerformanceCalculator {
 ### 3.过长函数
 最终的效果：你应该积极地分解函数。遵循一条原则：每当感觉需要注释来说明点什么的时候，我们就把需要说明的东西写进一个独立函数中，并以其用途命名。<br/>
 条件表达式和循环常常也是提炼的信号。你可以使用分解条件表达式处理条件表达式。对于庞大的switch语句，其中的每个分支都应该通过提炼函数变成独立的函数调用。如果有多个switch语句基于同一个条件进行分支选择，就应该使用以多态取代条件表达式。<br/>
+
