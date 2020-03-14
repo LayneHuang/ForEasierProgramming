@@ -358,3 +358,128 @@ while(true) {
 其实这个问题跟JVM的内存模型有关。当前线程对方法的调用，其实方法的调用栈是线程独立的（线程间不共享）。<br/>
 虽然说 new 语句产生的对象是在堆中的，但引用的栈持有的。
 
+## 二.并发工具类
+来到的挺关键的一章，实战上能用到的都在这~<br/>
+
+### 1.Lock & Condition
+跟之前所说的一样，并发领域要解决两类问题：互斥，同步。<br/>
+而JAVA SDK并发包**通过 Lock 和 Condition 两个接口来实现管程，Lock用于解决互斥问题，Condition用于解决同步问题。**
+
+#### 1.1 再造管程的理由 
+而 locK 相比于 synchronized 有3个好处：<br/>
+1.**能够响应中断**。synchronized 的问题是，持有锁A后，如果尝试获取锁B失败，那么线程就进入拥塞状态，一旦发生死锁，就没有任何机会来唤醒拥塞的线程。
+如果我们给拥塞的线程发送中断信号时，能够唤醒它，它就有机会释放锁A。就可以破坏掉不可抢占的条件了。<br/>
+2.**支持超时**。如果线程在一段时间内没有获取到锁，不是进入阻塞状态，而是返回一个错误，那这个线程也有机会释放曾经持有的锁。<br/>
+3.**非拥塞地获取锁**。跟2.不多，没获取到锁就直接返回错误。<br/>
+```java
+// 支持中断的API
+void lockInterruptibly() 
+  throws InterruptedException;
+
+// 支持超时的API
+boolean tryLock(long time, TimeUnit unit) 
+  throws InterruptedException;
+
+// 支持非阻塞获取锁的API
+boolean tryLock();
+```
+
+#### 1.2 如何保证可见性
+它利用了volatile相关的Happen-Before规则。（如ReentrantLock，它内部持有一个volatile的成员变量state）
+
+#### 1.3 可重入锁
+可重入锁，指的是线程可以重复获取同一把锁。
+```java
+class X {
+  private final Lock rtl =
+  new ReentrantLock();
+  int value;
+  public int get() {
+    // 获取锁
+    rtl.lock();
+    try {
+      return value;
+    } finally {
+      // 保证锁能释放
+      rtl.unlock();
+    }
+  }
+  public void addOne() {
+    // 获取锁
+    rtl.lock();  
+    try {
+      value = 1 + get();
+    } finally {
+      // 保证锁能释放
+      rtl.unlock();
+    }
+  }
+}
+```
+
+#### 1.4 公平锁与非公平锁
+ReentrantLock 有两个构造函数。
+```java
+//无参构造函数：默认非公平锁
+public ReentrantLock() {
+    sync = new NonfairSync();
+}
+//根据公平策略参数创建锁
+public ReentrantLock(boolean fair){
+    sync = fair ? new FairSync() 
+                : new NonfairSync();
+}
+```
+公平锁：谁等待时间长，就唤醒谁。(队列) <br/>
+非公平锁：有可能等待时间短的线程先被唤醒。 <br/>
+
+#### 1.5 锁的最佳实践
+1.永远只在更新对象的成员变量时加锁<br/>
+2.永远只在访问可变的成员变量时加锁<br/>
+3.永远不在调用其他对象的方法时加锁<br/>
+
+#### 1.6 多条件变量
+Java语言内置的管程里只有一个条件变量，而Lock & Condition实现的管程支持多个条件变量。
+```java
+public class BlockedQueue<T>{
+  final Lock lock =
+    new ReentrantLock();
+  // 条件变量：队列不满  
+  final Condition notFull =
+    lock.newCondition();
+  // 条件变量：队列不空  
+  final Condition notEmpty =
+    lock.newCondition();
+
+  // 入队
+  void enq(T x) {
+    lock.lock();
+    try {
+      while (队列已满){
+        // 等待队列不满
+        notFull.await();
+      }  
+      // 省略入队操作...
+      //入队后,通知可出队
+      notEmpty.signal();
+    }finally {
+      lock.unlock();
+    }
+  }
+  // 出队
+  void deq(){
+    lock.lock();
+    try {
+      while (队列已空){
+        // 等待队列不空
+        notEmpty.await();
+      }  
+      // 省略出队操作...
+      //出队后，通知可入队
+      notFull.signal();
+    }finally {
+      lock.unlock();
+    }  
+  }
+}
+```
