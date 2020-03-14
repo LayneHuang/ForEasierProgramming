@@ -146,7 +146,7 @@ class Account {
 
 ### 5.等待-通知机制
 synchronized可以配合wait()、notyfy()、notyfyAll()这三个方法实现等待通知机制。<br/>
-// Todo: picture..
+<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program3.png" width="500"><br/>
 1.当线程进入临界区，由于某些条件不满足的情况下，调用wait()方法就会进入等待状态。同时当前线程被拥塞，进入右边的等待队列中，并且释放锁。<br/>
 2.锁被释放后，左边等待队列（临界区入口）中的线程就有机会获得锁。<br/>
 3.当条件满足的时候，调用notify()或notifyAll()方法即可唤醒右边等待队列中的线程。<br/>
@@ -171,7 +171,19 @@ notify()可能会导致某个线程永远得不到通知，虽然notifyAll()会�
 所谓竞态条件，指的是程序执行结果依赖程序执行顺序。<br/>
 比如转账操作，转账操作上有一个判断就是，转出金额不能大于账户余额。<br/>
 在并发环境中，如果不加控制，当多个线程同时对一个账户执行转出操作就会出现超额转出问题。<br/>
-// Todo: 加代码
+```java
+class Account {
+  private int balance;
+  // 转账
+  void transfer(
+      Account target, int amt){
+    if (this.balance > amt) {
+      this.balance -= amt;
+      target.balance += amt;
+    }
+  } 
+}
+```
 其实，在遇到竞态条件时，把判断一同加到互斥模块内就行了。<br/>
 
 #### 6.2 活跃性问题
@@ -207,7 +219,7 @@ Java并发包里面的原子类也是无锁的数据结构，Disruptor则是无�
 #### 7.2 管程（MESA）处理同步
 把共享变量及共享变量操作是被封装起来的，最外层的框就代表封装的意思。<br/>
 管程里还引入条件变量的概念，**每个条件变量都对应有一个等待队列**<br/>
-// todo: picture
+<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program4.png" width="500"><br/>
 
 类比管程入口：（感觉还是有点不大一样吧）<br/>
 ```java
@@ -259,7 +271,7 @@ public class BlockedQueue<T> {
 ### 8.Java线程
 
 #### 8.1 生命周期
-// todo: pic
+<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program5.png" width="500"><br/>
 
 Java语言中线程共有6种状态<br/>
 ```java
@@ -275,8 +287,7 @@ public enum State {
 ```
 在操作系统层面，Java线程的BLOCKED、WAITING、TIME_WAITING是一种状态，即休眠状态。只要JAVA线程处于这三种状态之一，那么这个线程就永远没有CPU的使用权。<br/>
 可简化图:<br/>
-// Todo : picture
-
+<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program6.png" width="500"><br/>
 
 **1.RUNNABLE与BLOCKED的状态转换**<br/>
 只有一种场景会触发这种转换，synchronized的隐式锁（那并发工具里面的lock那些呢），代码块同一时刻只允许一个线程执行。等待的线程就会从RUNNABLE转换到BLOCKED状态。而等待线程获取到锁就从BLOCKED转换到RUNNABLE状态。<br/>
@@ -318,17 +329,16 @@ while(true) {
         e.printStackTrace();
     }
 }
-
 ```
 
 #### 8.2 创建多少线程才是合适的？
 多线程本质上就是提升I/O利用率和CPU利用率。<br/>
 假设在单线程的情况下，I/O操作和CPU计算的耗时比为1:1，它们交叉执行的方式运行。<br/>
-// Todo: picture<br/>
+<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program7.png" width="500"><br/>
 这个时候，CPU利用率和I/O利用率都是50%。<br/>
 
 如果有两个线程的时候，A线程执行CPU计算的时候，B线程执行I/O操作，A线程执行I/O操作的时候，B线程执行CPU计算，这样双方的利用率都可以到达100%。（如果CPU和I/O利用率都很低的情况下可以尝试增加线程来提升吞吐量）<br/>
-// Todo: picture<br/>
+<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program8.png" width="500"><br/>
 
 在单核时代，多线程主要是用来平衡CPU和I/O设备的。如果程序只有CPU计算，而没有I/O计算的话，性能反而会变得更差（增加了线程切换的成本）。<br/>
 而在多核时代，它是可以提升性能的。比如计算sum[1,100e]。当你有4核时，可以分别用4个线程去求sum[1,25e),sum[25e,50e),sum[50e,75e),sum[75e,100e],得到结果再做一次求和（实质上就是类似分治的思想吧）。<br/>
@@ -338,7 +348,7 @@ while(true) {
 
 **2.I/O密集型计算**<br/>
 最佳线程数 = 1 + (I/O耗时 ÷ CPU耗时) [其实就是公式左边的1表示1个线程进行I/O的情况下，公式右边保证了CPU要打满]<br/>
-// todo : picture <br/>
+<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program9.png" width="500"><br/>
 
 
 在多核CPU的情况下：<br/>

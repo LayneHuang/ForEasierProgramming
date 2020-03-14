@@ -1,5 +1,8 @@
 # ForEasyCode
 
+## 基础
+#### [1.重构](https://github.com/LayneHuang/ForEasyCode/blob/master/normal/restructure.md)
+
 ## 前端
 #### [1.React & Redux](https://github.com/LayneHuang/ForEasyCode/blob/master/website/react/react.md)
 
