@@ -484,6 +484,44 @@ public class BlockedQueue<T>{
 }
 ```
 
+### 2.Semaphore(信号量)
+信号量模型还是很简单的：一个计算器，一个等待队列，三个方法。<br/>
+<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program10.png" width="300"><br/>
+这里提到的 init()、down() 和 up() 三个方法都是原子性的，并且这个原子性是由信号量模型的实现方保证的。<br/>
+在 Java SDK 并发包里，down() 和 up() 对应的则是 acquire() 和 release()。<br/>
+
+#### 2.1 信号量能快速实现一个限流器
+它跟Lock的区别是：**Semaphore可以允许多个线程访问一个临界区**。<br/>
+比较常见的需求就是各种池化资源，例如连接池、对象池、线程池等等。
+```java
+class ObjPool<T, R> {
+  final List<T> pool;
+  // 用信号量实现限流器
+  final Semaphore sem;
+  // 构造函数
+  ObjPool(int size, T t){
+    // 这里Vector能保证线程安全
+    pool = new Vector<T>(){};
+    for(int i=0; i<size; i++){
+      pool.add(t);
+    }
+    sem = new Semaphore(size);
+  }
+  // 利用对象池的对象，调用func
+  R exec(Function<T,R> func) {
+    T t = null;
+    sem.acquire();
+    try {
+      t = pool.remove(0);
+      return func.apply(t);
+    } finally {
+      pool.add(t);
+      sem.release();
+    }
+  }
+}
+```
+
 ### 3.ReadWriteLock
 有一种非常普遍的场景：读多写少场景。  
 在实际工作中，为了优化性能，经常会使用缓存，例如缓存元数据、缓存基础数据。（一个重要的条件就是，缓存里的数据一定是读多写少的）  
