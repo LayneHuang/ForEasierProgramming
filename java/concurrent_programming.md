@@ -573,38 +573,44 @@ public class Cache<K, V> {
 #### 3.2 读写锁的升级与降级
 读写锁是**不允许锁的升级的**，但是允许锁的降级。在读锁未释放时获取写锁，会导致写锁永久等待。导致相关线程都被阻塞。
 ```java
-public class Cache<K, V> {
-    final Map<K, V> m = new HashMap<>();
-    final ReadWriteLock rwl = new ReentrantReadWriteLock();
+class CachedData {
+    Object data;
+    volatile boolean cacheValid;
+    final ReadWriteLock rwl =
+            new ReentrantReadWriteLock();
+    // 读锁  
     final Lock r = rwl.readLock();
+    //写锁
     final Lock w = rwl.writeLock();
 
-    V get(K key) {
-        V v = null;
-        // 读缓存
+    void processCachedData() {
+        // 获取读锁
         r.lock();
+        if (!cacheValid) {
+            // 释放读锁，因为不允许读锁的升级
+            r.unlock();
+            // 获取写锁
+            w.lock();
+            try {
+                // 再次检查状态  
+                if (!cacheValid) {
+                    data = ...
+                    cacheValid = true;
+                }
+                // 释放写锁前，降级为读锁
+                // 降级是可以的
+                r.lock(); ①
+            } finally {
+                // 释放写锁
+                w.unlock();
+            }
+        }
+        // 此处仍然持有读锁
         try {
-            v = m.get(key);
+            use(data);
         } finally {
             r.unlock();
         }
-        // 缓存命中
-        if (v != null) {
-            return v;
-        }
-        // 缓存未命中，查询数据库
-        w.lock();
-        try {
-            // 再次验证
-            v = m.get(key);
-            if (v == null) {
-                v = getFromDataBase();
-                m.put(key, v);
-            }
-        } finally {
-            w.unlock();
-        }
-        return v;
     }
 }
 ```
@@ -612,10 +618,61 @@ public class Cache<K, V> {
 ### 4.StampedLock
 它的性能比ReadWriteLock还要好一些，它支持三种模式：写锁、悲观读锁和乐观读。  
 悲观读锁、写锁跟ReadWriteLock的读写锁差不多，不同的是，加锁成功后，StampedLock会返回一个stamp。（就类似版本号的东西呗，CAS原理）
-// todo: 代码块
+```java
+public class Demo {
+    final StampedLock sl = new StampedLock();
+    private void func() {
+        // 获取/释放悲观读锁示意代码
+        long stamp = sl.readLock();
+        try {
+          //省略业务相关代码
+        } finally {
+          sl.unlockRead(stamp);
+        }
+        
+        // 获取/释放写锁示意代码
+        long stamp = sl.writeLock();
+        try {
+          //省略业务相关代码
+        } finally {
+          sl.unlockWrite(stamp);
+        }
+    }
+}
+```
 StempedLock的性能之所以比ReadWriteLock的性能好，其关键是StampedLock支持乐观读。  
 ReadWriteLock在多线程同时读的时候，所有写操作都会被阻塞。而StampedLock提供的乐观读，是允许一个线程获取写锁的。  
-// todo : 代码块
+```java
+
+class Point {
+    private int x, y;
+    final StampedLock sl = new StampedLock();
+
+    //计算到原点的距离  
+    int distanceFromOrigin() {
+        // 乐观读
+        long stamp = sl.tryOptimisticRead();
+        // 读入局部变量，
+        // 读的过程数据可能被修改
+        int curX = x, curY = y;
+        //判断执行读操作期间，
+        //是否存在写操作，如果存在，
+        //则sl.validate返回false
+        if (!sl.validate(stamp)) {
+            // 升级为悲观读锁
+            stamp = sl.readLock();
+            try {
+                curX = x;
+                curY = y;
+            } finally {
+                //释放悲观读锁
+                sl.unlockRead(stamp);
+            }
+        }
+        return Math.sqrt(curX * curX + curY * curY);
+    }
+}
+```
 在上面代码的示例，如果执行乐观读操作的期间，存在写操作，**会把乐观读升级为悲观读锁。**否则你就需要在一个循环里反复执行乐观读（相当于自己实现自旋了），浪费CPU。
 
 #### 4.1 理解乐观读
@@ -626,3 +683,5 @@ ReadWriteLock在多线程同时读的时候，所有写操作都会被阻塞。�
 2.StampedLock的悲观读锁，写锁都不支持条件变量  
 3.线程阻塞在StampedLock的readLock()或者是WriteLock()上时，调用该阻塞线程的interrupt()方法，会导致CPU飙升。  
 **所以在使用StampedLock一定不要调用中断操作，如果需要支持中断功能，一定使用可中断的悲观读锁readLockInterruptibly()和写锁writeLockInterruptibly()**
+
+### 5.CountDownLatch 和 CyclicBarrier
