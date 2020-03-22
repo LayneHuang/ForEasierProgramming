@@ -685,3 +685,115 @@ class Point {
 **所以在使用StampedLock一定不要调用中断操作，如果需要支持中断功能，一定使用可中断的悲观读锁readLockInterruptibly()和写锁writeLockInterruptibly()**
 
 ### 5.CountDownLatch 和 CyclicBarrier
+CountDownLatch: 等待多个线程并行都执行任务完了，再往下执行。  
+```java
+// 创建2个线程的线程池
+Executor executor = Executors.newFixedThreadPool(2);
+while(存在未对账订单){
+    // 计数器初始化为2
+    CountDownLatch latch = new CountDownLatch(2);
+    // 查询未对账订单
+    executor.execute(()-> {
+        pos = getPOrders();
+        latch.countDown();
+    });
+    // 查询派送单
+    executor.execute(()-> {
+        dos = getDOrders();
+        latch.countDown();
+    });
+
+    // 等待两个查询操作结束
+    latch.await();
+
+    // 执行对账操作
+    diff = check(pos, dos);
+    // 差异写入差异库
+    save(diff);
+}
+```
+CyclicBarrier: 等待多个线程并行都执行任务完了，调用一个回调方法，并循环执行。  
+CyclicBarrier的计数器有自动重置的功能，当减到 0 的时候，会自动重置你设置的初始值。  
+```java
+// 订单队列
+Vector<P> pos;
+// 派送单队列
+Vector<D> dos;
+// 执行回调的线程池 
+Executor executor = Executors.newFixedThreadPool(1);
+final CyclicBarrier barrier =
+        new CyclicBarrier(2, ()->{
+            executor.execute(()->check());
+        });
+
+void check(){
+    P p = pos.remove(0);
+    D d = dos.remove(0);
+    // 执行对账操作
+    diff = check(p, d);
+    // 差异写入差异库
+    save(diff);
+}
+
+void checkAll(){
+    // 循环查询订单库
+    Thread T1 = new Thread(()->{
+        while(存在未对账订单){
+            // 查询订单库
+            pos.add(getPOrders());
+            // 等待
+            barrier.await();
+        }
+    });
+    T1.start();
+    // 循环查询运单库
+    Thread T2 = new Thread(()->{
+        while(存在未对账订单){
+            // 查询运单库
+            dos.add(getDOrders());
+            // 等待
+            barrier.await();
+        }
+    });
+    T2.start();
+}
+```
+（这两个东西我感觉它们能用到的地方还是很多的）。
+
+### 6.原子类
+```java
+public class Test {
+  AtomicLong count = 
+    new AtomicLong(0);
+  void add10K() {
+    int idx = 0;
+    while(idx++ < 10000) {
+      count.getAndIncrement();
+    }
+  }
+}
+```
+原子类是用无锁方案实现的，最大的好处就是性能。  
+（而互斥锁为了保证互斥性，需要执行加锁、解锁操作，会消耗性能，同时难不倒锁的线程还会进入阻塞，触发线程切换，也要消耗性能）  
+
+#### 6.1 无锁方案的实现
+其实原子类性能高的密码很简单，硬件支持而已。**CPU为了解决并发问题，提供了CAS指令（Compare And Swap）**
+CAS 指令包含 3 个参数：共享变量的内存地址 A、用于比较的值 B 和共享变量的新值 C  
+并且只有当内存中地址 A 处的值等于 B 时，才能将内存中地址 A 处的值更新为新值 C。    
+**作为一条 CPU 指令，CAS 指令本身是能够保证原子性的。**
+
+### 6.2 Java如何实现原子化的count+=1
+在Java 1.8版本中，getAndIncreament()方法会转调 unsafe.getAndAddLong() 方法。
+```java
+final long getAndIncrement() {
+  return unsafe.getAndAddLong(this, valueOffset, 1L);
+}
+```
+
+### 7.Executor与线程池
+虽然在Java语言中创建线程看上去就像创建对象一样简单，只需要new Thread()就可以了，但实际上创建线程远不是创建一个对象那么简单。  
+创建对象知识在JVM堆中分配一块内存而已。  
+而创建一个线程却需要调用操作系统内核的API，然后操作系统要为线程分配一系列资源，这个成本就很高了。  
+所以**线程是一个重量级的对象，应该避免频繁创建和销毁**
+
+#### 7.1 线程池是一种生产者-消费者模式

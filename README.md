@@ -1,10 +1,11 @@
 # ForEasyCode
 
 ## 基础
-#### [1.重构](https://github.com/LayneHuang/ForEasyCode/blob/master/normal/restructure.md)
+#### [设计模式之美](https://github.com/LayneHuang/ForEasyCode/blob/master/normal/design_pattern_beauty.md)
+#### [重构](https://github.com/LayneHuang/ForEasyCode/blob/master/normal/restructure.md)
 
 ## 前端
-#### [1.React & Redux](https://github.com/LayneHuang/ForEasyCode/blob/master/website/react/react.md)
+#### [React & Redux](https://github.com/LayneHuang/ForEasyCode/blob/master/website/react/react.md)
 
 ## Java后台
 #### [Effective Java 2.0](https://github.com/LayneHuang/ForEasyCode/blob/master/java/effectivejava.md)
