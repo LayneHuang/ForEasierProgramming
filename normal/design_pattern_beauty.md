@@ -381,3 +381,184 @@ YAGNI: you ain't gonna nedd it.
 
 ### 7.迪米特法制
 不该有直接依赖关系的类，不要有依赖。有依赖关系的类之间，**尽量只依赖必要的接口**。
+
+## 三.规范与重构
+这一章先略过，主要内容先看《重构第二版》
+
+## 四.设计模式与范式
+一些比较熟悉的模式，就直接记其特别的点。
+
+### 1.单例模式
+一个类只允许创建一个对象
+
+#### 1.1 单例模式需要解决的问题
+1.资源访问冲突（这个看并发编程就能搞得定）  
+2.全局唯一类（配置类、ID生成器等）
+
+#### 1.2 如何实现一个单例
+1.构造函数需要的是private访问权限，才能避免外部通过new创建实例  
+2.考虑对象创建时的线程安全问题。（懒加载时??）  
+3.考虑是否支持延迟加载。  
+4.考虑getInstance()性能是否高（是否加锁）。（这个有点不是很懂）
+
+**1.饿汉式（类创建时就初始化好）**  
+```java
+public class IdGenerator {
+    private AtomicLong id = new AtomicLong(0);
+    private static final IdGenerator instance = new IdGenerator();
+
+    private IdGenerator() {
+    }
+
+    public static IdGenerator getInstance() {
+        return instance;
+    }
+
+    public long getId() {
+        return id.incrementAndGet();
+    }
+}
+```
+如果初始化的时间长，最好不要等到真正用到它的时候，采取执行这个耗时长的操作。  
+如果实例占用资源多，按照fail-fast设计原则（有问题及早暴露），那我们也希望在程序启动时就将这个实例初始化好。  
+如果资源不够，程序会在启动时候就触发OOM。  
+
+**2.懒汉式**  
+支持延迟加载。(低版本Java有指令重排问题)
+```java
+public class IdGenerator { 
+  private AtomicLong id = new AtomicLong(0);
+  private static IdGenerator instance;
+  private IdGenerator() {}
+  public static IdGenerator getInstance() {
+    if (instance == null) {
+      synchronized(IdGenerator.class) { // 此处为类级别的锁
+        if (instance == null) {
+          instance = new IdGenerator();
+        }
+      }
+    }
+    return instance;
+  }
+  public long getId() { 
+    return id.incrementAndGet();
+  }
+}
+```
+**3.静态内部类**  
+```java
+public class IdGenerator {
+    private AtomicLong id = new AtomicLong(0);
+
+    private IdGenerator() {
+    }
+
+    private static class SingletonHolder {
+        private static final IdGenerator instance = new IdGenerator();
+    }
+
+    public static IdGenerator getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    public long getId() {
+        return id.incrementAndGet();
+    }
+}
+```
+SingletonHolder是一个静态内部类，当外部类IdGenerator被加载的时候，并不会创建SingletonHolder。
+只有调用getInstance()时，SingletonHolder才会被加载。instance的唯一性，创建过程的线程安全都由JVM保证。
+
+**4.枚举**
+```java
+public enum IdGenerator {
+  INSTANCE;
+  private AtomicLong id = new AtomicLong(0);
+ 
+  public long getId() { 
+    return id.incrementAndGet();
+  }
+}
+```
+同样，唯一性，创建过程的线程安全都由JVM保证。简单是简单，但是有点不是太直观的感觉。
+
+#### 1.3 单例模式的一些缺点
+1.对OOP的特性支持不友好  
+2.会隐藏类之间的依赖关系（不是构造函数注入，不知道具体依赖）  
+3.对代码的扩展性不友好（跟1.差不多，毕竟也是因为违反基于接口而非实现编程带来的后果）
+4.对代码的测试性不友好  
+5.不支持有参数的构造函数  
+**解决方案**：
+通过工厂模式、IOC容器（比如Spring IOC，貌似都有注解定义它是否单例了）来保证，提高扩展性。
+
+#### 1.4 集群模式下的单例
+单例一般来讲就是进程内的单例，也就是说一个进程只有一个单例对象。  
+
+**1.如何实现线程内的单例**  
+其实Java提供了ThreadLocal工具类，可以更加轻松地实现线程单例。不过ThreadLocal底层实现原理也是基于下面代码所示的HashMap。
+```java
+public class IdGenerator {
+    private AtomicLong id = new AtomicLong(0);
+
+    private static final ConcurrentHashMap<Long, IdGenerator> instances
+            = new ConcurrentHashMap<>();
+
+    private IdGenerator() {}
+
+    public static IdGenerator getInstance() {
+        Long currentThreadId = Thread.currentThread().getId();
+        instances.putIfAbsent(currentThreadId, new IdGenerator());
+        return instances.get(currentThreadId);
+    }
+
+    public long getId() {
+        return id.incrementAndGet();
+    }
+}
+```
+
+**2.如何实现集群下的单例**  
+集群唯一，也就是说多个进程共享同一个对象，不能创建同一个类的多个对象。  
+具体来说，我们需要把这个单例对象序列化并储存到外部共享储存区（比如文件，外部的内存也行嘛，文件就降级了）。
+进程在使用这个类的时候，需要先从外部共享存储区中将它读入到内存，并反序列化成对象，然后再使用。
+使用完成后还需要储存回外部存储区。    
+
+**在使用过程中还需要注意互斥。**  
+为了保证任何时刻，在进程内都只有一份对象存在，一个进程在获取到对象之后，需要对对象加锁，避免其他进程再其它获取。
+在进程用完这个对象之后，还需要显示地将对象从内存中删除，并且释放对对象的加锁。
+```java
+public class IdGenerator {
+    private AtomicLong id = new AtomicLong(0);
+    private static IdGenerator instance;
+    private static SharedObjectStorage storage = FileSharedObjectStorage(/*入参省略，比如文件地址*/);
+    private static DistributedLock lock = new DistributedLock(); // 分布式锁?
+
+    private IdGenerator() {
+    }
+
+    public synchronized static IdGenerator getInstance() {
+        if (instance == null) {
+            lock.lock();
+            instance = storage.load(IdGenerator.class);
+        }
+        return instance;
+    }
+
+    public synchroinzed
+
+    void freeInstance() {
+        storage.save(this, IdGeneator.class);
+        instance = null; //释放对象
+        lock.unlock();
+    }
+
+    public long getId() {
+        return id.incrementAndGet();
+    }
+}
+
+// IdGenerator使用举例
+IdGenerator idGeneator = IdGenerator.getInstance();
+long id = idGenerator.getId();
+IdGenerator.freeInstance();
+```
