@@ -544,9 +544,7 @@ public class IdGenerator {
         return instance;
     }
 
-    public synchroinzed
-
-    void freeInstance() {
+    public synchronized void freeInstance() {
         storage.save(this, IdGeneator.class);
         instance = null; //释放对象
         lock.unlock();
