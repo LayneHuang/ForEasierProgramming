@@ -214,3 +214,170 @@ public class Demo {
     }
 }
 ```
+
+### 3.里式替换原则（LSP）
+这条原则跟之前讲的“多态”有点相似，也有区别之处。
+
+#### 3.1 里式替换原则的理解
+子类对象能够替换程序中父类对象出现的任何地方，并且保证原来程序的逻辑行为不变及正确性不被破坏。  
+（这个原则根据字面意思其实也很好理解）  
+
+#### 3.2 哪些代码违背了LSP
+**1.子类违背了父类声明要实现的功能**  
+父类中提供的sortOrderByAmount()是要按照订单的金额排序。而子类重写这个函数后，是按照日期排序。  
+**2.子类违背了父类对输入、输出、异常的约定**  
+父类的某个函数：运行出错的时候返回null，获取数据为空时返回空集合。  
+而子类重载之后，运行出错返回异常（exception），获取数据为空返回null。
+父类中约定输入数据可以是任意整数，而子类约定只能是正整数，子类的输入校验比父类更严格了。  
+父类某个函数约定只会抛出ArgumentNullException，而子类抛出任何其他异常都违背了LSP。  
+**3.子类违背了父类注释罗列的任何特殊说明**
+
+### 4.接口隔离原则（ISP）
+客户端不应该强迫依赖它不需要的接口。“客户端”可以理解为接口的调用者。  
+“接口”也可以理解为：  
+1.一组API接口集合  
+2.单个API接口或函数  
+3.OOP中的接口概念
+
+#### 4.1 把接口理解为一组API接口集合
+比如说微服务用户系统提供了一组跟用于相关的API给其他系统调用。（注册、登录、获取用户信息等）  
+```java
+public interface UserService {
+    boolean register(String cellphone, String password);
+    boolean login(String cellphone, String password);
+    UserInfo getUserInfoById(long id);
+    UserInfo getUserInfoByCellphone(String cellphone);
+}
+
+public class UserServiceImpl implements UserService {
+    //...
+}
+```
+而当后台需要实现一个删除用户的操作时，不仅仅只在UserService上添加接口，还要注意一些安全隐患。  
+删除用户是一个非常慎重的操作，只希望通过后台管理系统来执行。  
+（之前架构的Spring-Boot都直接把接口放在Controller上，鉴权也放在Controller上，Impl放在Service上）  
+如果在代码设计层面，应该把删除操作独立放到另外一个接口RestrictedUserService中，然后它单独打包给后台管理系统来使用。
+
+#### 4.2 把接口理解为单个API接口或函数
+这一点跟单一职责原则基本差不多，只不过接口隔离更针对于接口而言。
+
+#### 4.3 把接口理解为OOP中的接口概念
+假设项目有3个外部系统：Redis、MySQL、Kafka。每个系统都有一系列配置（比如地址、端口、访问超时时间）。  
+分别设计了3个类：RedisConfig、MySQLConfig、KafkaConfig  
+现在有一个需求，实现了一个ScheduleUpdater来调用Redis、Kafka的update方法更新配置，但不希望MySQL更新。  
+有另外一个需求，配置查看，需要查看Redis、MySQL的配置，而不需要Kafka的。  
+最终的设计是把接口分成Updater、Viewer，让配置按需来实现。  
+
+（感觉这个3点说得差不多，都是需要接口粒度更细，职责更单一）
+
+### 5.依赖反转原则
+
+#### 5.1 依赖反转与控制反转的区别
+控制反转，缩写IOC。通过一个例子了解一下控制反转：
+```java
+public class UserServiceTest {
+    public static boolean doTest() {
+        // ... 
+    }
+
+    public static void main(String[] args) {//这部分逻辑可以放到框架中
+        if (doTest()) {
+            System.out.println("Test succeed.");
+        } else {
+            System.out.println("Test failed.");
+        }
+    }
+}
+```
+上面的代码中，所有的流程都由程序员来控制。如果我们抽象出一个下面这样一个框架。  
+我们再来看，如何利用框架来实现同样的功能。
+```java
+public abstract class TestCase {
+    public void run() {
+        if (doTest()) {
+            System.out.println("Test succeed.");
+        } else {
+            System.out.println("Test failed.");
+        }
+    }
+
+    public abstract boolean doTest();
+}
+
+public class JunitApplication {
+    private static final List<TestCase> testCases = new ArrayList<>();
+
+    public static void register(TestCase testCase) {
+        testCases.add(testCase);
+    }
+
+    public static final void main(String[] args) {
+        for (TestCase c: testCases) {
+            c.run();
+        }
+    }
+}
+```
+把这个简化版本的测试框架引入到工程中，我们只需要在框架预留的扩展点，  
+也就是TestCase类中的doTest()抽象函数中，填充具体的测试代码就可以实现之前的功能。
+
+这个例子，就是典型的通过框架来实现“控制反转”的例子。  
+**框架提供了一个可扩展的代码骨架，用来组装对象、管理整个执行流程。**  
+程序员利用框架进行开发时，只需要往预留的扩展点上添加跟自己业务相关的代码，就可以利用框架来驱动整个程序流程。  
+
+这里的“控制”指的是对程序执行流程的控制，而“反转”指的是在没有使用框架之前，程序员自己控制整个程序的执行。  
+在使用框架之后，整个程序的执行流程可以通过框架来控制。流程的控制权从程序员“反转”到框架。  
+（挺Nice的一个例子）
+
+#### 5.2 依赖注入（DI）
+不通过new()的方式在类内部创建依赖对象，而是将依赖类的对象在外部创建好之后，通过构造函数，函数参数等方式传递（或注入）给类使用。
+```java
+public class Notification {
+  private MessageSender messageSender;
+  
+  public Notification(MessageSender messageSender) {
+    this.messageSender = messageSender;
+  }
+  
+  public void sendMessage(String cellphone, String message) {
+    this.messageSender.send(cellphone, message);
+  }
+}
+
+public interface MessageSender {
+  void send(String cellphone, String message);
+}
+
+// 短信发送类
+public class SmsSender implements MessageSender {
+  @Override
+  public void send(String cellphone, String message) {
+    //....
+  }
+}
+
+// 站内信发送类
+public class InboxSender implements MessageSender {
+  @Override
+  public void send(String cellphone, String message) {
+    //....
+  }
+}
+
+//使用Notification
+MessageSender messageSender = new SmsSender();
+Notification notification = new Notification(messageSender);
+```
+
+#### 5.3 依赖反转原则
+高层模块（调用方）不要依赖低层模块（被调用方）。  
+高层模块和低层模块应该通过抽象来互相依赖。  
+除此之外，抽象不要依赖具体实现，具体实现依赖抽象。
+
+### 6.KISS与YAGNI
+KISS: Keep it simple and stupid.  
+YAGNI: you ain't gonna nedd it.  
+这两个理解起来就比较容易了。就是要让程序简单可读（KISS），不要过度设计（YAGNI）。
+
+### 7.迪米特法制
+不该有直接依赖关系的类，不要有依赖。有依赖关系的类之间，尽量值依赖必要的接口。
