@@ -1,5 +1,5 @@
 # 设计模式之美
-这个也是来自于极客时间《设计模式之美》的阅读笔记。
+这个也是来自于极客时间《设计模式之美》,以及《Head First设计模式》的阅读笔记。
 
 这个课程有100讲。主要包含：  
 1.面向对象  
@@ -54,7 +54,7 @@
 接口实现了约定和实现分离，可以降低代码间的耦合性，提高代码的可扩展性。  
 （如果类之间继承结构稳定，层次较浅，关系不复杂，就可以大胆的使用继承）  
 
-### 3.组合由于继承
+### 3.组合优于继承
 继承是面向对象的四大特性之一，用来表示类之间的is-a关系，可以解决代码复用的问题。虽然继承有诸多作用，但继承层次过深、过复杂，也会影响代码的可维护性。
 
 #### 3.1 组合相比继承有哪些优势？
@@ -386,8 +386,11 @@ YAGNI: you ain't gonna nedd it.
 这一章先略过，主要内容先看《重构第二版》
 
 ## 四.设计模式与范式
-一些比较熟悉的模式，就直接记其特别的点。
-
+一些比较熟悉的模式，就直接记其特别的点。  
+根据不同的功能分类：   
+创建型：单例模式、工厂模式。  
+结构型：  
+行为型：  
 ### 1.单例模式
 一个类只允许创建一个对象
 
@@ -560,3 +563,331 @@ IdGenerator idGeneator = IdGenerator.getInstance();
 long id = idGenerator.getId();
 IdGenerator.freeInstance();
 ```
+### 2.工厂模式
+工厂模式分为三种更细分的类型：简单工厂、工厂方法和抽象工厂
+
+#### 2.1 简单工厂
+在不同情境下，我们可能需要创建不同类型的类去处理业务。  
+比如说我们需要用不同的解析器去处理不同的文件，根据文件名后缀去创建解析器。
+```java
+public class RuleConfigSource {
+    public RuleConfig load(String ruleConfigFilePath) {
+        String ruleConfigFileExtension = getFileExtension(ruleConfigFilePath);
+        IRuleConfigParser parser = null;
+        if ("json".equalsIgnoreCase(ruleConfigFileExtension)) {
+            parser = new JsonRuleConfigParser();
+        } else if ("xml".equalsIgnoreCase(ruleConfigFileExtension)) {
+            parser = new XmlRuleConfigParser();
+        } else if ("yaml".equalsIgnoreCase(ruleConfigFileExtension)) {
+            parser = new YamlRuleConfigParser();
+        } else if ("properties".equalsIgnoreCase(ruleConfigFileExtension)) {
+            parser = new PropertiesRuleConfigParser();
+        } else {
+            throw new InvalidRuleConfigException(
+                    "Rule config file format is not supported: " + ruleConfigFilePath);
+        }
+
+        String configText = "";
+        //从ruleConfigFilePath文件中读取配置文本到configText中
+        RuleConfig ruleConfig = parser.parse(configText);
+        return ruleConfig;
+    }
+
+    private String getFileExtension(String filePath) {
+        // ....
+    }
+}
+```
+按照单一职责设计原则来说，把创建这一步移出来作为一个类（简单工厂模式）：
+```java
+public class RuleConfigParserFactory {
+    public static IRuleConfigParser createParser(String configFormat) {
+        IRuleConfigParser parser = null;
+        if ("json".equalsIgnoreCase(configFormat)) {
+            parser = new JsonRuleConfigParser();
+        } else if ("xml".equalsIgnoreCase(configFormat)) {
+            parser = new XmlRuleConfigParser();
+        } else if ("yaml".equalsIgnoreCase(configFormat)) {
+            parser = new YamlRuleConfigParser();
+        } else if ("properties".equalsIgnoreCase(configFormat)) {
+            parser = new PropertiesRuleConfigParser();
+        }
+        return parser;
+    }
+}
+```
+在上面的代码实现中，我们每次调用createParser()都会创建一个新的parser。  
+实际上如果parser可以复用的话，就可以把之前创建的parser缓存起来。(有点类似单例和工厂的结合)
+```java
+public class RuleConfigParserFactory {
+    private static final Map<String, RuleConfigParser> cachedParsers = new HashMap<>();
+
+    static {
+        cachedParsers.put("json", new JsonRuleConfigParser());
+        cachedParsers.put("xml", new XmlRuleConfigParser());
+        cachedParsers.put("yaml", new YamlRuleConfigParser());
+        cachedParsers.put("properties", new PropertiesRuleConfigParser());
+    }
+
+    public static IRuleConfigParser createParser(String configFormat) {
+        if (configFormat == null || configFormat.isEmpty()) {
+            return null;//返回null还是IllegalArgumentException全凭你自己说了算
+        }
+        IRuleConfigParser parser = cachedParsers.get(configFormat.toLowerCase());
+        return parser;
+    }
+}
+```
+
+#### 2.2 工厂方法
+如果把if的逻辑去掉，比较经典的方法就是利用多态进行重构。
+```java
+public interface IRuleConfigParserFactory {
+    IRuleConfigParser createParser();
+}
+
+public class JsonRuleConfigParserFactory implements IRuleConfigParserFactory {
+    @Override
+    public IRuleConfigParser createParser() {
+        return new JsonRuleConfigParser();
+    }
+}
+
+public class XmlRuleConfigParserFactory implements IRuleConfigParserFactory {
+    @Override
+    public IRuleConfigParser createParser() {
+        return new XmlRuleConfigParser();
+    }
+}
+
+public class YamlRuleConfigParserFactory implements IRuleConfigParserFactory {
+    @Override
+    public IRuleConfigParser createParser() {
+        return new YamlRuleConfigParser();
+    }
+}
+
+public class PropertiesRuleConfigParserFactory implements IRuleConfigParserFactory {
+    @Override
+    public IRuleConfigParser createParser() {
+        return new PropertiesRuleConfigParser();
+    }
+}
+```
+实际上，这就是工厂方法模式的典型代码实现。  
+这样当我们新增一个parser的时候，只需要新增一个实现了IRuleConfigParserFactory接口的Factory类即可。  
+所以工厂方法模式比起简单工厂模式更符合开闭原则。
+
+从工厂方法的使用来看：
+```java
+public class RuleConfigSource {
+    public RuleConfig load(String ruleConfigFilePath) {
+        String ruleConfigFileExtension = getFileExtension(ruleConfigFilePath);
+
+        IRuleConfigParserFactory parserFactory = null;
+        if ("json".equalsIgnoreCase(ruleConfigFileExtension)) {
+            parserFactory = new JsonRuleConfigParserFactory();
+        } else if ("xml".equalsIgnoreCase(ruleConfigFileExtension)) {
+            parserFactory = new XmlRuleConfigParserFactory();
+        } else if ("yaml".equalsIgnoreCase(ruleConfigFileExtension)) {
+            parserFactory = new YamlRuleConfigParserFactory();
+        } else if ("properties".equalsIgnoreCase(ruleConfigFileExtension)) {
+            parserFactory = new PropertiesRuleConfigParserFactory();
+        } else {
+            throw new InvalidRuleConfigException("Rule config file format is not supported: " + ruleConfigFilePath);
+        }
+        IRuleConfigParser parser = parserFactory.createParser();
+
+        String configText = "";
+        //从ruleConfigFilePath文件中读取配置文本到configText中
+        RuleConfig ruleConfig = parser.parse(configText);
+        return ruleConfig;
+    }
+
+    private String getFileExtension(String filePath) {
+        //...解析文件名获取扩展名，比如rule.json，返回json
+        return "json";
+    }
+}
+```
+工厂类对象的创建逻辑又耦合进了load函数中，跟我们最初版本的代码非常相似。  
+引入工厂方法不仅没有解决问题，反而让设计更复杂了。那怎么解决这个问题呢？  
+
+我们可以为工厂类再创建一个简单工厂，也就是工厂的工厂，用来创建工厂类对象。  
+（真的有点蠢了）
+```java
+public class RuleConfigSource {
+    public RuleConfig load(String ruleConfigFilePath) {
+        String ruleConfigFileExtension = getFileExtension(ruleConfigFilePath);
+
+        IRuleConfigParserFactory parserFactory = RuleConfigParserFactoryMap.getParserFactory(ruleConfigFileExtension);
+        if (parserFactory == null) {
+            throw new InvalidRuleConfigException("Rule config file format is not supported: " + ruleConfigFilePath);
+        }
+        IRuleConfigParser parser = parserFactory.createParser();
+
+        String configText = "";
+        //从ruleConfigFilePath文件中读取配置文本到configText中
+        RuleConfig ruleConfig = parser.parse(configText);
+        return ruleConfig;
+    }
+
+    private String getFileExtension(String filePath) {
+        //...解析文件名获取扩展名，比如rule.json，返回json
+        return "json";
+    }
+}
+
+//因为工厂类只包含方法，不包含成员变量，完全可以复用，
+//不需要每次都创建新的工厂类对象，所以，简单工厂模式的第二种实现思路更加合适。
+public class RuleConfigParserFactoryMap { //工厂的工厂
+    private static final Map<String, IRuleConfigParserFactory> cachedFactories = new HashMap<>();
+
+    static {
+        cachedFactories.put("json", new JsonRuleConfigParserFactory());
+        cachedFactories.put("xml", new XmlRuleConfigParserFactory());
+        cachedFactories.put("yaml", new YamlRuleConfigParserFactory());
+        cachedFactories.put("properties", new PropertiesRuleConfigParserFactory());
+    }
+
+    public static IRuleConfigParserFactory getParserFactory(String type) {
+        if (type == null || type.isEmpty()) {
+            return null;
+        }
+        IRuleConfigParserFactory parserFactory = cachedFactories.get(type.toLowerCase());
+        return parserFactory;
+    }
+}
+```
+实际上，对于规则配置文件解析这个应用场景来说，工厂模式需要额外创建诸多的Factory类，也会增加代码的复杂性。  
+而且每个Factory类只做了简单的 new 操作，功能太单薄，没必要设计成独立的类。  
+所以在这个应用场景下，简单工厂模式比工厂方法模式更加合适。  
+当对象创建逻辑比较复杂再用工厂方法模式。
+
+#### 2.3 抽象工厂
+抽象工厂的应用场景比较特殊，没有前两种常用。所以不是学习的重点，了解一下就可以了。  
+
+在简单工厂和工厂方法中，类只有一种分类方式。（比如之前的按配置文件格式分类）  
+当类有两种分类方式时（比如也可以按照解析对象，Rule规则配置还是System系统配置来分类）  
+那我们就要写8个parser类了。
+```text
+// 针对规则配置的解析器：基于接口IRuleConfigParser
+JsonRuleConfigParser
+XmlRuleConfigParser
+YamlRuleConfigParser
+PropertiesRuleConfigParser
+
+// 针对系统配置的解析器：基于接口ISystemConfigParser
+JsonSystemConfigParser
+XmlSystemConfigParser
+YamlSystemConfigParser
+PropertiesSystemConfigParser
+```
+抽象工厂就是针对这种场景而诞生的。
+我们可以让一个工厂负责创建多个不同类型的对象（IRuleConfigParser、ISystemConfigParser等），
+而不是只创建一种parser对象。
+```java
+public interface IConfigParserFactory {
+    IRuleConfigParser createRuleParser();
+
+    ISystemConfigParser createSystemParser();
+    //此处可以扩展新的parser类型，比如IBizConfigParser
+}
+
+public class JsonConfigParserFactory implements IConfigParserFactory {
+    @Override
+    public IRuleConfigParser createRuleParser() {
+        return new JsonRuleConfigParser();
+    }
+
+    @Override
+    public ISystemConfigParser createSystemParser() {
+        return new JsonSystemConfigParser();
+    }
+}
+
+public class XmlConfigParserFactory implements IConfigParserFactory {
+    @Override
+    public IRuleConfigParser createRuleParser() {
+        return new XmlRuleConfigParser();
+    }
+
+    @Override
+    public ISystemConfigParser createSystemParser() {
+        return new XmlSystemConfigParser();
+    }
+}
+
+// 省略YamlConfigParserFactory和PropertiesConfigParserFactory代码
+```
+
+### 观察者模式
+观察者模式其实就是订阅者发布者模式
+
+#### 1.Java内置的API支持  
+**观察者（订阅者）：**
+```java
+public interface Observer {
+    void update(Observable o, Object arg);
+}
+```
+订阅者就相对简单很多了，当发布者有变化的时候，就会调用接口的update()方法进行更新。  
+
+**被观察者（发布者）：**
+```java
+public class Observable {
+    private boolean changed = false;
+    private Vector<Observer> obs;
+
+    public Observable() {
+        obs = new Vector<>();
+    }
+    public synchronized void addObserver(Observer o) {
+        if (o == null)
+            throw new NullPointerException();
+        if (!obs.contains(o)) {
+            obs.addElement(o);
+        }
+    }
+    public synchronized void deleteObserver(Observer o) {
+        obs.removeElement(o);
+    }
+    public void notifyObservers() {
+        notifyObservers(null);
+    }
+    public void notifyObservers(Object arg) {
+        Object[] arrLocal;
+
+        synchronized (this) {
+            if (!changed)
+                return;
+            arrLocal = obs.toArray();
+            clearChanged();
+        }
+
+        for (int i = arrLocal.length-1; i>=0; i--)
+            ((Observer)arrLocal[i]).update(this, arg);
+    }
+    public synchronized void deleteObservers() {
+        obs.removeAllElements();
+    }
+    protected synchronized void setChanged() {
+        changed = true;
+    }
+    protected synchronized void clearChanged() {
+        changed = false;
+    }
+    public synchronized boolean hasChanged() {
+        return changed;
+    }
+    public synchronized int countObservers() {
+        return obs.size();
+    }
+}
+```
+可以看得出来，订阅者列表是用Vector实现的，保证线程安全。  
+changed控制是否去更新观察者，如果调用notifyObservers()之前没有先调用setChanged()，观察者就“不会”被通知。（为不同场景提供了弹性）  
+而这个实现也有缺点，就是Observable是一个类，而不是接口。违反了设计原则针对接口而非实现编程，不方便扩展。  
+
+### 装饰者模式
+动态地将责任附加到对象上。想要扩展功能，装饰者提供有别于继承的另一种选择。  
