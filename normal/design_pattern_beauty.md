@@ -58,7 +58,7 @@
 继承是面向对象的四大特性之一，用来表示类之间的is-a关系，可以解决代码复用的问题。虽然继承有诸多作用，但继承层次过深、过复杂，也会影响代码的可维护性。
 
 #### 3.1 组合相比继承有哪些优势？
-实际上，我们可以利用组合、接口、委托，来解决继承存在的问题。  
+实际上，我们可以利用组合、接口、委托(策略模式？)，来解决继承存在的问题。  
 // todo: 代码  
 
 ## 二.设计原则
@@ -111,7 +111,7 @@ public class Alert {
         }
     }
 }
-```
+```  
 业务逻辑主要集中在check()函数中。当接口的TPS超过某个预先设置的最大阈值，  
 以及请求出错数大于某个允许值时，就会触发警告。  
 
@@ -271,6 +271,7 @@ public class UserServiceImpl implements UserService {
 （感觉这个3点说得差不多，都是需要接口粒度更细，职责更单一）
 
 ### 5.依赖反转原则
+讲到控制反转原则，还有2个看着相似的概念（其实没什么关系），就是控制反转，依赖注入。
 
 #### 5.1 依赖反转与控制反转的区别
 控制反转，缩写IOC。通过一个例子了解一下控制反转：
@@ -330,7 +331,7 @@ public class JunitApplication {
 （挺Nice的一个例子）
 
 #### 5.2 依赖注入（DI）
-不通过new()的方式在类内部创建依赖对象，而是将依赖类的对象在外部创建好之后，通过构造函数，函数参数等方式传递（或注入）给类使用。
+不通过new()的方式在类内部创建依赖对象，而是将依赖类的对象在外部创建好之后，通过构造函数，函数参数等方式传递（或注入）给类使用。  
 ```java
 public class Notification {
   private MessageSender messageSender;
@@ -819,6 +820,202 @@ public class XmlConfigParserFactory implements IConfigParserFactory {
 }
 
 // 省略YamlConfigParserFactory和PropertiesConfigParserFactory代码
+```
+
+#### 2.4 依赖注入容器（Dependency Injection）
+当创建对象是一个“大工程”时，即涉及很多类的创建。  
+一种是设计复杂的if-else分支判断，另一种是对象创建需要组装多个其他类对象或者需要复杂的初始化过程。  
+依赖注入框架（Dependency Injection Container），简称DI容器，就是用来解决这个问题。  
+
+**1.工厂模式和DI容器有何区别**  
+DI容器的底层基本设计思路就是基于工厂模式的。DI容器相当于一个大的工厂类。（负责的是整个应用中所有类对象的创建）  
+除此之外，DI容器还要处理配置的解析，对象生命周期的管理。  
+
+**2.DI容器的核心功能**  
+配置解析：我们将需要由DI容器来创建的类对象和创建类对象的必要信息（使用哪个构造函数及对应构造函数参数是什么等等），
+放到配置文件中。容器读取配置文件，根据其提供的信息创建对象。  
+对象创建：利用“反射”机制，在程序运行的过程中，动态地加载类，创建对象。  
+生命周期管理：在Spring框架中，可以通过配置scope属性，区分不同类型的对象（是否单例）等。
+还提供init-method,destroy-method提供对象创建销毁时函数调用。  
+（Spring都有相应的注解去处理）  
+
+**3.简单的ID容器实现**  
+把理解的东西放到下面代码的注解当中：
+执行入口：
+```java
+public interface ApplicationContext {
+    Object getBean(String beanId);
+}
+
+public class ClassPathXmlApplicationContext implements ApplicationContext {
+    private BeansFactory beansFactory;
+    private BeanConfigParser beanConfigParser;
+
+    /**
+     * 由工厂类和配置解析器构成
+     */
+    public ClassPathXmlApplicationContext(String configLocation) {
+        this.beansFactory = new BeansFactory();
+        this.beanConfigParser = new XmlBeanConfigParser();
+        loadBeanDefinitions(configLocation);
+    }
+
+    /**
+     * 根据文件路径，扫描配置后加载进来，放到工厂类中
+     */
+    private void loadBeanDefinitions(String configLocation) {
+        InputStream in = null;
+        try {
+            in = this.getClass().getResourceAsStream("/" + configLocation);
+            if (in == null) {
+                throw new RuntimeException("Can not find config file: " + configLocation);
+            }
+            List<BeanDefinition> beanDefinitions = beanConfigParser.parse(in);
+            beansFactory.addBeanDefinitions(beanDefinitions);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // TODO: log error
+                }
+            }
+        }
+    }
+
+    @Override
+    public Object getBean(String beanId) {
+        return beansFactory.getBean(beanId);
+    }
+}
+```
+配置解析器及加载类信息的定义：
+```java
+public interface BeanConfigParser {
+    List<BeanDefinition> parse(InputStream inputStream);
+    List<BeanDefinition> parse(String configContent);
+}
+
+public class XmlBeanConfigParser implements BeanConfigParser {
+
+    @Override
+    public List<BeanDefinition> parse(InputStream inputStream) {
+        String content = null;
+        // TODO:...
+        return parse(content);
+    }
+
+    @Override
+    public List<BeanDefinition> parse(String configContent) {
+        List<BeanDefinition> beanDefinitions = new ArrayList<>();
+        // TODO:...
+        return beanDefinitions;
+    }
+
+}
+
+public class BeanDefinition {
+    private String id;              // Bean id
+    private String className;       // 类名
+    private List<ConstructorArg> constructorArgs = new ArrayList<>();  // 参数
+    private Scope scope = Scope.SINGLETON;      // 类类型
+    private boolean lazyInit = false;           // 是否懒加载
+    // 省略必要的getter/setter/constructors
+
+    public boolean isSingleton() {
+        return scope.equals(Scope.SINGLETON);
+    }
+
+
+    public static enum Scope {
+        SINGLETON,
+        PROTOTYPE
+    }
+
+    public static class ConstructorArg {
+        private boolean isRef;
+        private Class type;
+        private Object arg;
+        // 省略必要的getter/setter/constructors
+    }
+}
+```
+核心工厂类：
+```java
+public class BeansFactory {
+    // 跟简单工厂的第二种差不多，用个Map的存好创建的单例对象
+    private ConcurrentHashMap<String, Object> singletonObjects = new ConcurrentHashMap<>();
+    // 通过配置读取的所有类的信息(BeanDefinition)
+    private ConcurrentHashMap<String, BeanDefinition> beanDefinitions = new ConcurrentHashMap<>();
+
+    public void addBeanDefinitions(List<BeanDefinition> beanDefinitionList) {
+        // 读入配置
+        for (BeanDefinition beanDefinition : beanDefinitionList) {
+            this.beanDefinitions.putIfAbsent(beanDefinition.getId(), beanDefinition);
+        }
+        // 饿汉式创建
+        for (BeanDefinition beanDefinition : beanDefinitionList) {
+            if (beanDefinition.isLazyInit() == false && beanDefinition.isSingleton()) {
+                createBean(beanDefinition);
+            }
+        }
+    }
+
+    public Object getBean(String beanId) {
+        BeanDefinition beanDefinition = beanDefinitions.get(beanId);
+        if (beanDefinition == null) {
+            throw new NoSuchBeanDefinitionException("Bean is not defined: " + beanId);
+        }
+        return createBean(beanDefinition);
+    }
+
+    @VisibleForTesting
+    protected Object createBean(BeanDefinition beanDefinition) {
+        // 之前已经用饿汉式创建过的话，就直接返回喽
+        if (beanDefinition.isSingleton() && singletonObjects.contains(beanDefinition.getId())) {
+            return singletonObjects.get(beanDefinition.getId());
+        }
+
+        // 这里就是“反射”创建新的类对象了
+        Object bean = null;
+        try {
+            Class beanClass = Class.forName(beanDefinition.getClassName());
+            List<BeanDefinition.ConstructorArg> args = beanDefinition.getConstructorArgs();
+            if (args.isEmpty()) {
+                bean = beanClass.newInstance();
+            } else {
+                Class[] argClasses = new Class[args.size()];
+                Object[] argObjects = new Object[args.size()];
+                for (int i = 0; i < args.size(); ++i) {
+                    BeanDefinition.ConstructorArg arg = args.get(i);                   
+                    if (!arg.getIsRef()) {
+                        // 基础类型直接放属性中
+                        argClasses[i] = arg.getType();
+                        argObjects[i] = arg.getArg();
+                    } else {
+                        // 组合了其他类的话，就递归创建
+                        BeanDefinition refBeanDefinition = beanDefinitions.get(arg.getArg());
+                        if (refBeanDefinition == null) {
+                            throw new NoSuchBeanDefinitionException("Bean is not defined: " + arg.getArg());
+                        }
+                        argClasses[i] = Class.forName(refBeanDefinition.getClassName());
+                        argObjects[i] = createBean(refBeanDefinition);
+                    }
+                }
+                bean = beanClass.getConstructor(argClasses).newInstance(argObjects);
+            }
+        } catch (ClassNotFoundException | IllegalAccessException
+                | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+            throw new BeanCreationFailureException("", e);
+        }
+
+        if (bean != null && beanDefinition.isSingleton()) {
+            singletonObjects.putIfAbsent(beanDefinition.getId(), bean);
+            return singletonObjects.get(beanDefinition.getId());
+        }
+        return bean;
+    }
+}
 ```
 
 ### 观察者模式
