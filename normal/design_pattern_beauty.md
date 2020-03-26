@@ -840,7 +840,7 @@ DI容器的底层基本设计思路就是基于工厂模式的。DI容器相当�
 （Spring都有相应的注解去处理）  
 
 **3.简单的ID容器实现**  
-把理解的东西放到下面代码的注解当中：
+把理解的东西放到下面代码的注解当中。  
 执行入口：
 ```java
 public interface ApplicationContext {
