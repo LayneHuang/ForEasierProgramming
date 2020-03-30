@@ -290,3 +290,114 @@ public class MetricsCollectorProxy {
 如果是基于Spring框架来开发的话，就可以在 AOP 切面中完成接口缓存功能。
 在启动的时候，我们从配置文件中加载需要支持缓存的接口，以及相应的缓存策略（比如过期时间）等。
 当请求到来的时候，我们再 AOP 切面中拦截请求，如果请求中带有支持缓存字段，就从缓存中取（内存或Redis），然后直接返回。
+
+### 5.装饰器模式
+动态地将责任附加到对象上。想要扩展功能，装饰器模式提供有别于继承的另一种选择。
+
+#### 5.1 装饰器的应用场景
+Java IO 类库非常庞大和复杂（我一开始使用的时候确实也搞不太懂），有十几个类，负责IO数据的读取和写入。  
+可以按照两个维度划分为4类：
+
+| |**字节流** |**字符流** |
+|:---|:---|:---|
+|**读入流**|InputSteam|Reader|
+|**输出流**|OutputSteam|Writer|
+
+**特殊点：**  
+
+1.装饰器类和原始类继承相同的父类（或者实现相同的接口），这样我们可以对原始类“嵌套”多个装饰器类。  
+
+2.装饰器类是对功能的增强，这也是装饰器模式的一个重要特点。  
+实际上，符合“组合关系”这种结构的设计模式很多，如代理模式，桥接模式，还有现在的装饰器模式。
+尽管代码结构相似，但是其意图还是不同的。
+**代理模式附加的是跟原始类无关的功能，而装饰器模式中，附加的是跟原始类相关的增强功能。**
+
+#### 5.2 BufferedInputStream
+看查JDK的源码发现，BufferedInputStream、DataInputStream 是继承自 FilterInputStream 的（而并非 InputSteam）。  
+InputStream 它本来就是抽象类而非接口，一些默认方法（read()、available()）都有默认实现。  
+但是对于一些不需要增加缓存的函数来说，BufferedInputStream 都要对其重新实现一次。
+```java
+public class BufferedInputStream extends InputStream {
+    protected volatile InputStream in;
+
+    protected BufferedInputStream(InputStream in) {
+        this.in = in;
+    }
+
+    // f()函数不需要增强，只是重新调用一下InputStream in对象的f()
+    public void f() {
+        in.f();
+    }
+}
+```
+所以 Java IO 抽象出一个装饰器父类 FilterInputStream 把 InputStream 的抽象方法实现了，
+那么 BufferedInputStream 就只需要实现它需要增强的方法就可以了。
+
+### 观察者模式
+观察者模式其实就是订阅者发布者模式
+
+#### 1.Java内置的API支持  
+**观察者（订阅者）：**
+```java
+public interface Observer {
+    void update(Observable o, Object arg);
+}
+```
+订阅者就相对简单很多了，当发布者有变化的时候，就会调用接口的update()方法进行更新。  
+
+**被观察者（发布者）：**
+```java
+public class Observable {
+    private boolean changed = false;
+    private Vector<Observer> obs;
+
+    public Observable() {
+        obs = new Vector<>();
+    }
+    public synchronized void addObserver(Observer o) {
+        if (o == null)
+            throw new NullPointerException();
+        if (!obs.contains(o)) {
+            obs.addElement(o);
+        }
+    }
+    public synchronized void deleteObserver(Observer o) {
+        obs.removeElement(o);
+    }
+    public void notifyObservers() {
+        notifyObservers(null);
+    }
+    public void notifyObservers(Object arg) {
+        Object[] arrLocal;
+
+        synchronized (this) {
+            if (!changed)
+                return;
+            arrLocal = obs.toArray();
+            clearChanged();
+        }
+
+        for (int i = arrLocal.length-1; i>=0; i--)
+            ((Observer)arrLocal[i]).update(this, arg);
+    }
+    public synchronized void deleteObservers() {
+        obs.removeAllElements();
+    }
+    protected synchronized void setChanged() {
+        changed = true;
+    }
+    protected synchronized void clearChanged() {
+        changed = false;
+    }
+    public synchronized boolean hasChanged() {
+        return changed;
+    }
+    public synchronized int countObservers() {
+        return obs.size();
+    }
+}
+```
+可以看得出来，订阅者列表是用Vector实现的，保证线程安全。  
+changed控制是否去更新观察者，如果调用notifyObservers()之前没有先调用setChanged()，观察者就“不会”被通知。（为不同场景提供了弹性）  
+而这个实现也有缺点，就是Observable是一个类，而不是接口。违反了设计原则针对接口而非实现编程，不方便扩展。  
+  
