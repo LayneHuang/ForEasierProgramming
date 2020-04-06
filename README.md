@@ -9,8 +9,8 @@
 
 ## Java后台
 #### [Effective Java 2.0](https://github.com/LayneHuang/ForEasyCode/blob/master/java/effectivejava.md)
-#### [并发编程](https://github.com/LayneHuang/ForEasyCode/blob/master/java/concurrent_programming.md)
-#### [Spring](https://github.com/LayneHuang/ForEasyCode/blob/master/java/spring.md)
+#### [并发编程](https://github.com/LayneHuang/ForEasyCode/blob/master/java/concurrent_programming/concurrent_programming.md)
+#### [Spring](https://github.com/LayneHuang/ForEasyCode/blob/master/java/spring/spring.md)
 
 ## 数据分析
 
