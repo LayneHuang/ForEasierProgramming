@@ -30,7 +30,7 @@ SOLID：单一职责原则、开闭原则、里式替换原则、接口隔离原
 
 ### [1.创建型：单例模式、工厂模式、建造者模式](https://github.com/LayneHuang/ForEasyCode/blob/master/normal/design_pattern/design_pattern_beauty_create.md)
 
-### [2.结构型：代理模式、装饰器模式](https://github.com/LayneHuang/ForEasyCode/blob/master/normal/design_pattern/design_pattern_beauty_structure.md)
+### [2.结构型：代理模式、装饰器模式、享元模式](https://github.com/LayneHuang/ForEasyCode/blob/master/normal/design_pattern/design_pattern_beauty_structure.md)
 （一些类或对象组合在一起的经典结构）
 
 ### [3.行为型：观察者模式](https://github.com/LayneHuang/ForEasyCode/blob/master/normal/design_pattern/design_pattern_beauty_action.md)  
