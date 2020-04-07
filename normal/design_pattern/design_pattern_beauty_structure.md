@@ -267,3 +267,30 @@ public class BufferedInputStream extends InputStream {
 ```
 所以 Java IO 抽象出一个装饰器父类 FilterInputStream 把 InputStream 的抽象方法实现了，
 那么 BufferedInputStream 就只需要实现它需要增强的方法就可以了。
+
+## 6.享元模式
+享元模式的意图是复用对象，节省内存，前提是享元对象是**不可变对象**。  
+当一个系统存在大量重复对象，如果这些对象是不可变对象，我们就可以利用享元模式将对象设计成享元。  
+专栏给出的例子是**象棋（享元）**和很多状态的棋盘。  
+
+### 6.1 享元模式在Integer、String中的应用
+基本类型有一个自动装箱（autoboxing）和自动拆箱（Unboxing）的过程（这个自己了解把）。
+```java
+Integer i1 = 56;
+Integer i2 = 56;
+Integer i3 = 129;
+Integer i4 = 129;
+System.out.println(i1 == i2);
+System.out.println(i3 == i4);
+```
+对于上面的代码，第一个输出返回的是 true，而第二个输出返回的是 false 。  
+原因是Integer用到了享元模式来复用对象，对于要创建Integer的值在 -128 ~ 127 之间（常用），
+就会从 IntegerCache 类中直接返回，否则才调用 new 方法创建。
+```java
+public static Integer valueOf(int i) {
+    if (i >= IntegerCache.low && i <= IntegerCache.high)
+        return IntegerCache.cache[i + (-IntegerCache.low)];
+    return new Integer(i);
+}
+```
+对于String，原理也是一样的。
