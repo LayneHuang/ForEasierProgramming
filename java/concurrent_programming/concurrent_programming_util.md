@@ -16,16 +16,14 @@ synchronized 的问题是，持有锁A后，如果尝试获取锁B失败，那�
 跟2.不多，没获取到锁就直接返回错误。  
 
 ```java
-// 支持中断的API
-void lockInterruptibly() 
-  throws InterruptedException;
-
-// 支持超时的API
-boolean tryLock(long time, TimeUnit unit) 
-  throws InterruptedException;
-
-// 支持非阻塞获取锁的API
-boolean tryLock();
+public class Demo {
+    // 支持中断的API
+    void lockInterruptibly() throws InterruptedException;
+    // 支持超时的API
+    boolean tryLock(long time, TimeUnit unit) throws InterruptedException;
+    // 支持非阻塞获取锁的API
+    boolean tryLock();
+}
 ```
 
 ### 1.2 如何保证可见性
@@ -64,14 +62,16 @@ class X {
 #### 1.4 公平锁与非公平锁
 ReentrantLock 有两个构造函数。
 ```java
-//无参构造函数：默认非公平锁
-public ReentrantLock() {
-    sync = new NonfairSync();
-}
-//根据公平策略参数创建锁
-public ReentrantLock(boolean fair){
-    sync = fair ? new FairSync() 
-                : new NonfairSync();
+public class Demo {
+    //无参构造函数：默认非公平锁
+    public ReentrantLock() {
+        sync = new NonfairSync();
+    }
+    //根据公平策略参数创建锁
+    public ReentrantLock(boolean fair){
+        sync = fair ? new FairSync() 
+                    : new NonfairSync();
+    }
 }
 ```
 公平锁：谁等待时间长，就唤醒谁。(队列)   
@@ -238,12 +238,12 @@ class CachedData {
             try {
                 // 再次检查状态  
                 if (!cacheValid) {
-                    data = ...
+                    data = "something";
                     cacheValid = true;
                 }
                 // 释放写锁前，降级为读锁
                 // 降级是可以的
-                r.lock(); ①
+                r.lock();
             } finally {
                 // 释放写锁
                 w.unlock();
@@ -332,74 +332,81 @@ class Point {
 CountDownLatch: 等待多个线程并行都执行任务完了，再往下执行。  
 ```java
 // 创建2个线程的线程池
-Executor executor = Executors.newFixedThreadPool(2);
-while(存在未对账订单){
-    // 计数器初始化为2
-    CountDownLatch latch = new CountDownLatch(2);
-    // 查询未对账订单
-    executor.execute(()-> {
-        pos = getPOrders();
-        latch.countDown();
-    });
-    // 查询派送单
-    executor.execute(()-> {
-        dos = getDOrders();
-        latch.countDown();
-    });
-
-    // 等待两个查询操作结束
-    latch.await();
-
-    // 执行对账操作
-    diff = check(pos, dos);
-    // 差异写入差异库
-    save(diff);
+public class Demo {
+    public void run() {
+        Executor executor = Executors.newFixedThreadPool(2);
+        while(存在未对账订单){
+            // 计数器初始化为2
+            CountDownLatch latch = new CountDownLatch(2);
+            // 查询未对账订单
+            executor.execute(()-> {
+                pos = getPOrders();
+                latch.countDown();
+            });
+            // 查询派送单
+            executor.execute(()-> {
+                dos = getDOrders();
+                latch.countDown();
+            });
+        
+            // 等待两个查询操作结束
+            latch.await();
+        
+            // 执行对账操作
+            diff = check(pos, dos);
+            // 差异写入差异库
+            save(diff);
+        }
+    }
 }
+
 ```
 CyclicBarrier: 等待多个线程并行都执行任务完了，调用一个回调方法，并循环执行。  
 CyclicBarrier的计数器有自动重置的功能，当减到 0 的时候，会自动重置你设置的初始值。  
 ```java
-// 订单队列
-Vector<P> pos;
-// 派送单队列
-Vector<D> dos;
-// 执行回调的线程池 
-Executor executor = Executors.newFixedThreadPool(1);
-final CyclicBarrier barrier =
-        new CyclicBarrier(2, ()->{
-            executor.execute(()->check());
+public class Demo {
+    // 订单队列
+    Vector<P> pos;
+    // 派送单队列
+    Vector<D> dos;
+    // 执行回调的线程池 
+    Executor executor = Executors.newFixedThreadPool(1);
+    final CyclicBarrier barrier =
+            new CyclicBarrier(2, ()->{
+                executor.execute(()->check());
+            });
+    
+    void check(){
+        P p = pos.remove(0);
+        D d = dos.remove(0);
+        // 执行对账操作
+        diff = check(p, d);
+        // 差异写入差异库
+        save(diff);
+    }
+    
+    void checkAll(){
+        // 循环查询订单库
+        Thread T1 = new Thread(()->{
+            while(存在未对账订单){
+                // 查询订单库
+                pos.add(getPOrders());
+                // 等待
+                barrier.await();
+            }
         });
-
-void check(){
-    P p = pos.remove(0);
-    D d = dos.remove(0);
-    // 执行对账操作
-    diff = check(p, d);
-    // 差异写入差异库
-    save(diff);
-}
-
-void checkAll(){
-    // 循环查询订单库
-    Thread T1 = new Thread(()->{
-        while(存在未对账订单){
-            // 查询订单库
-            pos.add(getPOrders());
-            // 等待
-            barrier.await();
-        }
-    });
-    T1.start();
-    // 循环查询运单库
-    Thread T2 = new Thread(()->{
-        while(存在未对账订单){
-            // 查询运单库
-            dos.add(getDOrders());
-            // 等待
-            barrier.await();
-        }
-    });
-    T2.start();
+        T1.start();
+        // 循环查询运单库
+        Thread T2 = new Thread(()->{
+            while(存在未对账订单){
+                // 查询运单库
+                dos.add(getDOrders());
+                // 等待
+                barrier.await();
+            }
+        });
+        T2.start();
+    }
 }
 ```
 （这两个东西我感觉它们能用到的地方还是很多的）。
@@ -429,8 +436,10 @@ CAS 指令包含 3 个参数：共享变量的内存地址 A、用于比较的�
 ### 6.2 Java如何实现原子化的count+=1
 在Java 1.8版本中，getAndIncreament()方法会转调 unsafe.getAndAddLong() 方法。
 ```java
-final long getAndIncrement() {
-  return unsafe.getAndAddLong(this, valueOffset, 1L);
+public class Demo {
+    final long getAndIncrement() {
+        return unsafe.getAndAddLong(this, valueOffset, 1L);
+    }
 }
 ```
 
@@ -441,3 +450,166 @@ final long getAndIncrement() {
 所以**线程是一个重量级的对象，应该避免频繁创建和销毁**
 
 ### 7.1 线程池是一种生产者-消费者模式
+它并不是通过 execute(Runnable target) 这种方式去执行的。（说实话，一开始我以为是这样的）  
+目前业界的线程池设计，普遍采用**生产者 - 消费者模式**。线程池的使用方是生产者，线程池本身是消费者。
+```java
+//简化的线程池，仅用来说明工作原理
+class MyThreadPool {
+    //利用阻塞队列实现生产者-消费者模式
+    BlockingQueue<Runnable> workQueue;
+    //保存内部工作线程
+    List<WorkerThread> threads
+            = new ArrayList<>();
+
+    // 构造方法
+    MyThreadPool(int poolSize,
+                 BlockingQueue<Runnable> workQueue) {
+        this.workQueue = workQueue;
+        // 创建工作线程
+        for (int idx = 0; idx < poolSize; idx++) {
+            WorkerThread work = new WorkerThread();
+            work.start();
+            threads.add(work);
+        }
+    }
+
+    // 提交任务
+    void execute(Runnable command) {
+        workQueue.put(command);
+    }
+
+    // 工作线程负责消费任务，并执行任务
+    class WorkerThread extends Thread {
+        public void run() {
+            //循环取任务并执行
+            while (true) {
+                Runnable task = workQueue.take();
+                task.run();
+            }
+        }
+    }
+}
+
+public class Demo {
+    /**
+     * 下面是使用示例
+     **/
+    public void run() {
+        // 创建有界阻塞队列
+        BlockingQueue<Runnable> workQueue =
+                new LinkedBlockingQueue<>(2);
+        // 创建线程池
+        MyThreadPool pool = new MyThreadPool(
+                10, workQueue);
+        // 提交任务
+        pool.execute(() -> {
+            System.out.println("hello");
+        });
+    }
+}
+```
+在 MyThreadPool 的内部，我们维护了一个阻塞队列 workQueue 和一组工作线程    
+工作线程个数由构造函数中的 poolSize 来指定。  
+通过调用 execute() 方法来提交 Runnable 任务。execute() 方法仅仅将任务放入 workQueue 中。（而非真正执行）  
+MyThreadPool 内部工作线程会消费 workQueue 中的任务并执行任务。
+（其实线程池的实现也没有很复杂）
+
+### 7.2 如何使用 Java 中的线程池
+Java 提供的线程池当中最核心的是 **ThreadPoolExecutor**，通过名字也可能看出来，它强调的是 Executor (有什么区别呢？)，而不是一般的池化资源。
+
+TheadPoolExecutor 的构造函数
+（一开始理解起来可能很复杂，但是之前做完阿里云中间件比赛之后，就着实理解了池化到底干了什么事情）  
+```java
+public class Demo {
+    ThreadPoolExecutor(
+            int corePoolSize,
+            int maximumPoolSize,
+            long keepAliveTime,
+            TimeUnit unit,
+            BlockingQueue<Runnable> workQueue,
+            ThreadFactory threadFactory,
+            RejectedExecutionHandler handler) {
+    }
+}
+```
+可以把线程池类比成一个项目组，而线程就是项目组的成员（可以，这个类比有点意思）  
+#### corePoolSize
+表示线程池保有的最少线程数。有些项目很闲，但至少有coolPoolSize个人在待命。
+#### maximumPoolSize
+表示线程池创建的最大线程数。当项目很忙时，就需要加人，但是也不能无限制地加。  
+最多加到 maximumPoolSize 个人。当项目闲下来时，就要撤走，最多能撤到 corePoolSize 个。
+#### keepAliveTime & unit
+一个线程如果在一段时间内，都没有执行任务，说明很闲，keepAliveTime 和 unit 就是用来定义这个“一段时间”的参数。  
+也就是说，如果一个线程空闲了keepAliveTime & unit这么久，而且线程池的线程数大于 corePoolSize ，那么这个空闲的线程就要被回收了。
+#### workQueue
+工作队列，和上面示例代码的工作队列同义。
+#### threadFactory
+通过这个参数你可以自定义如何创建线程，例如你可以给线程指定一个有意义的名字。
+#### handler
+通过这个参数你可以自定义任务的拒绝策略。
+
+### 7.3 使用线程池要注意的
+因为 ThreadPoolExecutor 的构造函数实在有些复杂，所有 Java 并发包提供了一个线程池的静态工厂类 Executors。  
+但是 Executors 默认提供的都是无界的 LinkedBlockQueue，在高负载下会导致OOM的发生。
+
+使用有界队列，当任务过多时，线程池会触发执行 默认拒绝策略。如果线程池处理的任务非常重要，**建议自定义拒绝策略**。
+
+如果 execute() 方法提交任务是，如果任务在执行的过程中出现运行时异常，会导致执行的任务线程终止；  
+不过最致命的是任务虽然异常了，但是没获取到任何通知，就会让人误以为执行得很正常。  
+最简单的方法还是捕获所有的异常并按需处理。
+```java
+public class Demo {
+    void run() {
+        try {
+            //业务逻辑
+        } catch (RuntimeException x) {
+            //按需处理
+        } catch (Throwable x) {
+            //按需处理
+        }
+    }
+}
+```
+
+## 8.Future
+利用 ThreadPoolExecutor 的 void executor(Runnable command) 方法虽然可以提交任务，但是却没有办法获取任务的执行结果。
+
+Java 通过 ThreadPoolExecutor 提供的3个 submit() 方法和1个 FutureTask 工具类来支持获得任务执行结果的需求。  
+```java
+public class Demo {
+    // 提交Runnable任务
+    Future<?> submit(Runnable task);
+    // 提交Callable任务
+    <T> Future<T> submit(Callable<T> task);
+    // 提交Runnable任务及结果引用
+    <T> Future<T> submit(Runnable task, T result);
+}
+```
+(Callable能返回结果)
+而 Future 接口提供了5个方法（截取自 concurrent 包）：
+```java
+public interface Future<V> {
+    // 取消任务
+    boolean cancel(boolean mayInterruptIfRunning);
+    // 判断任务是否已取消
+    boolean isCancelled();
+    // 判断任务是否已结束
+    boolean isDone();
+    // 获得任务执行结果
+    V get() throws InterruptedException, ExecutionException;
+    // 获得任务执行结果，支持超时
+    V get(long timeout, TimeUnit unit) 
+        throws InterruptedException, ExecutionException, TimeoutException;
+}
+```
+### 8.1 三个submit()方法的区别
+
+1.submit(Runnable task)： 这个方法的参数是一个 Runnable 接口，Runnable 接口的 run() 方法是没有返回值得，
+所以 submit(Runnable task) 方法返回的 Future 仅可以用来断言任务已经结束了，类似于 Thread.join()。  
+（...说实话 Thread.join() 的具体我也不大清楚）  
+
+2.submit(Callable<T> task)： 这个方法的参数是一个 Callable 接口，它只有一个 call() 方法，并且是有返回值的，
+所以这个方法返回的 Future 对象可以通过调用其 get() 方法来获取任务的执行结果。
+
+3.submit(Runnable task, T result)： 假设这个方法返回的 Future 对象是 f，f.get() 的返回值就是传给 submit()
+方法的参数 result。 

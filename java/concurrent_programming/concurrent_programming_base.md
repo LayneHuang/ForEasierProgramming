@@ -317,15 +317,19 @@ public enum State {
 
 思考:
 ```java
-Thread th = Thread.currentThread();
-while(true) {
-    if( th.isInterrupted() ) {
-        break;
-    }
-    try {
-        Thread.sleep(100);
-    } catch( InterruptedException e ) {
-        e.printStackTrace();
+public class Demo {
+    public void run() {
+        Thread th = Thread.currentThread();
+        while(true) {
+            if( th.isInterrupted() ) {
+                break;
+            }
+            try {
+                Thread.sleep(100);
+            } catch( InterruptedException e ) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 ```
