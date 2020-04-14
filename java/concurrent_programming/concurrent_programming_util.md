@@ -602,8 +602,8 @@ public interface Future<V> {
         throws InterruptedException, ExecutionException, TimeoutException;
 }
 ```
-### 8.1 三个submit()方法的区别
 
+### 8.1 三个submit()方法的区别
 1.submit(Runnable task)： 这个方法的参数是一个 Runnable 接口，Runnable 接口的 run() 方法是没有返回值得，
 所以 submit(Runnable task) 方法返回的 Future 仅可以用来断言任务已经结束了，类似于 Thread.join()。  
 （...说实话 Thread.join() 的具体我也不大清楚）  
@@ -612,4 +612,39 @@ public interface Future<V> {
 所以这个方法返回的 Future 对象可以通过调用其 get() 方法来获取任务的执行结果。
 
 3.submit(Runnable task, T result)： 假设这个方法返回的 Future 对象是 f，f.get() 的返回值就是传给 submit()
-方法的参数 result。 
+方法的参数 result。  
+需要注意的是 Runnable 接口的实现类 Task 声明一个有参构造函数 Task(Result r)。  
+创建 Task 对象的时候传入 result 对象，就能在类 Task 的 run() 方法中对 result 进行各种操作了，
+通过它，主线程和子线程可以共享数据（...还能这样？也算是一种同步吗）
+```java
+class Demo {
+    void run() {
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        // 创建Result对象r
+        Result r = new Result();
+        r.setAAA(a);
+        // 提交任务
+        Future<Result> future = executor.submit(new Task(r), r);
+        Result fr = future.get();
+        // 下面等式成立
+        fr == r;
+        fr.getAAA() == a;
+        fr.getXXX() == x;
+    }
+}
+
+class Task implements Runnable {
+    Result r;
+    //通过构造函数传入result
+    Task(Result r) {
+        this.r = r;
+    }
+
+    void run() {
+        //可以操作result
+        a = r.getAAA();
+        r.setXXX(x);
+    }
+}
+```
+（其实就是一个变量 Result 可以在各个线程之间给其赋值）

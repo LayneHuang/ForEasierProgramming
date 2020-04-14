@@ -74,11 +74,11 @@ function playFor(aPerformance) {
 }
 
 function totalAmount(data) {
-    return data.performances.reduce((total, p) = > total + p.amount, 0);
+    return data.performances.reduce((total, p) => total + p.amount, 0);
 }
 
 function totalVolumeCredits(data) {
-    return data.performances.reduce((total, p) = > total + p.volumeCredits, 0);
+    return data.performances.reduce((total, p) => total + p.volumeCredits, 0);
 }
 
 function createPerformanceCalculator(aPerformance, aPlay) {
@@ -246,6 +246,7 @@ function price(order, priceList) { 　
     return order.quantity * priceList[order.productID]; 
 }
 ```
+
 ## 七.封装
 
 ### 1.封装集合
@@ -259,8 +260,8 @@ become:
 ```javascript
 class Person {
     getCourses() {return this._courses.slice();}
-    addCourse(aCourse) { ... }   
-    removeCourse(aCourse) { ... }
+    addCourse(aCourse) { }   
+    removeCourse(aCourse) { }
 }
 ```
 
