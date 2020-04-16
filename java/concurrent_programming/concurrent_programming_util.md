@@ -647,4 +647,6 @@ class Task implements Runnable {
     }
 }
 ```
-（其实就是一个变量 Result 可以在各个线程之间给其赋值）
+（其实就是一个变量 Result 可以在各个线程之间给其赋值）  
+而 FutureTask 实现了 Runnable 和 Future 接口，由于实现了 Runnable 接口，所以可以将 FutureTask 对象作为任务交给 ThreadPoolExecutor
+去执行
