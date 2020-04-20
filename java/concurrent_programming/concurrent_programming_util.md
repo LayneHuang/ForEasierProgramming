@@ -650,3 +650,155 @@ class Task implements Runnable {
 （其实就是一个变量 Result 可以在各个线程之间给其赋值）  
 而 FutureTask 实现了 Runnable 和 Future 接口，由于实现了 Runnable 接口，所以可以将 FutureTask 对象作为任务交给 ThreadPoolExecutor
 去执行
+
+### 8.2 用 Future 实现烧水泡茶
+文章中给出的流程图是这样的：
+<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program11.png" width="500">
+
+前面说到了并发编程可以总结为3个核心的问题（分工、同步和互斥）：  
+分工指得就是高效地拆解任务并分配给线程。（同步互斥就不再解释了）  
+目前来讲吧下面的3道工序分配给第二个线程去完成。
+<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program12.png" width="500">
+
+#### 实现步骤：
+1.创建2个 FutureTask ，ft1 完成洗水壶，烧开水，泡茶的任务，ft2 完成其余步骤。  
+2.ft1 这个任务执行在泡茶任务之前，需要等待 ft2 把茶叶拿来，所以 ft1 内部需要引用 ft2，并在执行泡茶前，
+调用 ft2 的 get() 方法实现等待。  
+（代码有一丢丢长，不过不难看懂）
+```java
+class Demo {
+    // 创建任务T2的FutureTask
+    FutureTask<String> ft2 = new FutureTask<>(new T2Task());
+
+    // 创建任务T1的FutureTask
+    FutureTask<String> ft1 = new FutureTask<>(new T1Task(ft2));
+
+    // 线程T1执行任务ft1
+    Thread T1 = new Thread(ft1);
+    T1.start();
+
+    // 线程T2执行任务ft2
+    Thread T2 = new Thread(ft2);
+    T2.start();
+    // 等待线程T1执行结果
+    System.out.println(ft1.get());
+}
+
+// T1Task需要执行的任务：
+// 洗水壶、烧开水、泡茶
+class T1Task implements Callable<String> {
+    FutureTask<String> ft2;
+
+    // T1任务需要T2任务的FutureTask
+    T1Task(FutureTask<String> ft2) {
+        this.ft2 = ft2;
+    }
+
+    @Override
+    String call() throws Exception {
+        System.out.println("T1:洗水壶...");
+        TimeUnit.SECONDS.sleep(1);
+
+        System.out.println("T1:烧开水...");
+        TimeUnit.SECONDS.sleep(15);
+        // 获取T2线程的茶叶  
+        String tf = ft2.get();
+        System.out.println("T1:拿到茶叶:" + tf);
+
+        System.out.println("T1:泡茶...");
+        return "上茶:" + tf;
+    }
+}
+
+// T2Task需要执行的任务:
+// 洗茶壶、洗茶杯、拿茶叶
+class T2Task implements Callable<String> {
+    @Override
+    String call() throws Exception {
+        System.out.println("T2:洗茶壶...");
+        TimeUnit.SECONDS.sleep(1);
+
+        System.out.println("T2:洗茶杯...");
+        TimeUnit.SECONDS.sleep(2);
+
+        System.out.println("T2:拿茶叶...");
+        TimeUnit.SECONDS.sleep(1);
+        return "龙井";
+    }
+}
+/*
+ * 一次执行结果：
+ * T1:洗水壶...
+ * T2:洗茶壶...
+ * T1:烧开水...
+ * T2:洗茶杯...
+ * T2:拿茶叶...
+ * T1:拿到茶叶:龙井
+ * T1:泡茶...
+ * 上茶:龙井
+ */
+```
+
+## 9.CompletableFuture 异步编程
+
+Java 在 1.8 版本提供了 CompletableFuture 来支持异步编程， 
+CompletableFuture 有可能是你见过的最复杂的工具类了，不过功能也着实让人感到震撼。
+
+### 9.1 CompletableFuture 的优势
+
+1.无需手工维护线程，没有繁琐的手工维护线程的工作，非任务分配线程的工作也不需要我们关注。  
+2.语义更清晰，如 f3 = f1.thenCombine(f2,()->{}) 能够清晰表述“任务3要等待任务1,2完成后才开始”。  
+3.代码更加简练且专注于业务逻辑。
+```java
+class Demo {
+    void solve() {
+        //任务1：洗水壶->烧开水
+        CompletableFuture<Void> f1 = CompletableFuture.runAsync(() -> {
+            System.out.println("T1:洗水壶...");
+            sleep(1, TimeUnit.SECONDS);
+
+            System.out.println("T1:烧开水...");
+            sleep(15, TimeUnit.SECONDS);
+        });
+        //任务2：洗茶壶->洗茶杯->拿茶叶
+        CompletableFuture<String> f2 = CompletableFuture.supplyAsync(() -> {
+            System.out.println("T2:洗茶壶...");
+            sleep(1, TimeUnit.SECONDS);
+
+            System.out.println("T2:洗茶杯...");
+            sleep(2, TimeUnit.SECONDS);
+
+            System.out.println("T2:拿茶叶...");
+            sleep(1, TimeUnit.SECONDS);
+            return "龙井";
+        });
+        //任务3：任务1和任务2完成后执行：泡茶
+        CompletableFuture<String> f3 = f1.thenCombine(f2, (__, tf) -> {
+            System.out.println("T1:拿到茶叶:" + tf);
+            System.out.println("T1:泡茶...");
+            return "上茶:" + tf;
+        });
+        //等待任务3执行结果
+        System.out.println(f3.join());
+
+        void sleep ( int t, TimeUnit u){
+            try {
+                u.sleep(t);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+}
+/*
+ * 一次执行结果：
+ * T1:洗水壶...
+ * T2:洗茶壶...
+ * T1:烧开水...
+ * T2:洗茶杯...
+ * T2:拿茶叶...
+ * T1:拿到茶叶:龙井
+ * T1:泡茶...
+ * 上茶:龙井
+ */
+```
+可能不知道 runAsync 跟 supplyAsync 有什么区别，但是明显看起来代码更加短，更加容易理解了。
