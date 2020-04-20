@@ -1,5 +1,7 @@
 # Spring Boot 国际化
-在处理不同环境的
+在处理不同语言环境的情况下，需要不同的字段显示。
+（通常就是一份中文显示配置，一份英文显示配置）
+
 ### 1.创建国际化文件 
 <img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_spring_locale.png" width="300">
 
@@ -12,7 +14,12 @@ spring.messages.basename=/i18n/messages
 
 ### 3.获取国际化配置
 
-#### 3.2 若 MessageResource 为 Empty
+#### 3.1 通过 MessageSource 获取配置信息
+Spring Boot 注入 MessageSource，调用 getMessage(String arg, Object[] objects, Locale locale) 方法，
+就可以获取到对应语言环境配置的字段了。 
+ 
+#### 3.2 若 MessageSource 为 Empty
+我在实践的时候发现直接 Autowired MessageSource 是不行的（会报 Empty Resource）  
 可能 Spring Boot 没加载到 MessageResource 作为 Bean。  
 然后的话暂时自定义一个 Component 类去解决
 ```java
