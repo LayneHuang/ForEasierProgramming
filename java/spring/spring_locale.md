@@ -19,9 +19,10 @@ Spring Boot 注入 MessageSource，调用 getMessage(String arg, Object[] object
 就可以获取到对应语言环境配置的字段了。 
  
 #### 3.2 若 MessageSource 为 Empty
-我在实践的时候发现直接 Autowired MessageSource 是不行的（会报 Empty Resource）  
-可能 Spring Boot 没加载到 MessageResource 作为 Bean。  
-然后的话暂时自定义一个 Component 类去解决
+我在实践的时候发现直接 Autowired MessageSource 是不行的（会报 Empty Resource，Spring Boot 并没有默认实现）  
+可能 Spring Boot 没加载到 MessageResource 作为 Bean。（MessageResource 只是个接口）  
+然后的话暂时自定义一个 Component 类去解决。   
+要十分注意的一个事情就是，Locale 的使用，要注意国家码是否有定义（比如 Locale.CHINA 与 Locale.CHINESE 是有区别的）。
 ```java
 @Slf4j
 @Component
@@ -33,6 +34,7 @@ public class MyMessageResource {
     private ReloadableResourceBundleMessageSource messageSource;
 
     public MyMessageResource() {
+        // 注意 Locale 的设置
         messageSource = new ReloadableResourceBundleMessageSource();
     }
 
@@ -40,13 +42,19 @@ public class MyMessageResource {
     void init() {
         messageSource.setCacheSeconds(-1);
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
-        messageSource.setBasename(path);
+        messageSource.setBasenames(path);
+        messageSource.setDefaultLocale(Locale.US);
+        messageSource.setUseCodeAsDefaultMessage(true);
     }
 
     public String getMessage(String result, Object[] params) {
+        return messageSource.getMessage(result, params, Locale.US);
+    }
+
+    public String getMessage(String result, Object[] params, Locale locale) {
         String message = "";
         try {
-            Locale locale = LocaleContextHolder.getLocale();
+            messageSource.setDefaultLocale(locale);
             message = messageSource.getMessage(result, params, locale);
         } catch (Exception e) {
             log.error(e.toString());
