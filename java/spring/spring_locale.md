@@ -22,7 +22,8 @@ Spring Boot 注入 MessageSource，调用 getMessage(String arg, Object[] object
 我在实践的时候发现直接 Autowired MessageSource 是不行的（会报 Empty Resource，Spring Boot 并没有默认实现）  
 可能 Spring Boot 没加载到 MessageResource 作为 Bean。（MessageResource 只是个接口）  
 然后的话暂时自定义一个 Component 类去解决。   
-要十分注意的一个事情就是，Locale 的使用，要注意国家码是否有定义（比如 Locale.CHINA 与 Locale.CHINESE 是有区别的）。
+**还有一各要十分注意的一个事情就是**：  
+Locale 的使用，要注意国家码是否有定义（比如 Locale.CHINA 与 Locale.CHINESE 是有区别的）。
 ```java
 @Slf4j
 @Component
