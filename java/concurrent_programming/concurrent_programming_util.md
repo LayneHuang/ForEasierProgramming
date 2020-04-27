@@ -802,3 +802,20 @@ class Demo {
  */
 ```
 可能不知道 runAsync 跟 supplyAsync 有什么区别，但是明显看起来代码更加短，更加容易理解了。
+
+### 9.2 CompletableFuture 的创建
+supplyAsync 跟 runAsync 的区别主要是前者有返回值。  
+而 CompletableFuture 的创建方法可以指定线程池。  
+（不设置默认为 ForkJoinPool , 默认创建线程数为 CPU 个数，如果所有 CompletableFuture 都共用它，I/O操作将会很慢）  
+**所以，建议根据不同的业务类型，自己设置线程池，避免相互干扰**
+
+### 9.3 CompletionStage 接口
+CompletionStage 接口可以清晰地描述任务之间的时序关系。  
+例如前面 f3 = f1.thenCombine(f2,()->{}) 描述了一种汇聚关系（AND）。
+那也会有一种 OR 聚合关系，描述依赖的任务只要有一个完成就可以执行当前任务。
+（现在暂时没用过这个工具，所以就不介绍各种接口了，真正用到再说，貌似也不难看懂）
+
+## 10.CompletionService 批量执行异步任务
+这个类提供的创建函数主要是一个线程池 和 Future 的拥塞队列。  
+原型还是 生产者 - 消费者 模式。  
+跟 Future 的区别是它最后线程任务完成后会经过队列，消费者从队列中取即可。（C）
