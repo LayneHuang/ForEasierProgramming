@@ -41,6 +41,7 @@ public interface TestInterface2 {
     void sub();
 }
 ```
-所以 Comparator 接口就给出了许多默认方法，比如整数排序，浮点数排序，自然序，逆序排序的默认方法。  
+所以 Comparator 接口就给出了许多默认方法，比如整数排序，浮点数排序，自然序，逆序排序的默认方法。   
+在 Comparator.comparing() 这个静态方法基本上支持对 对象 的排序。  
 （应用场景：给出默认方法，不需要开发者再独自去实现这个单独的接口）  
 如 Runnable , Callable 都是函数式接口。
