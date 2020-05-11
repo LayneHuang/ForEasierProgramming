@@ -6,7 +6,7 @@
 
 ## 前端
 #### [React & Redux](https://github.com/LayneHuang/ForEasyCode/blob/master/website/react/react.md)
-
+#### [ace editor 前端编辑器 react接入]()
 ## Java后台
 #### [Effective Java 2.0](https://github.com/LayneHuang/ForEasyCode/blob/master/java/effective_java.md)
 #### [并发编程](https://github.com/LayneHuang/ForEasyCode/blob/master/java/concurrent_programming/concurrent_programming.md)
