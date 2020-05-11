@@ -8,7 +8,7 @@
 #### [React & Redux](https://github.com/LayneHuang/ForEasyCode/blob/master/website/react/react.md)
 
 ## Java后台
-#### [Effective Java 2.0](https://github.com/LayneHuang/ForEasyCode/blob/master/java/effectivejava.md)
+#### [Effective Java 2.0](https://github.com/LayneHuang/ForEasyCode/blob/master/java/effective_java.md)
 #### [并发编程](https://github.com/LayneHuang/ForEasyCode/blob/master/java/concurrent_programming/concurrent_programming.md)
 #### [Spring](https://github.com/LayneHuang/ForEasyCode/blob/master/java/spring/spring.md)
 
