@@ -360,3 +360,13 @@ public class Demo {
 ### 8.3 为什么局部变量是线程安全的
 其实这个问题跟JVM的内存模型有关。当前线程对方法的调用，其实方法的调用栈是线程独立的（线程间不共享）。  
 虽然说 new 语句产生的对象是在堆中的，但引用的栈持有的。
+
+### 8.4 线程异常处理
+推荐使用线程池，线程池(包括ScheduledThreadPoolExecutor)的线程 setUncaughtExceptionHandler 是无效的。（线程池执行时可能不是提交时的线程了）  
+但如果有些场景不得不独立创建Thread时，遵循本规则。   
+Java 多线程程序中，所有线程都不允许抛出未捕获的 checked exception，也就是说各个线程需要自己把自己的 checked exception 处理掉。  
+但是无法避免的是 unchecked exception， 也就是 RuntimeException，当抛出异常时子线程会结束。  
+但主线程不会知道，因为主线程通过 try catch 是无法捕获子线程异常的。 Thread 对象提供了 setUncaughtExceptionHandler 方法用来获取线程中产生的异常。  
+而且还可使用 Thread.setDefaultUncaughtExceptionHandler，为所有线程设置默认异常捕获方法。   
+程序员应注意的是，在执行周期性任务例如 ScheduledExecutorService时，为了健壮性，可考虑在提交的 Runnable 的 run 方法内捕获高层级的异常。  
+ScheduledExecutorService的各种schedule方法，可以通过其返回的 ScheduledFuture 对象获取其异常。  

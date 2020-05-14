@@ -45,3 +45,23 @@ public interface TestInterface2 {
 在 Comparator.comparing() 这个静态方法基本上支持对 对象 的排序。  
 （应用场景：给出默认方法，不需要开发者再独自去实现这个单独的接口）  
 如 Runnable , Callable 都是函数式接口。
+
+### 2.finally
+如果 try 语句块提前 return ， finally 就会在 return 之前执行 ( a 传入大于 0 的值)  
+否则就在 try{} 语句后执行，在 Step 4 之前执行。
+若有 Exception ， Step 2 就会在 Step 3 之前执行。
+```java
+public static void solve(int a) {
+    try {
+        System.out.println("Step 1.try 执行");
+        if (a > 0) {
+            return;
+        }
+    } catch(Exception e) {
+        System.out.println("Step 2.catch Exception 执行");
+    } finally {
+        System.out.println("Step 3.finally 执行");
+    }
+    System.out.println("Step 4.后面语句执行");
+}
+```

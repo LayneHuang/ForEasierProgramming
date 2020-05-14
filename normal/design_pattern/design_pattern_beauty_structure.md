@@ -274,14 +274,25 @@ public class BufferedInputStream extends InputStream {
 专栏给出的例子是**象棋（享元）**和很多状态的棋盘。  
 
 ### 6.1 享元模式在Integer、String中的应用
-基本类型有一个自动装箱（autoboxing）和自动拆箱（Unboxing）的过程（这个自己了解把）。
+基本类型有一个自动装箱（autoboxing）和自动拆箱（Unboxing）的过程（这个自己了解把）。  
+下面这段代码真的很帮助理解
 ```java
 Integer i1 = 56;
 Integer i2 = 56;
 Integer i3 = 129;
 Integer i4 = 129;
-System.out.println(i1 == i2);
-System.out.println(i3 == i4);
+System.out.println(i1 == i2); // true
+System.out.println(i3 == i4); // false
+System.out.println(i3 == 129); // true
+
+System.out.println(new Integer(129) == 129); // true , 应该是自动拆箱了
+System.out.println(Integer.valueOf(129) == 129); // true
+
+System.out.println(new Integer(129) == new Integer(129)); // false 在堆上
+System.out.println(Integer.valueOf(129) == Integer.valueOf(129)); // false 缓冲区上无值
+
+System.out.println(new Integer(56) == new Integer(56)); // false 在堆上
+System.out.println(Integer.valueOf(56) == Integer.valueOf(56)); // treu 缓冲区上有值
 ```
 对于上面的代码，第一个输出返回的是 true，而第二个输出返回的是 false 。  
 原因是Integer用到了享元模式来复用对象，对于要创建Integer的值在 -128 ~ 127 之间（常用），
