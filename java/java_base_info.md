@@ -65,3 +65,27 @@ public static void solve(int a) {
     System.out.println("Step 4.后面语句执行");
 }
 ```
+
+### 3.getCanonicalPath
+
+1.getAbsolutePath():  
+返回的是定义时的路径对应的相对路径，但不会处理“.”和“..”的情况    
+
+2.getCanonicalPath():  
+返回的是规范化的绝对路径，相当于将getAbsolutePath()中的“.”和“..”解析成对应的正确的路径  
+
+举例如下：
+```java
+File file = new File(".\\test.txt");
+System.out.println(file.getPath());
+System.out.println(file.getAbsolutePath());
+System.out.println(file.getCanonicalPath());
+
+ /*
+返回的结果为:
+    .\test.txt
+    E:\workspace\Test\.\test.txt
+    E:\workspace\Test\test.txt
+    “..”的情况类似
+*/
+```
