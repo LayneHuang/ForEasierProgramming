@@ -233,7 +233,7 @@ componentWillUnmount() {
 1.1 CommentList 需要订阅 DataSource，用于评论渲染  
 1.2 Blog 需要订阅 DataSource，用于订阅单个blog的帖子  
 他们就存在共同的**行为逻辑**(如监听，取消监听，对监听事件响应)  
-设为withSubscription:
+设为 withSubscription:
 ```renderscript
 // 此函数接收一个组件...
 function withSubscription(WrappedComponent, selectData) {

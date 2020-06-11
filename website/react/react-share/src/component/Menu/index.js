@@ -3,6 +3,8 @@ import React from 'react';
 import Calculator from '../Calculator';
 import Demo1 from '../Demo1';
 import Demo3 from '../Demo3';
+import Demo4 from '../Demo4';
+import Demo5 from '../Demo5';
 import NameForm from '../NameForm';
 
 const { TabPane } = Tabs;
@@ -34,6 +36,10 @@ class Menu extends React.Component {
                 component: <Calculator/>, title: '状态提升'
             }, {
                 component: <Demo3/>, title: 'Context'
+            }, {
+                component: <Demo4/>, title: 'Ref 转发'
+            }, {
+                component: <Demo5/>, title: 'HOC'
             }
         ];
         let tabs = [];
