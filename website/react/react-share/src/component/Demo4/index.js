@@ -3,6 +3,7 @@ import React from 'react';
 import FancyButton from '../FancyButton';
 
 class Demo4 extends React.Component {
+
     constructor(props) {
         super(props);
         this.showRef = this.showRef.bind(this);
