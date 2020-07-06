@@ -89,3 +89,79 @@ System.out.println(file.getCanonicalPath());
     “..”的情况类似
 */
 ```
+
+### 4.子类覆盖父类的成员变量
+```java
+public class Main {
+
+    static class Father {
+        public int id = 1;
+
+        public void printId() {
+            System.out.print(id);
+        }
+    }
+
+    static class Son extends Father {
+        public int id = 100;
+
+        @Override
+        public void printId() {
+            System.out.print(id);
+        }
+    }
+
+    public static void main(String[] args) {
+        Father person = new Son();
+        System.out.println(person.id);
+        person.printId();
+    }
+}
+```
+对应的输出是:  
+1  
+100  
+因为 person 引用对象还是 Father 的，它直接使用的成员变量 person.id 还是没有被覆盖。  
+方法被子类复写之后，引用的是子类的 id 输出就变为 100 ，如果没有复写就是引用父类的方法，即输出 1。  
+
+### 5.静态代码块
+通常正常人都不会写静态代码块这个东西
+```java
+public class Main{
+
+    static class Father {
+        public static int m = 1;
+
+        static {
+            System.out.println("init father");
+        }
+    }
+
+    static class Son extends Father {
+        static {
+            m = 100;
+            System.out.println("init son");
+            //System.out.println(m);
+        }
+
+        //public static int m = 150;
+    }
+
+    private Main() {
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Son.m);
+    }
+}
+```
+这里输出的还是 1， 父类的静态变量 m 并没有被子类的静态代码块覆盖。    
+将子类的
+
+静态代码块的一些特性：  
+1.类被加载的时候执行。  
+2.跟静态方法相同的是，不能访问普通变量，但静态方法属于被动执行，而静态代码块属于主动执行。  
+
+### 6.安全随机数生成
+java.Security.SecureRandom()
