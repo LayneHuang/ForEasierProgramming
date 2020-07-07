@@ -124,7 +124,7 @@ public class Main {
 因为 person 引用对象还是 Father 的，它直接使用的成员变量 person.id 还是没有被覆盖。  
 方法被子类复写之后，引用的是子类的 id 输出就变为 100 ，如果没有复写就是引用父类的方法，即输出 1。  
 
-### 5.静态代码块
+### [5.静态代码块](https://www.cnblogs.com/ysocean/p/8194428.html)
 通常正常人都不会写静态代码块这个东西
 ```java
 public class Main{
@@ -163,5 +163,75 @@ public class Main{
 1.类被加载的时候执行。  
 2.跟静态方法相同的是，不能访问普通变量，但静态方法属于被动执行，而静态代码块属于主动执行。  
 
+#### 5.1 构造代码块
+构造代码块即静态代码块去掉了 static，它在构造函数执行之前执行（每次创建对象都会执行一次）
+
+#### 5.2 父子类执行顺序
+静态代码块 > 构造代码块 > 构造函数 > 普通代码块  
+```java
+public class SuperClass {
+    static{
+        System.out.println("父类静态代码块");
+    }
+    {
+        System.out.println("父类构造代码块");
+    }
+    public SuperClass(){
+        System.out.println("父类构造函数");
+    }
+}
+
+public class SubClass extends SuperClass {
+    static{
+        System.out.println("子类静态代码块");
+    }
+     
+    {
+        System.out.println("子类构造代码块");
+    }
+     
+    public SubClass(){
+        System.out.println("子类构造函数");
+    }
+}
+
+public static void main(String[] args) {
+    SubClass sb = new SubClass();
+    System.out.println("------------");
+    SubClass sb1 = new SubClass();
+}
+```
+结果：
+```text
+父类静态代码块
+子类静态代码块
+父类构造代码块
+父类构造函数
+子类构造代码块
+子类构造函数
+------------
+父类构造代码块
+父类构造函数
+子类构造代码块
+子类构造函数
+```
+
 ### 6.安全随机数生成
 java.Security.SecureRandom()
+
+### 7.只引用类静态 final 变量 类并未被加载
+```java
+class Show {
+    public static final String SOMETHING = "haha";
+    static {
+        System.out.println("init");
+    }   
+}
+class Test {
+    public static void main(String[] args) {
+        System.out.println(Show.SOMETHING);
+    }
+}
+```
+
+### CSRF、LDAP、ORNL是啥？
