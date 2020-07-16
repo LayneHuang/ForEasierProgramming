@@ -310,7 +310,8 @@ Notification notification = new Notification(messageSender);
 ### 5.3 依赖反转原则
 高层模块（调用方）不要依赖低层模块（被调用方）。  
 高层模块和低层模块应该通过抽象来互相依赖。  
-除此之外，抽象不要依赖具体实现，具体实现依赖抽象。
+除此之外，抽象不要依赖具体实现，具体实现依赖抽象。  
+突然发现有一句话描述得挺好： 上层定义接口，下层实现接口。  
 
 ## 6.KISS与YAGNI
 KISS: Keep it simple and stupid.  
