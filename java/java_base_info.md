@@ -125,7 +125,7 @@ public class Main {
 方法被子类复写之后，引用的是子类的 id 输出就变为 100 ，如果没有复写就是引用父类的方法，即输出 1。  
 
 ### [5.静态代码块](https://www.cnblogs.com/ysocean/p/8194428.html)
-通常正常人都不会写静态代码块这个东西
+通常正常人都不会写静态代码块这个东西（还真别说，就是有这样写的）
 ```java
 public class Main{
 
