@@ -216,6 +216,8 @@ public static void main(String[] args) {
 子类构造函数
 ```
 
+#### 5.3 [覆盖和隐藏](https://blog.csdn.net/u013771764/article/details/81430303)
+
 ### 6.安全随机数生成
 java.Security.SecureRandom()
 
