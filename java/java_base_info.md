@@ -218,6 +218,39 @@ public static void main(String[] args) {
 ```
 
 #### 5.3 [覆盖和隐藏](https://blog.csdn.net/u013771764/article/details/81430303)
+```java
+public class Main4{
+
+    static class Father {
+        public static int m = 1;
+
+        static {
+            System.out.println("init father");
+        }
+    }
+
+    static class Son extends Father {
+        static {
+            m = 100;
+            System.out.println("init son");
+            //System.out.println(m);
+        }
+
+        public static int m = 150;
+    }
+
+    private Main4() {
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Son.m);
+        Father person = new Son();
+        System.out.println(person.m);
+    }
+}
+这个明显就是隐藏了子类的静态变量
+```
 
 ### 6.安全随机数生成
 java.Security.SecureRandom()
