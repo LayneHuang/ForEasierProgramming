@@ -123,6 +123,7 @@ public class Main {
 100  
 因为 person 引用对象还是 Father 的，它直接使用的成员变量 person.id 还是没有被覆盖。  
 方法被子类复写之后，引用的是子类的 id 输出就变为 100 ，如果没有复写就是引用父类的方法，即输出 1。  
+这个在 5.3 里面有解释
 
 ### [5.静态代码块](https://www.cnblogs.com/ysocean/p/8194428.html)
 通常正常人都不会写静态代码块这个东西（还真别说，就是有这样写的）
@@ -222,6 +223,7 @@ public static void main(String[] args) {
 java.Security.SecureRandom()
 
 ### 7.只引用类静态 final 变量 类并未被加载
+正确来说应该是类被加载了，但是还没被初始化
 ```java
 class Show {
     public static final String SOMETHING = "haha";
