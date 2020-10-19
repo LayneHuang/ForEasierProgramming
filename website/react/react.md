@@ -62,7 +62,7 @@ static propTypes = {
 常用的几个拦截方法:   
 1.componentWillMount  
 2.componentDidMount  
-3.componentWillReceiveProps  
+3.componentWillReceiveProps (已经被废弃了,使用 componentWillReceiveProps 替代)  
 4.componentWillUnmount  
 ![生命周期图](../../images/pic_react_life_cycle.jpg)
 
