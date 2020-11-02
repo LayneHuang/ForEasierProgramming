@@ -32,3 +32,6 @@ public class MyDto {
 }
 ````
 
+### 2.Bean XML 配置中 constructor-arg 和 property 的区别
+constructor-arg：通过构造函数注入。   
+property：通过setter对应的方法注入。
