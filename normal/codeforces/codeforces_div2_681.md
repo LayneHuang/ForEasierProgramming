@@ -241,3 +241,48 @@ public class Main {
     }
 }
 ```
+
+### D题
+左右需要分别递减，所以贪心一下，从左往右构造递减的时候，尽量减得多，这样使得右边的起点也尽量小。
+```java
+public class Main {
+    private static FastReader cin = new FastReader(System.in);
+
+    private static void solve() {
+        int n = cin.nextInt();
+        List<Integer> list = new ArrayList<>(n);
+        for (int i = 0; i < n; ++i) {
+            list.add(cin.nextInt());
+        }
+
+        boolean[] isDown = new boolean[n];
+        for (int i = n - 1; i >= 0; --i) {
+            if (i == n - 1 || list.get(i) <= list.get(i + 1)) {
+                isDown[i] = true;
+            } else {
+                break;
+            }
+        }
+
+        int leftNum = Integer.MAX_VALUE;
+        int rightNum = 0;
+        for (int i = 0; i < n; ++i) {
+            int now = list.get(i);
+            if (rightNum <= now && isDown[i]) {
+                System.out.println("YES");
+                return;
+            }
+            if (rightNum > now) {
+                break;
+            }
+            int nowLeftNum = now - rightNum;
+            if (nowLeftNum > leftNum) {
+                rightNum += (nowLeftNum - leftNum);
+            } else {
+                leftNum = nowLeftNum;
+            }
+        }
+        System.out.println("NO");
+    }
+}
+```
