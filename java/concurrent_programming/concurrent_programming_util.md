@@ -30,7 +30,8 @@ public class Demo {
 它利用了volatile相关的Happen-Before规则。（如ReentrantLock，它内部持有一个volatile的成员变量state）
 
 ### 1.3 可重入锁
-可重入锁，指的是线程可以重复获取同一把锁。
+可重入锁，指的是线程可以重复获取同一把锁。  
+（递归调用到相同函数的时候）
 ```java
 class X {
   private final Lock rtl =
@@ -362,7 +363,8 @@ public class Demo {
 
 ```
 CyclicBarrier: 等待多个线程并行都执行任务完了，调用一个回调方法，并循环执行。  
-CyclicBarrier的计数器有自动重置的功能，当减到 0 的时候，会自动重置你设置的初始值。  
+CyclicBarrier 的计数器有自动重置的功能，当减到 0 的时候，会自动重置你设置的初始值。
+CyclicBarrier 最后一个线程执行回调。
 ```java
 public class Demo {
     // 订单队列
