@@ -13,6 +13,12 @@ https://www.cnblogs.com/wx60079/p/13201456.html
 ```
 
 ### 2.ON DUPLICATE KEY UPDATE
+```mysql
+INSERT INTO TABLE_NAME(KEY, COLUMN1, COLUMN2)
+VALUES (#{key}, #{column1}, #{column2})
+ON DUPLICATE KEY UPDATE COLUMN1 = #{column1},
+                        COLUMN2 = #{column2};
+```
 这个是 MySQL 特有的语法吗？
 
 ### 3.枚举类处理器
