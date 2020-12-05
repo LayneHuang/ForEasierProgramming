@@ -23,22 +23,46 @@ ON DUPLICATE KEY UPDATE COLUMN1 = #{column1},
 
 ### 3.枚举类处理器
 ```java
-public class EnumHandler extends BaseTypeHandler<RunResult> {
+public class EnumHandler extends BaseTypeHandler<MyEnum> {
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, RunResult runResult, JdbcType jdbcType)
+    public void setNonNullParameter(PreparedStatement ps, int i, MyEnum myEnum, JdbcType jdbcType)
         throws SQLException {
     }
 
     @Override
-    public RunResult getNullableResult(ResultSet rs, String columnName) throws SQLException {
+    public MyEnum getNullableResult(ResultSet rs, String columnName) throws SQLException {
     }
 
     @Override
-    public RunResult getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+    public MyEnum getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
     }
 
     @Override
-    public RunResult getNullableResult(CallableStatement cs, int i) throws SQLException {
+    public MyEnum getNullableResult(CallableStatement cs, int i) throws SQLException {
     }
 }
 ```
+在 XML 的用法，不管是查询在 resultMap 中，还是插入时都要加上
+```xml
+<resultMap id="MyObject" type="MyObject">
+    <result column="MY_ENUM" property="myEnum"
+            javaType="EnumHandler"
+            typeHandler="EnumHandlerClassPath"/>
+</resultMap>
+
+<insert id="saveMyObject" parameterType="MyObject">
+    INSERT INTO TABLE_NAME(ID, MY_ENUM)
+    VALUES (#{id},
+            #{myEnum,typeHandler=EnumHandlerClassPath})
+</insert>
+
+<select id="getMyObject" parameterType="int" resultMap="MyObject">
+    SELECT ID, MY_ENUM FROM TABLE_NAME WHERE ID = #{id}
+</select>
+```
+
+### 4. @Mapper 注解
+添加后可以省去扫描包的过程
+
+### 5. Mapper 的 XML 文件路径
+一定要放在对应资源目录下，不然扫描不到
