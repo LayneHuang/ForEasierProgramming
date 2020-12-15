@@ -5,7 +5,8 @@
 
 link:  
 [react中文文档](http://caibaojian.com/react/)  
-[redux中文文档](https://www.redux.org.cn/)
+[redux中文文档](https://www.redux.org.cn/)  
+[react生命周期参考](https://segmentfault.com/a/1190000016494335?utm_source=tag-newest)
 
 ## 目录
 - [React & Redux相关笔记](#React-&-Redux相关笔记)
