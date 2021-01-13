@@ -3,3 +3,9 @@
 线程工厂可以使用 google 并发包当中的 ThreadFactoryBuilder 去创建。
 
 ### 2. npm 中使用 treer 生成目录结构
+
+### 3. find 命令
+```shell
+find [dir] -name [name] [-type d]
+```
+-type d 搜索目录
