@@ -23,9 +23,9 @@
 5.CountDownLatch、CyclicBarrier(多线程的同步等待执行)  
 6.原子类  
 7.Executor与线程池  
-8.Future
-9.CompletableFuture
-10.CompletableService
+8.Future  
+9.CompletableFuture  
+10.CompletableService  
 
 ## 优化锁的技术原理
 1.减少每把锁的范围  
