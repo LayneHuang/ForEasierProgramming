@@ -271,14 +271,14 @@ class Test {
 }
 ```
 
-### 8. ArrayList 中元素添加 transient 的作用
+### 8.ArrayList 中元素添加 transient 的作用
 <img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_java_base_info.png" width="300"><br/>
 1. ArrayList 重写了 readObject(), writeObject() 方法  
 2. 防止扩用猴
 
-### CSRF、LDAP、ORNL是啥？
+### 9.CSRF、LDAP、ORNL是啥？
 
-### JAVA数组翻转
+### 10.JAVA数组翻转
 ```java
 Collections.reverse(arrayList);
 ```
