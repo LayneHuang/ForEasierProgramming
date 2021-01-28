@@ -277,3 +277,8 @@ class Test {
 2. 防止扩用猴
 
 ### CSRF、LDAP、ORNL是啥？
+
+### JAVA数组翻转
+```java
+Collections.reverse(arrayList);
+```
