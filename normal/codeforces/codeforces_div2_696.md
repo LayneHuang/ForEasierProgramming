@@ -9,7 +9,8 @@ http://codeforces.com/contest/1474/problem/D
 
 思路：
 1.在不使用第2种操作的情况下，想要把所有石头都清除，你必须从前往后操作且需要把前面的石头堆都清零，那么  
-
+把 dp[i] 看成操作后剩余的石头数目，每次操作实质上就是 dp[i] = a[i] - dp[i-1]  
+对于整个
 
 ```java
 public class Main {
