@@ -25,7 +25,7 @@ ON DUPLICATE KEY UPDATE COLUMN1 = #{column1},
 ```java
 public class EnumHandler extends BaseTypeHandler<MyEnum> {
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, MyEnum myEnum, JdbcType jdbcType)
+    public void setNonNullParameter(PreparedStatement ps, int columnIndex, MyEnum myEnum, JdbcType jdbcType)
         throws SQLException {
     }
 
@@ -38,7 +38,7 @@ public class EnumHandler extends BaseTypeHandler<MyEnum> {
     }
 
     @Override
-    public MyEnum getNullableResult(CallableStatement cs, int i) throws SQLException {
+    public MyEnum getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
     }
 }
 ```
