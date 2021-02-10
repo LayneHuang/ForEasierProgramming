@@ -61,8 +61,24 @@ public class EnumHandler extends BaseTypeHandler<MyEnum> {
 </select>
 ```
 
-### 4. @Mapper 注解
+### 4.@Mapper 注解
 添加后可以省去扫描包的过程
 
-### 5. Mapper 的 XML 文件路径
+### 5.Mapper 的 XML 文件路径
 一定要放在对应资源目录下，不然扫描不到
+
+### 6.通过标签简化 xml 配置
+
+6.1 `<sql/>` `<include/>`标签  
+通过配置此标签，通配多个 select 查询场景。
+```xml
+<mapper>
+    <sql id="base_select">
+        id, name, info1, info2, info3
+    </sql>
+
+    <select>
+        select <include refid="base_select" /> from table_name
+    </select>
+</mapper>
+```
