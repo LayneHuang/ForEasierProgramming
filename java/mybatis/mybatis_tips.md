@@ -82,3 +82,21 @@ public class EnumHandler extends BaseTypeHandler<MyEnum> {
     </select>
 </mapper>
 ```
+
+6.2 `<set/>`与`<if/>`两种标签配合可以处理 update 相关的内容
+```xml
+<update>
+    UPDATE TABLE_NAME
+    <set>
+        <if test="name != null">
+            NAME = #{name},
+        </if>
+    </set>
+    <where>
+        ID = #{id}
+    </where>
+</update>
+```
+
+### 7.批量插入处理
+https://www.jianshu.com/p/97e484b55d04
