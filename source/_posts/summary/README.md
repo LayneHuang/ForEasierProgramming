@@ -1,10 +1,8 @@
 ---
-title: Summary
+title: For Easy Code
 date: 2021-02-23 11:26:31
 categories: Summary
 ---
-
-# ForEasyCode
 画图工具：亿图、X Mind
 
 ## 基础
