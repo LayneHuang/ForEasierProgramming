@@ -15,7 +15,7 @@ CPU、内存和IO设备的处理能力的不一致，使得我们要通过一些
 一个线程对共享资源变量的修改，另外一个线程能否立即看到，称为可见性。  
 在多核的情况下，线程占用的是不同的CPU资源。
   
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program1.png" width="500">  
+{% img /images/pic_concurrent_program1.png %}
 
 ### 1.2 原子性
 我们把一个或者多个操作在CPU执行的过程中不被中断的特性成为原子性。
@@ -68,7 +68,7 @@ class SafeCalc {
 ```
 你会发现这段代码其实是用两个锁保护一个资源。这个受保护的资源就是静态变量 value，两个锁分别是 this 和 SafeCalc.class。我们可以用
 下面这幅图来形象描述这个关系。  
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program2.png" width="500">  
+{% img /images/pic_concurrent_program2.png %}
 由于临界区 get() 和 addOne() 是用两个锁保护的，因此这两个临界区没有互斥关系，临界区 addOne() 对 value 的修改对临界区 get() 也
 没有可见性保证，这就导致并发问题了。  
 
@@ -148,7 +148,7 @@ class Account {
 
 ## 5.等待-通知机制
 synchronized可以配合wait()、notyfy()、notyfyAll()这三个方法实现等待通知机制。  
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program3.png" width="500">  
+{% img /images/pic_concurrent_program3.png %}
 1.当线程进入临界区，由于某些条件不满足的情况下，调用wait()方法就会进入等待状态。同时当前线程被拥塞，进入右边的等待队列中，并且释放锁。  
 2.锁被释放后，左边等待队列（临界区入口）中的线程就有机会获得锁。  
 3.当条件满足的时候，调用notify()或notifyAll()方法即可唤醒右边等待队列中的线程。  
@@ -222,8 +222,8 @@ Java并发包里面的原子类也是无锁的数据结构，Disruptor则是无�
 
 ### 7.2 管程（MESA）处理同步
 把共享变量及共享变量操作是被封装起来的，最外层的框就代表封装的意思。  
-管程里还引入条件变量的概念，**每个条件变量都对应有一个等待队列**  
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program4.png" width="500">  
+管程里还引入条件变量的概念，**每个条件变量都对应有一个等待队列**
+{% img /images/pic_concurrent_program4.png %}
 
 类比管程入口：（感觉还是有点不大一样吧）  
 ```java
@@ -275,7 +275,7 @@ public class BlockedQueue<T> {
 ## 8.Java线程
 
 ### 8.1 生命周期
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program5.png" width="500">  
+{% img /images/pic_concurrent_program5.png %}
 
 Java语言中线程共有6种状态  
 ```java
@@ -291,7 +291,7 @@ public enum State {
 ```
 在操作系统层面，Java线程的BLOCKED、WAITING、TIME_WAITING是一种状态，即休眠状态。只要JAVA线程处于这三种状态之一，那么这个线程就永远没有CPU的使用权。  
 可简化图:  
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program6.png" width="500">  
+{% img /images/pic_concurrent_program6.png %}
 
 #### 1.RUNNABLE与BLOCKED的状态转换
 只有一种场景会触发这种转换，synchronized的隐式锁（那并发工具里面的lock那些呢），代码块同一时刻只允许一个线程执行。等待的线程就会从RUNNABLE转换到BLOCKED状态。而等待线程获取到锁就从BLOCKED转换到RUNNABLE状态。  
@@ -342,11 +342,11 @@ public class Demo {
 ### 8.2 创建多少线程才是合适的？
 多线程本质上就是提升I/O利用率和CPU利用率。  
 假设在单线程的情况下，I/O操作和CPU计算的耗时比为1:1，它们交叉执行的方式运行。  
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program7.png" width="500">  
+{% img /images/pic_concurrent_program7.png %}
 这个时候，CPU利用率和I/O利用率都是50%。  
 
 如果有两个线程的时候，A线程执行CPU计算的时候，B线程执行I/O操作，A线程执行I/O操作的时候，B线程执行CPU计算，这样双方的利用率都可以到达100%。（如果CPU和I/O利用率都很低的情况下可以尝试增加线程来提升吞吐量）  
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program8.png" width="500">  
+{% img /images/pic_concurrent_program8.png %}
 
 在单核时代，多线程主要是用来平衡CPU和I/O设备的。如果程序只有CPU计算，而没有I/O计算的话，性能反而会变得更差（增加了线程切换的成本）。  
 而在多核时代，它是可以提升性能的。比如计算sum[1,100e]。当你有4核时，可以分别用4个线程去求sum[1,25e),sum[25e,50e),sum[50e,75e),sum[75e,100e],得到结果再做一次求和（实质上就是类似分治的思想吧）。  
@@ -356,8 +356,7 @@ public class Demo {
 
 #### 2.I/O密集型计算
 最佳线程数 = 1 + (I/O耗时 ÷ CPU耗时) [其实就是公式左边的1表示1个线程进行I/O的情况下，公式右边保证了CPU要打满]  
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program9.png" width="500">  
-
+{% img /images/pic_concurrent_program9.png %}
 
 在多核CPU的情况下：  
 最佳线程数 = CPU核数 * [ 1 + (I/O耗时 ÷ CPU耗时) ]   

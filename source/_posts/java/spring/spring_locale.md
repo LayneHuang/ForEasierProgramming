@@ -7,9 +7,8 @@ categories: Spring
 在处理不同语言环境的情况下，需要不同的字段显示。
 （通常就是一份中文显示配置，一份英文显示配置）
 
-### 1.创建国际化文件 
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_spring_locale.png" width="300">
-
+### 1.创建国际化文件
+{% img /images/pic_spring_locale.png %}  
 ### 2.Spring Boot 启动配置
 在 .properties 中定义国际化文件路径,这个可以设置 basenames 来定义多个文件  
 (注意前缀要跟 1. 中创建的文件前缀要一样)

@@ -134,13 +134,13 @@ public class BlockedQueue<T>{
 ```
 
 ## 2.Semaphore(信号量)
-信号量模型还是很简单的：一个计算器，一个等待队列，三个方法。<br/>
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program10.png" width="300"><br/>
+信号量模型还是很简单的：一个计算器，一个等待队列，三个方法。  
+{% img /images/pic_concurrent_program10.png %}  
 这里提到的 init()、down() 和 up() 三个方法都是原子性的，并且这个原子性是由信号量模型的实现方保证的。<br/>
 在 Java SDK 并发包里，down() 和 up() 对应的则是 acquire() 和 release()。<br/>
 
 ### 2.1 信号量能快速实现一个限流器
-它跟Lock的区别是：**Semaphore可以允许多个线程访问一个临界区**。<br/>
+它跟Lock的区别是：**Semaphore可以允许多个线程访问一个临界区**。  
 比较常见的需求就是各种池化资源，例如连接池、对象池、线程池等等。
 ```java
 class ObjPool<T, R> {
@@ -658,13 +658,12 @@ class Task implements Runnable {
 去执行
 
 ### 8.2 用 Future 实现烧水泡茶
-文章中给出的流程图是这样的：
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program11.png" width="500">
-
+文章中给出的流程图是这样的：  
+{% img /images/pic_concurrent_program11.png %}  
 前面说到了并发编程可以总结为3个核心的问题（分工、同步和互斥）：  
 分工指得就是高效地拆解任务并分配给线程。（同步互斥就不再解释了）  
-目前来讲吧下面的3道工序分配给第二个线程去完成。
-<img src="https://github.com/LayneHuang/ForEasyCode/blob/master/images/pic_concurrent_program12.png" width="500">
+目前来讲吧下面的3道工序分配给第二个线程去完成。  
+{% img /images/pic_concurrent_program12.png %}
 
 #### 实现步骤：
 1.创建2个 FutureTask ，ft1 完成洗水壶，烧开水，泡茶的任务，ft2 完成其余步骤。  
