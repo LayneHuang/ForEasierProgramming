@@ -1,4 +1,8 @@
-# 编码小建议
+---
+title: 语法
+date: 2021-02-23 11:26:31
+categories: Website
+---
 
 ### 1.object 大括号内...的用法
 ```javascript

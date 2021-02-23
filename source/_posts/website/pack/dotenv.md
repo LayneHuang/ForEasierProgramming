@@ -1,4 +1,9 @@
-# dotenv开发环境控制
+---
+title: dotenv开发环境控制
+date: 2021-02-23 11:26:31
+categories: Website
+---
+
 [dotenv github address](https://github.com/mrsteele/dotenv-webpack) <br/>
 说明: 在打包过程中进行变量的预替代，能够以命令的形式来对不同环境做打包
 

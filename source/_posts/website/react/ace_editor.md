@@ -1,4 +1,9 @@
-# Ace Editor 前端编辑器
+---
+title: Ace Editor 前端编辑器
+date: 2021-02-23 11:26:31
+categories: Website
+---
+
 在项目中涉及了 json 的实时编辑。  
 而 ace 就是一个很不错的编辑器（提供了不仅仅只有 json , 还有 java, html, python 等等的语法）
 因为我接入的项目是 react, 所以用的是 [react-ace](https://github.com/securingsincity/react-ace) 这个组件。  
