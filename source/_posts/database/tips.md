@@ -30,3 +30,7 @@ VALUES (#{key}, #{column1}, #{column2})
 ON DUPLICATE KEY UPDATE COLUMN1 = #{column1},
                         COLUMN2 = #{column2};
 ```
+
+### COALESCE
+从函数参数列表当中选择首个 非空参数 返回，所有参数都为空返回 NULL
+{% img /images/pic_database.png %}
