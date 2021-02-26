@@ -295,4 +295,5 @@ Collections.reverse(arrayList);
 ### 11.JSON 对于数组的转换
 ```
 List<String> list = JSON.parseObject(v, new TypeReference<List<String>>(){})
+List<String> list = JSON.parseArray(str, String.class);
 ```
