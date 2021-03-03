@@ -7,7 +7,7 @@ categories: Unit Test
 github地址：https://github.com/powermock/powermock/wiki/Mockito  
 
 当需要 Mock 一些 static, final, private 的方法时需要加上注解:  
-```java
+```
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Static.class)
 ```

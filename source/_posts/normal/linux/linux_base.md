@@ -1,4 +1,9 @@
-# Linux 命令行常用
+---
+title: Linux 常用命令
+date: 2020-06-11 17:58:00
+tags: tips
+---
+# 
 
 ### 1.日志抓取
 ```shell script
