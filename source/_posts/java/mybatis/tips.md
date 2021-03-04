@@ -95,7 +95,7 @@ public class EnumHandler extends BaseTypeHandler<MyEnum> {
 </mapper>
 ```
 
-5.2 `<set/>`与`<if/>`两种标签配合可以处理 update 相关的内容
+5.2 `<set/>` 与 `<if/>` 两种标签配合可以处理 update 相关的内容
 ```xml
 <update>
     UPDATE TABLE_NAME
@@ -108,6 +108,14 @@ public class EnumHandler extends BaseTypeHandler<MyEnum> {
         ID = #{id}
     </where>
 </update>
+```
+
+5.3 `<foreach/>` 处理列表循环  
+要注意的是定义了 item, 下方的字段前面也需要加上 item
+```xml
+<foreach item="item" collection="list" separator=",">
+    (#{item.username}, #{item.password}, #{item.email}, #{item.bio})
+</foreach>
 ```
 
 ### 6.[批量插入处理](https://www.jianshu.com/p/97e484b55d04)
