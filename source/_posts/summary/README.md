@@ -25,6 +25,7 @@ categories: Summary
 #### [Hexo](https://hexo.io/zh-cn/docs/configuration)
 #### [Dubbo](https://dubbo.apache.org/zh/docs/)
 #### [MyBatis](https://mybatis.org/mybatis-3/zh/index.html)
+#### [PostgreSQL中文](http://www.postgres.cn/docs/12/)
 
 ## 简录
 ```text
