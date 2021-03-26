@@ -10,5 +10,10 @@ categories: 量化交易
 
 {% link 'python QT入门' https://zhuanlan.zhihu.com/p/345292543 %}
 
+《交易系统与方法》  
+
 #### 实时查询接口文档
+
+{% link 'joinquant' https://www.joinquant.com/help/api %}  
+
 {% link '基金' https://blog.csdn.net/chaoren499/article/details/90232332 %}
