@@ -13,3 +13,8 @@ git reflog 命令可以查看所有 HEAD 的历史
 ```
 git reset --hard 98abc5a
 ```
+
+### 3.gitignore重新生效
+```shell
+git rm -r --cached .
+```
