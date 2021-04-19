@@ -42,3 +42,6 @@ property：通过setter对应的方法注入。
 
 ### 3.Spring MVC 中 Java Bean 如何处理
 {% img /images/spring_java_bean.png %}
+
+### 4.注解校验
+{% link 'hibernate文档' https://docs.jboss.org/hibernate/validator/4.2/reference/zh-CN/html_single/#validator-usingvalidator-annotate %}
