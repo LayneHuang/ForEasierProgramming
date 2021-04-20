@@ -6,7 +6,8 @@ categories: Spring
 由于在普通的 Spring MVC 项目中 Hibernate Validator 配置了很多次都没有生效，
 所以想对 Spring-Validation 的原理分析分析。
 
-{% link 'hibernate文档' https://docs.jboss.org/hibernate/validator/4.2/reference/zh-CN/html_single/#validator-usingvalidator-annotate %}
+{% link 'hibernate文档' https://docs.jboss.org/hibernate/validator/4.2/reference/zh-CN/html_single/#validator-usingvalidator-annotate %}  
+{% link ‘hibernate文档(中文)’ https://rumenz.com/java-topic/hibernate/hibernate-validator-cdi/index.html %}  
 (看不大懂)
 
 ### Bean Validation 与 Validator 的适配
