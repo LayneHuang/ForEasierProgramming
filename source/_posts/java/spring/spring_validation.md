@@ -88,3 +88,5 @@ public class MyController {
 
 但后面又发现一个问题, 就是子对象加上 @Valid 之后，原来的父对象会失效~ (太麻瓜了), Spring Boot 没有这个问题
 发现了它是和 LocalValidatorFactoryBean 是有关系的
+
+is not eligible for getting processed
