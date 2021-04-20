@@ -85,4 +85,4 @@ public class MyController {
 ```
 在普通 Spring MVC 框架上可以捕获到 ConstrainViolationException, 在 ControllerAdvice 中统一处理 
 
-但后面又发现一个问题, 就是子对象加上 @Valid 之后，原来的父层会失效~ (太麻瓜了), Spring Boot 没有这个问题
+但后面又发现一个问题, 就是子对象加上 @Valid 之后，原来的父对象会失效~ (太麻瓜了), Spring Boot 没有这个问题
