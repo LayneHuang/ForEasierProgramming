@@ -6,6 +6,9 @@ categories: Spring
 由于在普通的 Spring MVC 项目中 Hibernate Validator 配置了很多次都没有生效，
 所以想对 Spring-Validation 的原理分析分析。
 
+{% link 'hibernate文档' https://docs.jboss.org/hibernate/validator/4.2/reference/zh-CN/html_single/#validator-usingvalidator-annotate %}
+(看不大懂)
+
 ### Bean Validation 与 Validator 的适配
 
 1.核心组件: org.springframework.validation.beanvalidation.LocalValidatorFactoryBean  
@@ -81,3 +84,5 @@ public class MyController {
 }
 ```
 在普通 Spring MVC 框架上可以捕获到 ConstrainViolationException, 在 ControllerAdvice 中统一处理 
+
+但后面又发现一个问题, 就是子对象加上 @Valid 之后，原来的父层会失效~ (太麻瓜了), Spring Boot 完全没有这个问题
