@@ -297,3 +297,5 @@ Collections.reverse(arrayList);
 List<String> list = JSON.parseObject(v, new TypeReference<List<String>>(){})
 List<String> list = JSON.parseArray(str, String.class);
 ```
+在进行 DTO -> Bean 之间的转换时, 如果对象包含子对象或者数组的情况下, 
+BeanUtils 仅仅是一个浅拷贝, 这个时候可以用 fastjson 做一下对象拷贝
