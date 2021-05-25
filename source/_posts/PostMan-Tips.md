@@ -8,3 +8,8 @@ tags: PostMan
 在 Collections -> Edit -> Variables 中可设置  
 
 {% img /images/pic_postman1.jpg %}
+
+### 2.上传文件测试
+请求 Body 选择 form-data, 参数配上 file
+
+{% img /images/pic_postman2.png %}

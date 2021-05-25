@@ -1,10 +1,10 @@
 ---
-title: Power Mock 单元测试
+title: Power Mockito 单元测试
 date: 2020-11-24 14:20:00
 categories: Unit Test
 ---
 
-github地址：https://github.com/powermock/powermock/wiki/Mockito  
+{% link 'github地址' https://github.com/powermock/powermock/wiki/Mockito %}  
 
 当需要 Mock 一些 static, final, private 的方法时需要加上注解:  
 ```
