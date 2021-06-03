@@ -45,3 +45,15 @@ property：通过setter对应的方法注入。
 
 ### 4.注解校验
 {% link 'hibernate文档' https://docs.jboss.org/hibernate/validator/4.2/reference/zh-CN/html_single/#validator-usingvalidator-annotate %}
+
+### 5.Controller 上传文件大小受限
+如果需要接口支持文件上传的话，只要在 Controller 上加上 MultipartFile 的参数即可
+```
+@RequestParam(required = false) MultipartFile multipartFile
+```
+但是文件过大时(大于 Spring Boot 的默认配置的 1048576 bytes), 就会报异常 FileSizeLimitExceededException。  
+修改一下 Spring 配置文件 (设置成 -1 为不受限制):
+```properties
+spring.servlet.multipart.max-file-size=100MB
+spring.servlet.multipart.max-request-size=1000MB
+```
