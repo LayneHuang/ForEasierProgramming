@@ -57,3 +57,15 @@ property：通过setter对应的方法注入。
 spring.servlet.multipart.max-file-size=100MB
 spring.servlet.multipart.max-request-size=1000MB
 ```
+
+### 6.StopWatch 的用法
+StopWatch 这个工具可以帮助开发者记录每一步任务的耗时  
+要注意的是, StopWatch在下一步任务开始前，先要调用一次stop()
+```
+StopWatch sw = new StopWatch("teskName");
+sw.start("step1");
+sw.stop();
+sw.start("step2");
+sw.stop();
+log.info(sw.prettyPrint());
+```
