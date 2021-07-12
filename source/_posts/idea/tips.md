@@ -1,6 +1,6 @@
 ---
 title: IDEA Tips
-date: 2020-12-29 11:03:31
+date: 2021-7-29
 categories: Idea
 ---
 
