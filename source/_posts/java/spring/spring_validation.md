@@ -10,11 +10,13 @@ categories: Spring
 {% link ‘hibernate文档(中文)’ https://rumenz.com/java-topic/hibernate/hibernate-validator-cdi/index.html %}  
 (看不大懂)
 
+<!-- more -->
+
 ### Bean Validation 与 Validator 的适配
 
 1.核心组件: org.springframework.validation.beanvalidation.LocalValidatorFactoryBean  
-2.依赖 Bean Validation - JSR-303 or JSR-349 provider (这玩意有啥用呢?)  
-3.Bean 方法参数校验 - org.springframework.validation.beanvalidation.MethodValidationPostProcessor
+2.依赖 Bean Validation JSR-303 or JSR-349 provider (这玩意有啥用呢?)  
+3.Bean方法参数校验: org.springframework.validation.beanvalidation.MethodValidationPostProcessor
 
 LocalValidatorFactoryBean 继承了 SpringValidatorAdapter, SpringValidatorAdapter 用于适配 Hibernate Validator  
 

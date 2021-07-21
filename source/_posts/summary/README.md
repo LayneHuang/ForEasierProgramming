@@ -1,9 +1,8 @@
 ---
-title: For Easy Code
-date: 2021-02-23 11:26:31
-updated: 2021-07-21 14:19:00
+title: For Easier Programming
+date: 2021-02-24
+updated: 2021-07-21
 categories: Summary
-comments: true
 ---
 画图工具：亿图、X Mind
 
@@ -32,6 +31,7 @@ comments: true
 #### [MyBatis](https://mybatis.org/mybatis-3/zh/index.html)
 #### [PostgreSQL中文](http://www.postgres.cn/docs/12/)
 
+<!-- more -->
 ## 简录
 ```text
 [2020.2.4]
