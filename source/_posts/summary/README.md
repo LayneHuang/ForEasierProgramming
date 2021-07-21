@@ -1,8 +1,9 @@
 ---
 title: For Easier Programming
 date: 2021-02-24
-updated: 2021-07-21
-categories: Summary
+updated: 2021-07-22
+categories: 
+    - Summary
 ---
 画图工具：亿图、X Mind
 
