@@ -16,3 +16,7 @@ tags: PostMan
 
 ### 3.APP端抓包工具
 Fiddler
+
+### 4.全局 Header
+目前使用的是 8.8.0 版本, 带有一个 Environments, 可以保存起公用的请求变量
+{% img /images/pic_postman2.jpg %}
