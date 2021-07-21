@@ -1,7 +1,9 @@
 ---
 title: For Easy Code
 date: 2021-02-23 11:26:31
+updated: 2021-07-21 14:19:00
 categories: Summary
+comments: true
 ---
 画图工具：亿图、X Mind
 
@@ -18,6 +20,9 @@ categories: Summary
 #### [并发编程](https://github.com/LayneHuang/ForEasyCode/blob/master/java/concurrent_programming/concurrent_programming.md)
 #### [Spring](https://github.com/LayneHuang/ForEasyCode/blob/master/java/spring/spring.md)
 #### [Mybatis小tips](https://github.com/LayneHuang/ForEasyCode/blob/master/java/mybatis/mybatis_tips.md)
+
+## 开发协助工具
+#### [Postman]()
 
 ## 数据分析
 

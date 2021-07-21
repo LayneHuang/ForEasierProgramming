@@ -4,6 +4,10 @@ date: 2021-7-29
 categories: Idea
 ---
 
+IDEA 日常使用配置
+
+<!-- more -->
+
 ### 1.IDEA配置迁移
 在 idea 中搜索(ctl+shrift+a) export setting, 可以把配置打成jar包, 然后在其他环境导入即可
 
