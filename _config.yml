@@ -3,9 +3,9 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: For Easy Code
+title: For Easier Programming
 subtitle:
-description: '只为了提高工作效率'
+description: '码农搬砖指南'
 keywords: 'Java, 码农'
 author: Layne Huang
 language: zh-CN
@@ -13,7 +13,7 @@ timezone: 'Asia/Shanghai'
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
-url: https://laynehuang.gitee.io/ForEasyCode
+url: https://laynehuang.gitee.io/foreasierprogramming
 root: /ForEasyCode
 permalink: :year/:month/:day/:title/
 permalink_defaults:
