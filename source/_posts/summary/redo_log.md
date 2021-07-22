@@ -8,7 +8,7 @@ categories: Summary
 可以创建几种类型的线程池, 队列都是无界的 LinkedBlockingQueue。   
 线程工厂可以使用 google 并发包当中的 ThreadFactoryBuilder 去创建。
 
-### npm 中使用 treer 生成目录结构
+### npm 中使用 tree 生成目录结构
 
 ### find 命令
 ```shell
