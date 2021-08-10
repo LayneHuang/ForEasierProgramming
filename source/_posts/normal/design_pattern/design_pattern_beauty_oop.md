@@ -14,6 +14,9 @@ categories: 设计模式
 在设计实现类的时候，除非真的需要，否则不要给属性定义Setter方法。  
 尽管Getter方法相对Setter方法安全一些，但是如果返回的是集合容器，也要防范集合内部数据被修改。（Java语言提供了Collections.unmodifiableList()方法，可以让Getter返回一个不可修改的集合容器）。
 虽然说集合容器不可修改，但是如果是 List<Item> items 这样，列表里面的对象还是可修改的。。（怎么解决呢？）  
+```
+List<String> samlpeList = Collections.unmodifiableList(Arrays.asList("a", "b", "c"));
+```
 
 ### 1.2 滥用全局变量和全局方法
 有时会把程序中用到的常量放在一个Constant类中。  
