@@ -5,4 +5,8 @@ tag: 天池比赛
 ---
 
 {% link '赛题链接' https://tianchi.aliyun.com/competition/entrance/531922/information [title] %}
+{% link '代码地址' https://github.com/LayneHuang/mq-sample/tree/layne [title] %}
 
+### 优化点
+1.由于MQ收到的每条消息都需要Force到磁盘才能返回。
+题目给出了40个线程，单线程
