@@ -5,6 +5,8 @@ categories: Docker
 ---
 
 ### Docker常用命令
-```shell
 
+删除所有镜像
+```shell
+docker rmi $(docker images -q)
 ```
