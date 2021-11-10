@@ -19,7 +19,7 @@ B.越接近落盘数量的写线程先唤醒
 
 ### 收获点
 1.ThreadLocal使得线程同步时效率更高。
-2.多使用Unsafe进行buffer,byte数组的拷贝
+2.多使用Unsafe进行buffer,byte数组的拷贝(阳仔的处理)
 3.JNC的组件确实用得更6了
 
 ### 大佬的优化点
