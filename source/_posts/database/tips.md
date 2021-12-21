@@ -37,4 +37,8 @@ ON DUPLICATE KEY UPDATE COLUMN1 = #{column1},
 
 ### LIKE导致的通配符注入
 使用 like 字段进行一些列表的匹配查询时，要注意对 '%' '_' 这些通配符的处理，
-否则通配符会导致查全表（不走索引），降低服务器性能
+否则通配符会导致查全表（不走索引），降低服务器性能   
+搜 'xx_' 关键字时，在前面做反斜杠转义，并且追加 ESCAPE '/' 处理 (表示'/'为转义字符)
+```roomsql
+SELECT name FROM table_name where name like concat(concat('%','xx/_'),'%') ESCAPE '/'
+```
