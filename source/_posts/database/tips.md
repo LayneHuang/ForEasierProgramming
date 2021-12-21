@@ -34,3 +34,7 @@ ON DUPLICATE KEY UPDATE COLUMN1 = #{column1},
 ### COALESCE
 从函数参数列表当中选择首个 非空参数 返回，所有参数都为空返回 NULL
 {% img /images/pic_database.png %}
+
+### LIKE导致的通配符注入
+使用 like 字段进行一些列表的匹配查询时，要注意对 '%' '_' 这些通配符的处理，
+否则通配符会导致查全表（不走索引），降低服务器性能
