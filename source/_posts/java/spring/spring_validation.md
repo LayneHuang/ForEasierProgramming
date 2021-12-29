@@ -88,7 +88,10 @@ public class MyController {
 ```
 在普通 Spring MVC 框架上可以捕获到 ConstrainViolationException, 在 ControllerAdvice 中统一处理 
 
-但后面又发现一个问题, 就是子对象加上 @Valid 之后，原来的父对象会失效~ (太麻瓜了), Spring Boot 没有这个问题
+### Problem
+1.但后面又发现一个问题, 就是子对象加上 @Valid 之后，原来的父对象会失效~ (太麻瓜了), Spring Boot 没有这个问题
 发现了它是和 LocalValidatorFactoryBean 是有关系的
 
 is not eligible for getting processed
+
+2.有的版本中 @NotEmpty 只能用来出来集合不能处理 String，改用 @NotBlank 即可
