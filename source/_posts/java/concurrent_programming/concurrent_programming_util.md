@@ -5,6 +5,9 @@ categories: Java
 ---
 来到的挺关键的一章，实战上能用到的都在这~  
 
+从 java.util.concurrent 命名中可以大概区分为 Concurrent*, CopyOnWrite 和 Block 这3类。
+Concurrent 没有类似 CopyOnWrite 之类容器相对较重的修改开销。
+
 ## 1.Lock & Condition
 跟之前所说的一样，并发领域要解决两类问题：互斥，同步。  
 而JAVA SDK并发包**通过 Lock 和 Condition 两个接口来实现管程，Lock用于解决互斥问题，Condition用于解决同步问题。**
