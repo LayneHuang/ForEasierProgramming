@@ -1,6 +1,7 @@
 ---
 title: Codeforces 681 div2
 date: 2020-11-05 11:09:00
+categories: acm
 tag: Codeforces
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: Codeforces 696 div2
 date: 2021-01-29 11:58:00
+categories: acm
 tag: Codeforces
 ---
 

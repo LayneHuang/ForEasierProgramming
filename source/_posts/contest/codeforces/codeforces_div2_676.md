@@ -1,6 +1,7 @@
 ---
 title: Codeforces 676 div2
 date: 2020-10-23 09:01:00
+categories: acm
 tag: Codeforces
 ---
 
