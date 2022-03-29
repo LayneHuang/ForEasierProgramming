@@ -5,9 +5,13 @@ categories: acm
 tag: Codeforces
 ---
 
+{% link '#770 div2' https://codeforces.com/contest/1634 [title] %}
+
 # D题 find zero
 需要进行反问，从3个数字当中可得到 max(a,b,c) - min(a,b,c)
 最终判断出数字 0 可能存在的 2 个位置
+
+<!-- more -->
 
 ```python
 import collections
