@@ -14,6 +14,9 @@ IDEA 日常使用配置
 ### 2.SerialVersionUID 自动生成
 
 {% link '转载博客链接' https://blog.csdn.net/gnail_oug/article/details/80263383 %}
+```
+Preferences->editor->Inspections, 搜索UID
+```
 
 ### 3.File Header 配置
 设置路径: (Preferences -> Editor -> File and Code Templates -> include)
