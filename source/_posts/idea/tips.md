@@ -25,3 +25,5 @@ Preferences->editor->Inspections, 搜索UID
 想要定义其他文件的模板也可以, 配置对应的文件头即可  
 {% img /images/pic_idea_template2.png %}
 
+### 3.Terminal
+Setting -> Tools -> Terminal 中可以修改终端类型
