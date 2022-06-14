@@ -6,8 +6,8 @@ import java.util.InputMismatchException;
 public class Main {
     private static FastReader cin = new FastReader(System.in);
 
-    static int[] dirX = {1, -1};
-    static int[] dirY = {-1, 1};
+    static int[] dirX = {-1, 1};
+    static int[] dirY = {1, -1};
 
     public static int[] findDiagonalOrder(int[][] mat) {
         int m = mat.length;
@@ -21,11 +21,17 @@ public class Main {
             if (nowX == m - 1 && nowY == n - 1) {
                 break;
             }
-            if (nowX == 0) {
+            if (nowX == 0 && nowX + dirX[up] < 0 && nowY + 1 < n) {
+                nowY++;
+                up ^= 1;
+            } else if (nowY == 0 && nowY + dirY[up] < 0 && nowX + 1 < m) {
                 nowX++;
                 up ^= 1;
-            } else if (nowY == 0) {
+            } else if (nowX == m - 1 && nowX + dirX[up] >= m && nowY + 1 < n) {
                 nowY++;
+                up ^= 1;
+            } else if (nowY == n - 1 && nowY + dirY[up] >= n && nowX + 1 < m) {
+                nowX++;
                 up ^= 1;
             } else {
                 nowX += dirX[up];
@@ -37,7 +43,15 @@ public class Main {
 
 
     public static void main(String[] args) {
-        int[][] mat = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        int[][] mat = {
+                {1, 2, 3},
+                {4, 5, 6},
+                {7, 8, 9}
+        };
+//        int[][] mat = {
+//                {1, 2},
+//                {3, 4},
+//        };
         Arrays.stream(findDiagonalOrder(mat)).forEach(x -> System.out.print(" " + x));
         System.out.println();
     }
