@@ -1,12 +1,23 @@
 ---
 title: To Do List
-date: 2022-06-12 11:26:31
+date: 2022-06-27 23:29:31
 categories: Summary
 ---
 
 待完成事项
 
 <!-- more -->
+[2022.6.27]
+```text
+《深入理解JVM虚拟机》第3章 Finish
+```
+
+[2022.6.26]
+```text
+《深入理解JVM虚拟机》第二章 Finish
+Tomorrow: 第3,4章
+```
+
 [2022.6.12]
 ```text
 来到平安，确实这一年半偷懒了很多。
