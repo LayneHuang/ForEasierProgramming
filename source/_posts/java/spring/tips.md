@@ -69,3 +69,8 @@ sw.start("step2");
 sw.stop();
 log.info(sw.prettyPrint());
 ```
+
+### 7.Tomcat启动服务 与 Spring Boot内置Tomcat有什么区别
+spring-boot-starter-web中内置了tomcat,所以目前在docker是直接用java -jar命令执行应用。
+目前查阅了部分资料，暂时没说明有什么本质上的区别。
+但是这个问题足以要让我这个好几年都没懂Servlet原理的人去深入了解一下Tomcat。（《深入分析Java Web技术内幕》Cap 9,11）
