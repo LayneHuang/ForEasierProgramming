@@ -47,6 +47,7 @@ Spring Boot 在 install 的时候回自动跑上测试，如果我们想跳过�
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <!--能把本地包导入 jar包-->
                     <includeSystemScope>true</includeSystemScope>
                 </configuration>
             </plugin>
