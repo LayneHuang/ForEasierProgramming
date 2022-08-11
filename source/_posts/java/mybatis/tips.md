@@ -96,6 +96,7 @@ public class EnumHandler extends BaseTypeHandler<MyEnum> {
 ```
 
 5.2 `<set/>` 与 `<if/>` 两种标签配合可以处理 update 相关的内容
+注意：与 `<where/>`配合时不需要加, `<set/>`加上
 ```xml
 <update>
     UPDATE TABLE_NAME
