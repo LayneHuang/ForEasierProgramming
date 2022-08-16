@@ -4,6 +4,8 @@ date: 2022-08-15 21:00:00
 categories: Spring
 ---
 
+关于各种注解的用法
+
 ### 1.自定义注解
 
 自定义注解类
@@ -71,6 +73,27 @@ public class Factory {
     @PostConstruct
     public void init() {
         Map<String, Object> maps = applicationContext.getBeansWithAnnotation(Consumer.class);
+    }
+}
+```
+
+### 2.ExceptionHandler
+@RestControllerAdvice 注解在全局类上, 配合 @ExceptionHandler(value = {Throwable.class}) 注解在方法上。
+可以全局统一地处理异常，添加了全局异常后，Controller 抛出的 RuntimeException 就无须捕获了
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(value = {Throwable.class})
+    public Object commonException(Throwable e) {
+        // todo: do something
+    }
+    /**
+     * DTO 校验异常
+     */
+    @ExceptionHandler(value = {org.springframework.web.bind.MethodArgumentNotValidException.class})
+    public Object paramCheckException(MethodArgumentNotValidException e) {
+        // todo: do something
     }
 }
 ```
