@@ -24,7 +24,8 @@ public @interface Consumer {
 }
 ```
 
-#### 实现 ImportBeanDefinitionRegistrar 
+#### 实现 ImportBeanDefinitionRegistrar
+实现 ImportSelector 也是可以的。  
 将已经注解 @Consumer 的类扫描到 Spring 中
 (也可以去掉package属性,及下面的 getPackages 方法, 只要在目标类上面增加了注解, 都能扫到)
 
