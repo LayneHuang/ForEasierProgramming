@@ -8,8 +8,10 @@ categories: Spring
 
 ### 1.自定义注解
 
-自定义注解类
+可参考《Spring Boot编程思想》第八章
 
+
+#### 自定义注解类
 ```java
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -22,7 +24,8 @@ public @interface Consumer {
 }
 ```
 
-实现 ImportBeanDefinitionRegistrar 将其扫描到 Spring 中
+#### 实现 ImportBeanDefinitionRegistrar 
+将已经注解 @Consumer 的类扫描到 Spring 中
 (也可以去掉package属性,及下面的 getPackages 方法, 只要在目标类上面增加了注解, 都能扫到)
 
 ```
@@ -61,7 +64,7 @@ public class ConsumersRegister implements ImportBeanDefinitionRegistrar {
 }
 ```
 
-通过 application context 获取实例
+#### 通过 application context 获取实例
 
 ```
 @Component
