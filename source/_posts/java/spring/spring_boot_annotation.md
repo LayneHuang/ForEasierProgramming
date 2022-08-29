@@ -16,6 +16,7 @@ categories: Spring
 @Target(ElementType.TYPE)
 @Documented
 @Component
+@Import(ConsumersRegister.class)
 public @interface Consumer {
     String[] packages() default {};
 }
@@ -27,7 +28,7 @@ public @interface Consumer {
 ```
 @Slf4j
 @Component
-public class MqttConsumersRegister implements ImportBeanDefinitionRegistrar {
+public class ConsumersRegister implements ImportBeanDefinitionRegistrar {
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
