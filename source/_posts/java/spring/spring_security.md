@@ -144,3 +144,44 @@ public class MySecurityMetaDataSource implements FilterInvocationSecurityMetadat
     }
 }
 ```
+
+### 6.管理员失效某用户Session
+
+引入 session redis 依赖
+```xml
+ <dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.session</groupId>
+        <artifactId>spring-session-data-redis</artifactId>
+    </dependency>
+</dependencies>
+```
+
+配置 Spring Security 使用 redis 存储 session
+```yaml
+spring:
+  session:
+    store-type: redis
+```
+
+清理 redis 中的 session id
+```java
+@Slf4j
+@Service
+public class MyUserDetailsService implements UserDetailsService {
+    public void logout(String username) {
+        Map<String, ? extends Session> userSessions = sessionRepository.findByIndexNameAndIndexValue(
+                RedisIndexedSessionRepository.PRINCIPAL_NAME_INDEX_NAME,
+                username
+        );
+        List<String> sessionIds = new ArrayList<>(userSessions.keySet());
+        for (String session : sessionIds) {
+            sessionRepository.deleteById(session);
+        }
+    }
+}
+```

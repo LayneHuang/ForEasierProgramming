@@ -10,3 +10,9 @@ categories: Docker
 ```shell
 docker rmi $(docker images -q)
 ```
+
+### Redis
+进入 Redis 容器
+```shell
+docker exec -it redis /bin/bash
+```
