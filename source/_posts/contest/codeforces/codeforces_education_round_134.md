@@ -14,14 +14,13 @@ import java.io.InputStream;
 import java.util.*;
 
 /**
- * 2
- * 5
- * 4 2 7 11 25
- * 27 29 24 20 6
- * <p>
- * 3
- * 27 30 0
- * 0 5 9
+2
+5
+4 2 7 11 25
+27 29 24 20 6
+3
+27 30 0
+0 5 9
  *
  * <p>
  * 31
@@ -35,30 +34,68 @@ public class Main {
         return (num & (1 << bit)) > 0 ? 1 : 0;
     }
 
+
+    private static void decode(int num, int[] bits) {
+        int idx = 0;
+        while (num > 0) {
+            bits[idx++] = num % 2;
+            num /= 2;
+        }
+    }
+
     private static void solve() {
         int n = cin.nextInt();
         int[] cnt = new int[31];
+        int[][][] bits = new int[2][n][31];
+        int[][] sum = new int[2][31];
+
+
         List<Integer> a = new ArrayList<>();
         List<Integer> b = new ArrayList<>();
         List<List<Integer>> aa = new ArrayList<>();
         List<List<Integer>> bb = new ArrayList<>();
         for (int i = 0; i < n; ++i) a.add(cin.nextInt());
         for (int i = 0; i < n; ++i) b.add(cin.nextInt());
-        aa.add(a);
-        bb.add(b);
+
+        List<Integer> idxA = new ArrayList<>();
+        List<Integer> idxB = new ArrayList<>();
+        for (int i = 0; i < n; ++i) {
+            decode(a.get(i), bits[0][i]);
+            decode(b.get(i), bits[1][i]);
+            idxA.add(i);
+            idxB.add(i);
+        }
+
+        for (int k = 0; k < 2; ++k) {
+            for (int i = 0; i < 31; ++i) {
+                for (int j = 0; j < n; ++j) {
+                    sum[k][i] += bits[k][j][i];
+                }
+            }
+        }
+
+        aa.add(idxA);
+        bb.add(idxB);
+
         for (int bit = 30; bit >= 0; --bit) {
+
+            if (sum[0][bit] != n - sum[1][bit]) continue;
+
             for (int i = 0; i < aa.size(); ++i) {
                 List<Integer> nowA = aa.get(i);
                 List<Integer> nowB = bb.get(i);
                 int cntA = 0;
                 int cntB = 0;
                 for (int j = 0; j < nowA.size(); ++j) {
-                    int bitA = count(nowA.get(j), bit);
+                    int idA = nowA.get(j);
+                    int idB = nowB.get(j);
+                    int bitA = bits[0][idA][bit];
                     cntA += bitA;
-                    int bitB = count(nowB.get(j), bit);
+                    int bitB = bits[1][idB][bit];
                     cntB += 1 ^ bitB;
                 }
                 if (cntA == cntB) cnt[bit] += nowA.size();
+                else break;
             }
 
             if (cnt[bit] == n) {
@@ -72,11 +109,16 @@ public class Main {
                     List<Integer> nb0 = new ArrayList<>();
                     List<Integer> nb1 = new ArrayList<>();
                     for (int j = 0; j < nowA.size(); ++j) {
-                        int bitA = count(nowA.get(j), bit);
+
+                        int idA = nowA.get(j);
+                        int idB = nowB.get(j);
+
+                        int bitA = bits[0][idA][bit];
+                        int bitB = bits[1][idB][bit];
+
                         if (bitA == 0) na0.add(nowA.get(j));
                         else na1.add(nowA.get(j));
 
-                        int bitB = count(nowB.get(j), bit);
                         if (bitB == 0) nb0.add(nowB.get(j));
                         else nb1.add(nowB.get(j));
                     }
@@ -189,4 +231,5 @@ public class Main {
         }
     }
 }
+
 ```
