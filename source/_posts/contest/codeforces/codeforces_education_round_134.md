@@ -13,27 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-/**
-2
-5
-4 2 7 11 25
-27 29 24 20 6
-3
-27 30 0
-0 5 9
- *
- * <p>
- * 31
- * 9
- */
 public class Main {
     private static final FastReader cin = new FastReader(System.in);
-
-
-    private static int count(int num, int bit) {
-        return (num & (1 << bit)) > 0 ? 1 : 0;
-    }
-
 
     private static void decode(int num, int[] bits) {
         int idx = 0;
@@ -45,23 +26,22 @@ public class Main {
 
     private static void solve() {
         int n = cin.nextInt();
+
         int[] cnt = new int[31];
         int[][][] bits = new int[2][n][31];
         int[][] sum = new int[2][31];
 
+        int[] a = new int[n];
+        int[] b = new int[n];
 
-        List<Integer> a = new ArrayList<>();
-        List<Integer> b = new ArrayList<>();
-        List<List<Integer>> aa = new ArrayList<>();
-        List<List<Integer>> bb = new ArrayList<>();
-        for (int i = 0; i < n; ++i) a.add(cin.nextInt());
-        for (int i = 0; i < n; ++i) b.add(cin.nextInt());
+        for (int i = 0; i < n; ++i) a[i] = cin.nextInt();
+        for (int i = 0; i < n; ++i) b[i] = cin.nextInt();
 
         List<Integer> idxA = new ArrayList<>();
         List<Integer> idxB = new ArrayList<>();
         for (int i = 0; i < n; ++i) {
-            decode(a.get(i), bits[0][i]);
-            decode(b.get(i), bits[1][i]);
+            decode(a[i], bits[0][i]);
+            decode(b[i], bits[1][i]);
             idxA.add(i);
             idxB.add(i);
         }
@@ -74,59 +54,45 @@ public class Main {
             }
         }
 
+        List<List<Integer>> aa = new ArrayList<>();
+        List<List<Integer>> bb = new ArrayList<>();
+
         aa.add(idxA);
         bb.add(idxB);
 
         for (int bit = 30; bit >= 0; --bit) {
-
             if (sum[0][bit] != n - sum[1][bit]) continue;
-
+            List<List<Integer>> nAA = new ArrayList<>();
+            List<List<Integer>> nBB = new ArrayList<>();
             for (int i = 0; i < aa.size(); ++i) {
                 List<Integer> nowA = aa.get(i);
                 List<Integer> nowB = bb.get(i);
+                List<Integer> na0 = new ArrayList<>();
+                List<Integer> na1 = new ArrayList<>();
+                List<Integer> nb0 = new ArrayList<>();
+                List<Integer> nb1 = new ArrayList<>();
                 int cntA = 0;
                 int cntB = 0;
                 for (int j = 0; j < nowA.size(); ++j) {
                     int idA = nowA.get(j);
                     int idB = nowB.get(j);
                     int bitA = bits[0][idA][bit];
-                    cntA += bitA;
                     int bitB = bits[1][idB][bit];
+                    cntA += bitA;
                     cntB += 1 ^ bitB;
+                    if (bitA == 0) na0.add(nowA.get(j));
+                    else na1.add(nowA.get(j));
+                    if (bitB == 0) nb0.add(nowB.get(j));
+                    else nb1.add(nowB.get(j));
                 }
                 if (cntA == cntB) cnt[bit] += nowA.size();
                 else break;
+                nAA.add(na0);
+                nAA.add(na1);
+                nBB.add(nb1);
+                nBB.add(nb0);
             }
-
             if (cnt[bit] == n) {
-                List<List<Integer>> nAA = new ArrayList<>();
-                List<List<Integer>> nBB = new ArrayList<>();
-                for (int i = 0; i < aa.size(); ++i) {
-                    List<Integer> nowA = aa.get(i);
-                    List<Integer> nowB = bb.get(i);
-                    List<Integer> na0 = new ArrayList<>();
-                    List<Integer> na1 = new ArrayList<>();
-                    List<Integer> nb0 = new ArrayList<>();
-                    List<Integer> nb1 = new ArrayList<>();
-                    for (int j = 0; j < nowA.size(); ++j) {
-
-                        int idA = nowA.get(j);
-                        int idB = nowB.get(j);
-
-                        int bitA = bits[0][idA][bit];
-                        int bitB = bits[1][idB][bit];
-
-                        if (bitA == 0) na0.add(nowA.get(j));
-                        else na1.add(nowA.get(j));
-
-                        if (bitB == 0) nb0.add(nowB.get(j));
-                        else nb1.add(nowB.get(j));
-                    }
-                    nAA.add(na0);
-                    nAA.add(na1);
-                    nBB.add(nb1);
-                    nBB.add(nb0);
-                }
                 aa = nAA;
                 bb = nBB;
             }
