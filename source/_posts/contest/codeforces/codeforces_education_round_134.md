@@ -26,8 +26,8 @@ def solve():
     n = int(input().strip())
     a = list(map(int, input().strip().split()))
     b = list(map(int, input().strip().split()))
-    print(a)
-    print(b)
+    # print(a)
+    # print(b)
     idxA = [i for i in range(n)]
     idxB = [i for i in range(n)]
 
@@ -36,21 +36,19 @@ def solve():
         bits[0].append(decode(a[i]))
         bits[1].append(decode(b[i]))
 
-    print('bits:', bits)
-
     aa = [idxA]
     bb = [idxB]
     cnt = [0 for _ in range(31)]
 
-    for bit in range(30, 0, -1):
-        print(bit)
+    for bit in range(30, -1, -1):
+        # print(bit)
         naa = []
         nbb = []
         for i in range(len(aa)):
             nowA = aa[i]
             nowB = bb[i]
-            print('nowA', nowA)
-            print('nowB', nowB)
+            # print('nowA', nowA)
+            # print('nowB', nowB)
             na0 = []
             nb0 = []
             na1 = []
@@ -60,8 +58,6 @@ def solve():
             for j in range(len(nowA)):
                 idA = nowA[j]
                 idB = nowB[j]
-                print('ida', idA)
-                print('idb', idB)
                 bitA = bits[0][idA][bit]
                 bitB = bits[1][idB][bit]
                 if bitA == 0:
@@ -75,25 +71,27 @@ def solve():
                 else:
                     nb1.append(idB)
 
-                if cntA == cntB:
-                    cnt[bit] += len(nowA)
-                else:
-                    break
-                naa.append(na0)
-                naa.append(na1)
-                nbb.append(nb1)
-                nbb.append(nb0)
-            if cnt[bit] == n:
-                aa = naa
-                bb = nbb
+            if cntA == cntB:
+                cnt[bit] += len(nowA)
+            else:
+                break
+            naa.append(na0)
+            naa.append(na1)
+            nbb.append(nb1)
+            nbb.append(nb0)
+        if cnt[bit] == n:
+            aa = naa
+            bb = nbb
+
     ans = 0
+    for i in range(31):
+        if cnt[i] == n: ans |= (1 << i)
     print(ans)
 
 
 if __name__ == '__main__':
     t = int(input().strip())
     for _ in range(t):
-        print('begin')
         solve()
 
 ```
