@@ -1,8 +1,22 @@
 ---
-title: 线段树
+title: acm模板
 date: 2022-07-22 10:47:00
-categories: ACM模板
+categories: acm
 ---
+
+质数筛
+
+```python
+    vis = [False for i in range(n + 1)]
+    pri = [1]
+    for i in range(2, n + 1):
+        if not vis[i]:
+            pri.append(i)
+            for j in range(i, n + 1, i):
+                vis[j] = True
+```
+
+
 
 区间最值, 简易模板
 
