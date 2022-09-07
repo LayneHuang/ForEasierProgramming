@@ -8,7 +8,7 @@ categories: acm
 
 ```python
     vis = [False for i in range(n + 1)]
-    pri = [1]
+    pri = []
     for i in range(2, n + 1):
         if not vis[i]:
             pri.append(i)
@@ -16,7 +16,36 @@ categories: acm
                 vis[j] = True
 ```
 
+```python
+def get_gcd_list(num):
+    res = []
+    for i in range(2, num):
+        if i * i > num:
+            break
+        if num % i == 0:
+            res.append(i)
+            while num % i == 0:
+                num //= i
 
+    if num > 1:
+        res.append(num)
+
+    return res
+```
+
+统计 n 以内互质的数的个数
+```python
+    vis = [False for i in range(n + 1)]
+    pri_cnt = [i for i in range(n + 1)]
+
+    pri = [0, 1]
+    for i in range(2, n + 1):
+        if not vis[i]:
+            pri.append(i)
+            for j in range(i, n + 1, i):
+                vis[j] = True
+                pri_cnt[j] -= pri_cnt[j] // i
+```
 
 区间最值, 简易模板
 
