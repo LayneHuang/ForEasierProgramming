@@ -40,3 +40,53 @@ if __name__ == '__main__':
     for _ in range(t):
         solve()
 ```
+
+# E
+```python
+def get_next(j, k, nxt, p):
+    while p[j] != '$':
+        if k == -1 or p[j] == p[k]:
+            j += 1
+            k += 1
+            if p[j] == p[k]:
+                nxt[j] = nxt[k]
+            else:
+                nxt[j] = k
+        else:
+            k = nxt[k]
+    return j, k, nxt
+ 
+ 
+def solve():
+    s = input().strip()
+ 
+    len_s = len(s)
+    ns = [ch for ch in s]
+    for i in range(11):
+        ns.append('$')
+ 
+    # print(ns)
+    j, k, nxt = get_next(0, -1, [-1 for i in range(len(ns))], ns)
+ 
+    q = int(input().strip())
+    for _ in range(q):
+        t = input().strip()
+        ans = []
+ 
+        for i in range(10):
+            ns[i + len_s] = '$'
+ 
+        for i in range(len(t)):
+            ns[i + len_s] = t[i]
+            # print(ns)
+            nj, nk, n_nxt = get_next(j, k, nxt, ns)
+            # print(n_nxt)
+            ans.append(n_nxt[len_s + i + 1])
+        print(' '.join(map(str, ans)))
+ 
+ 
+if __name__ == '__main__':
+    # t = int(input().strip())
+    # for _ in range(t):
+    solve()
+```
