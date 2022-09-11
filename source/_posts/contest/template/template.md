@@ -91,7 +91,7 @@ v = []
 def init(n):
     global t
     global v
-    t = [0 for i in range(n + 1)]
+    t = [0 for i in range((n + 1) << 2)]
     v = [0 for i in range(n + 1)]
 
 
