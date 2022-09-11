@@ -82,6 +82,58 @@ public class Main {
 }
 ```
 
+线段树单点更新，区间求最
+```python
+t = []
+v = []
+
+
+def init(n):
+    global t
+    global v
+    t = [0 for i in range(n + 1)]
+    v = [0 for i in range(n + 1)]
+
+
+def up(root):
+    t[root] = max(t[root << 1], t[root << 1 | 1])
+
+
+def build(root, lx, rx):
+    if lx == rx:
+        t[root] = v[lx]
+    mid = (lx + rx) >> 1
+    build(root << 1, lx, mid)
+    build(root << 1 | 1, mid + 1, rx)
+    up(root)
+
+
+def update(root, lx, rx, pos, value):
+    if lx == rx:
+        t[root] = max(t[root], value)
+        return
+
+    mid = (lx + rx) >> 1
+    if pos <= mid:
+        update(root << 1, lx, mid, pos, value)
+    if pos > mid:
+        update(root << 1 | 1, mid + 1, rx, pos, value)
+    up(root)
+
+
+def query_max(root, lx, rx, ql, qr):
+    if ql <= lx and rx <= qr:
+        return t[root]
+    now_max = 0
+    mid = (lx + rx) >> 1
+    if ql <= mid:
+        now_max = max(now_max, query_max(root << 1, lx, mid, ql, qr))
+    if qr > mid:
+        now_max = max(now_max, query_max(root << 1 | 1, mid + 1, rx, ql, qr))
+    return now_max
+```
+
+
 KMP
 ```java
 public class Main {
