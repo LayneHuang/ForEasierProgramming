@@ -37,16 +37,23 @@ def dfs(s, beg, ed, dp, lst_pos):
             else:
                 ch = s[ed + 1]
 
-            if dfs(s, beg + 1, ed, dp, 0) == 2 and ord(s[beg]) > ord(ch):
-                dp[beg][ed][lst_pos] = 1
-            elif dfs(s, beg, ed - 1, dp, 1) == 2 and ord(s[ed]) > ord(ch):
-                dp[beg][ed][lst_pos] = 1
+            if dfs(s, beg + 1, ed, dp, 0) == 2:
+                if ord(s[beg]) < ord(ch):
+                    dp[beg][ed][lst_pos] = 1
+                elif ord(s[beg]) > ord(ch):
+                    dp[beg][ed][lst_pos] = 0
+            elif dfs(s, beg, ed - 1, dp, 1) == 2:
+                if ord(s[ed]) < ord(ch):
+                    dp[beg][ed][lst_pos] = 1
+                elif ord(s[ed]) > ord(ch):
+                    dp[beg][ed][lst_pos] = 0
             elif dfs(s, beg + 1, ed, dp, 0) == 0 or dfs(s, beg, ed - 1, dp, 1) == 0:
                 dp[beg][ed][lst_pos] = 1
             elif dfs(s, beg + 1, ed, dp, 0) == 1 and dfs(s, beg, ed - 1, dp, 1) == 1:
                 dp[beg][ed][lst_pos] = 0
-            # print(dfs(s, beg + 1, ed, dp, 0), dfs(s, beg, ed - 1, dp, 1))
-            # print(beg, ed, lst_pos, dp[beg][ed][lst_pos])
+
+        print(dfs(s, beg + 1, ed, dp, 0), dfs(s, beg, ed - 1, dp, 1))
+        print(beg, ed, lst_pos, dp[beg][ed][lst_pos])
 
     return dp[beg][ed][lst_pos]
 
@@ -59,7 +66,7 @@ def solve():
             print('Alice')
         else:
             print('Draw')
-
+        return
     dp = [[[-1 for k in range(2)] for j in range(n)] for i in range(n)]
 
     if dfs(s, 1, n - 1, dp, 0) == 0 or dfs(s, 0, n - 2, dp, 1) == 0:
