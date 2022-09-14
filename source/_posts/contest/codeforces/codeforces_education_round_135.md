@@ -26,8 +26,6 @@ def dfs(s, beg, ed, dp, lst_pos):
                 dp[beg][ed][lst_pos] = 1
             elif dfs(s, beg + 1, ed, dp, 0) == 1 and dfs(s, beg, ed - 1, dp, 1) == 1:
                 dp[beg][ed][lst_pos] = 0
-            elif (dfs(s, beg + 1, ed - 1, dp, 0) == 2 or dfs(s, beg + 1, ed - 1, dp, 1)) and s[beg] != s[ed]:
-                dp[beg][ed][lst_pos] = 1
             else:
                 dp[beg][ed][lst_pos] = 2
         else:
@@ -52,8 +50,8 @@ def dfs(s, beg, ed, dp, lst_pos):
             elif dfs(s, beg + 1, ed, dp, 0) == 1 and dfs(s, beg, ed - 1, dp, 1) == 1:
                 dp[beg][ed][lst_pos] = 0
 
-        print(dfs(s, beg + 1, ed, dp, 0), dfs(s, beg, ed - 1, dp, 1))
-        print(beg, ed, lst_pos, dp[beg][ed][lst_pos])
+        # print(dfs(s, beg + 1, ed, dp, 0), dfs(s, beg, ed - 1, dp, 1))
+        # print(beg, ed, lst_pos, dp[beg][ed][lst_pos])
 
     return dp[beg][ed][lst_pos]
 
