@@ -147,6 +147,9 @@ public class MySecurityMetaDataSource implements FilterInvocationSecurityMetadat
 
 ### 6.管理员失效某用户Session
 
+可用于多服务实例分布式管理Session
+{% link 'spring-session-data-redis好文' https://blog.csdn.net/shuoyueqishilove/article/details/122244995 [title] %}
+
 引入 session redis 依赖
 ```xml
  <dependencies>
