@@ -150,6 +150,8 @@ public class MySecurityMetaDataSource implements FilterInvocationSecurityMetadat
 可用于多服务实例分布式管理Session
 {% link 'spring-session-data-redis好文' https://blog.csdn.net/shuoyueqishilove/article/details/122244995 [title] %}
 
+应用通过 SessionRepositoryFilter 把请求(HttpServletRequest)中的 Session 进行存储
+
 引入 session redis 依赖
 ```xml
  <dependencies>
@@ -185,6 +187,54 @@ public class MyUserDetailsService implements UserDetailsService {
         for (String session : sessionIds) {
             sessionRepository.deleteById(session);
         }
+    }
+}
+```
+
+### 7.Cookie 与 Session
+
+{% link 'Cookie与Session详解' https://www.cnblogs.com/qingshangucheng/p/16041147.html [title] %}
+文中提到 SessionId 是存在 Cookie 中的，这解析了为啥，请求中只需要传入 Cookie， 服务器依然能够识别用户信息。
+
+```java
+public class LoginTest {
+
+    private static String cookie;
+
+    @BeforeAll
+    public static void login() throws Exception {
+        RestTemplate template = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("username", "username");
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+
+        ResponseEntity<String> res = template.postForEntity(
+                "http://localhost:7001/login",
+                requestEntity,
+                String.class
+        );
+        // 得到 cookie
+        cookie = Objects.requireNonNull(res.getHeaders().get("Set-Cookie")).get(0).split(";")[0];
+    }
+
+    @Test
+    public void testGetBaseConfig() {
+        RestTemplate template = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        // 设置 cookie
+        headers.set("Cookie", cookie);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(new LinkedMultiValueMap<>(), headers);
+        ResponseEntity<String> res = template.exchange(
+                "http://localhost:7001/doSomething",
+                HttpMethod.GET,
+                requestEntity,
+                String.class
+        );
+        Assert.notNull(res, "请求体为空");
+        Assert.isTrue(HttpStatus.OK == res.getStatusCode(), "请求结果错误");
+        System.out.println(JSON.toJSONString(res.getBody()));
     }
 }
 ```
