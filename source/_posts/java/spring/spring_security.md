@@ -194,7 +194,10 @@ public class MyUserDetailsService implements UserDetailsService {
 ### 7.Cookie 与 Session
 
 {% link 'Cookie与Session详解' https://www.cnblogs.com/qingshangucheng/p/16041147.html [title] %}
-文中提到 SessionId 是存在 Cookie 中的，这解析了为啥，请求中只需要传入 Cookie， 服务器依然能够识别用户信息。
+文中提到 SessionId 是存在 Cookie 中的，这解析了为啥，请求中只需要传入 Cookie， 服务器依然能够识别用户信息。 
+
+在 HttpServletRequestWrapper 封装请求的过程中，程序会从 Cookie 中读取 SessionId (实现类: CookieHttpSessionIdResolver)
+
 
 ```java
 public class LoginTest {
