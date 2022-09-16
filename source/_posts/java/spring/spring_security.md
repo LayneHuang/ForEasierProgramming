@@ -222,7 +222,7 @@ public class LoginTest {
     }
 
     @Test
-    public void testGetBaseConfig() {
+    public void testDoSomething() {
         RestTemplate template = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         // 设置 cookie
