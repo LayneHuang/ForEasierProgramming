@@ -147,11 +147,6 @@ public class MySecurityMetaDataSource implements FilterInvocationSecurityMetadat
 
 ### 6.管理员失效某用户Session
 
-可用于多服务实例分布式管理Session
-{% link 'spring-session-data-redis好文' https://blog.csdn.net/shuoyueqishilove/article/details/122244995 [title] %}
-
-应用通过 SessionRepositoryFilter 把请求(HttpServletRequest)中的 Session 进行存储
-
 引入 session redis 依赖
 ```xml
  <dependencies>
@@ -198,6 +193,10 @@ public class MyUserDetailsService implements UserDetailsService {
 
 在 HttpServletRequestWrapper 封装请求的过程中，程序会从 Cookie 中读取 SessionId (实现类: CookieHttpSessionIdResolver)
 
+应用通过 SessionRepositoryFilter 把请求(HttpServletRequest)中的 Session 进行存储
+
+Session 中存储的内容  
+{% img /images/pic_session.png %}
 
 ```java
 public class LoginTest {
