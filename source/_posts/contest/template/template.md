@@ -178,3 +178,36 @@ public class Main {
     }
 }
 ```
+
+### 字典树
+```python
+class TreeNode:
+    def __init__(self):
+        self.val = 0
+        self.son = [None for i in range(26)]
+
+
+def add(now, word, p):
+    now.val += 1
+    if p + 1 < len(word):
+        ch = word[p + 1]
+        idx = ord(ch) - ord('a')
+        # print(ch, idx)
+        if now.son[idx] is None:
+            now.son[idx] = TreeNode()
+        add(now.son[idx], word, p + 1)
+
+
+def cnt(now, word):
+    ans = 0
+    for ch in word:
+        idx = ord(ch) - ord('a')
+        now = now.son[idx]
+        ans += now.val
+
+    return ans
+
+if __name__ == '__main__':
+    root = TreeNode()
+    add(root, "abcd", -1)
+```
