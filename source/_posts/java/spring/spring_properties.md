@@ -27,3 +27,18 @@ Edit configuration 下有 program arguments，配置 --spring.profiles.active=de
 
 #### 3.2 @XmlType
 可以改变 JAXB 输出时候的顺序
+
+### 4.单个请求文件大小配置
+
+```yaml
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1000MB
+```
+
+在 GlobalExceptionHandler 中可以处理统一返回
+```
+@ExceptionHandler(value = {MaxUploadSizeExceededException.class})
+```
