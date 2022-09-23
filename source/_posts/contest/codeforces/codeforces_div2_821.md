@@ -39,8 +39,11 @@ def solve():
             dp[i][0] = min(dp[i][0], dp[i - 1][1] + min(x, 2 * y))
             dp[i][0] = min(dp[i][0], dp[i - 1][2] + y)
             dp[i][1] = min(dp[i][1], dp[i - 1][0])
+            if i > 1 and c[i - 1] == 1:
+                dp[i][2] = min(dp[i][2], min(dp[i - 2][1], dp[i - 2][2]) + y)
+
         # print(i, dp[i][0], dp[i][1], dp[i][2])
-    print(-1 if dp[n - 1][0] == mx else dp[n - 1][0])
+    print(-1 if dp[n - 1][0] >= mx else dp[n - 1][0])
 
 
 if __name__ == '__main__':
