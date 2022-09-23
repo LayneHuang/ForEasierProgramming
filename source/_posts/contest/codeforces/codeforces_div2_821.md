@@ -8,10 +8,6 @@ tag: Codeforces
 {% link '#821 div2' https://codeforces.com/contest/1717 [title] %}
 ### D
 ```python
-import heapq
-import operator
-
-
 def solve():
     n, x, y = map(int, input().strip().split())
     s = input().strip()
@@ -23,34 +19,28 @@ def solve():
 
     # print(c)
 
-    cnt1 = 0
-    pair = 0
-    pre = -10
-    for i in range(n):
-        if c[i] == 1:
-            cnt1 += 1
-            if pre + 1 == i:
-                pair += 1
-                pre = -10
-            else:
-                pre = i
+    mx = 1 << 31
+    dp = [[mx for j in range(3)] for i in range(n)]
 
-    if cnt1 % 2 == 1:
-        print(-1)
-        return
-
-    not_pair = (cnt1 // 2) - pair
-    if y < x and (cnt1 > 2 or pair > 1):
-        print(cnt1 // 2 * y)
-    elif x <= y * 2:
-        print((x * pair + y * not_pair))
+    if c[0] == 0:
+        dp[0][0] = 0
     else:
-        cost = cnt1 // 2
+        dp[0][1] = 0
 
-        if pair > 0:
-            cost = max(cost, 2)
-
-        print(cost * y)
+    for i, num in enumerate(c):
+        if i == 0:
+            continue
+        if num == 0:
+            dp[i][0] = min(dp[i][0], dp[i - 1][0])
+            dp[i][1] = min(dp[i][1], dp[i - 1][1] + x)
+            dp[i][1] = min(dp[i][1], dp[i - 1][2] + y)
+            dp[i][2] = min(dp[i - 1][1], dp[i - 1][2])
+        else:
+            dp[i][0] = min(dp[i][0], dp[i - 1][1] + min(x, 2 * y))
+            dp[i][0] = min(dp[i][0], dp[i - 1][2] + y)
+            dp[i][1] = min(dp[i][1], dp[i - 1][0])
+        # print(i, dp[i][0], dp[i][1], dp[i][2])
+    print(-1 if dp[n - 1][0] == mx else dp[n - 1][0])
 
 
 if __name__ == '__main__':
