@@ -176,3 +176,22 @@ if __name__ == '__main__':
     root = TreeNode()
     add(root, "abcd", -1)
 ```
+
+### 并查集
+```python
+def init(n):
+    return [i for i in range(n)]
+
+def find(p, fa):
+    if p == fa[p]:
+        return p
+    fa[p] = find(fa[p], fa)
+    return fa[p]
+
+
+def unit(p, q, fa):
+    fa_p = find(p, fa)
+    fa_q = find(q, fa)
+    if fa_p != fa_q:
+        fa[fa_q] = fa_p
+```
