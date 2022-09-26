@@ -14,9 +14,9 @@ categories: acm
 import heapq
 
 class MyPriorityQueue:
-    que = []
+    que: list = None
 
-    def init(self, arr=None):
+    def __init__(self, arr=None):
         if arr is None:
             arr = []
         self.que = arr
@@ -33,6 +33,9 @@ class MyPriorityQueue:
 
     def is_empty(self):
         return len(self.que) == 0
+
+    def show(self):
+        print('que:', self.que)
 ```
 
 ### 质数筛
