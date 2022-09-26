@@ -6,7 +6,9 @@ tag: Codeforces
 ---
 
 {% link '#823 div2' https://codeforces.com/contest/1730 [title] %}
+
 ### B
+
 题意：  
 x 轴上有 n 个人，大家都要去要一个相同的点开会。每个人都需要一个ti时间穿衣服，以及 abs(xi - ans) 时间移动。
 找出一个点让到达时间最小。
@@ -14,10 +16,25 @@ x 轴上有 n 个人，大家都要去要一个相同的点开会。每个人都
 思路：  
 对于任意一个点 x，它必定为它左边或右边最远的点（距离+穿衣时间）。  
 对于左边的点的距离为 ti + x - xi ， 实际上排序由 ti - xi 决定  
-对于右边的点的距离为 ti + xi - x ， 实际上排序由 ti + xi 决定  
+对于右边的点的距离为 ti + xi - x ， 实际上排序由 ti + xi 决定
 
 那么思路就是枚举坐标轴上的点，分别用左，右两个优先队列维护最远点的坐标。  
-（注意取答案时，值不能超过下一个点的值域，且越居中越好）  
+（注意取答案时，值不能超过下一个点的值域，且越居中越好）
+
+然而发现最大最小值其实是不变的~  
+正解：
+
+```python
+for _ in range(int(input().strip())):
+    n = int(input().strip())
+    a = list(map(int, input().strip().split()))
+    t = list(map(int, input().strip().split()))
+    left = min([(a[i] - t[i]) for i in range(n)])
+    right = max([(a[i] + t[i]) for i in range(n)])
+    print((left + right) / 2.0)
+```
+
+我的解：
 
 ```python
 import heapq
