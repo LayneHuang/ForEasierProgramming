@@ -8,6 +8,33 @@ categories: acm
 
 <!-- more -->
 
+### 优先队列
+
+```python
+import heapq
+
+class MyPriorityQueue:
+    que = []
+
+    def init(self, arr=None):
+        if arr is None:
+            arr = []
+        self.que = arr
+        heapq.heapify(self.que)
+
+    def push(self, val):
+        heapq.heappush(self.que, val)
+
+    def pop(self):
+        return heapq.heappop(self.que)
+
+    def peek(self):
+        return self.que[0]
+
+    def is_empty(self):
+        return len(self.que) == 0
+```
+
 ### 质数筛
 
 ```python
@@ -38,6 +65,7 @@ def get_gcd_list(num):
 ```
 
 ### 统计 n 以内互质的数的个数
+
 ```python
     vis = [False for i in range(n + 1)]
     pri_cnt = [i for i in range(n + 1)]
@@ -52,6 +80,7 @@ def get_gcd_list(num):
 ```
 
 ### 线段树单点更新，区间求最
+
 ```python
 t = []
 v = []
@@ -102,8 +131,8 @@ def query_max(root, lx, rx, ql, qr):
     return now_max
 ```
 
-
 ### KMP
+
 ```java
 public class Main {
     public static int[] getNext(String ps) {
@@ -125,6 +154,7 @@ public class Main {
         }
         return next;
     }
+
     public static int KMP(String ts, String ps) {
         char[] t = ts.toCharArray();
         char[] p = ps.toCharArray();
@@ -149,6 +179,7 @@ public class Main {
 ```
 
 ### 字典树
+
 ```python
 class TreeNode:
     def __init__(self):
@@ -182,6 +213,7 @@ if __name__ == '__main__':
 ```
 
 ### 并查集
+
 ```python
 def init(n):
     return [i for i in range(n)]
