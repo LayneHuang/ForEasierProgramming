@@ -3,12 +3,17 @@ title: 树目录构建方法
 date: 2022-9-25 21:00:00
 categories: Business
 ---
+很多时候业务需要用到树形目录结构，归纳模板，方便构建
+
+<!-- more -->
 
 树节点, 用于返回信息继承
+
 ```java
+
 @Data
-public class TreeNode {
-    private static final long serialVersionUID = 7395241565634729984L;
+public class TreeNode implements Serializable {
+    private static final long serialVersionUID = -1;
 
     public TreeNode(Long id) {
         this.id = id;
@@ -23,6 +28,7 @@ public class TreeNode {
 ```
 
 边构建与转换
+
 ```java
 public interface TreeNodeTransfer {
     /**
@@ -43,6 +49,7 @@ public interface TreeNodeTransfer {
 ```
 
 建树工具
+
 ```java
 public class TreeUtil<T extends TreeNodeTransfer> {
 
