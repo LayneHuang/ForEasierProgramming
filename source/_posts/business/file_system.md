@@ -35,7 +35,7 @@ public enum FileType {
     VIDEO(2, ".*", ".*\\.(mp4|mp5)", "视频"),
     CONFIG(3, ".*", ".*\\.(xml|yaml)", "配置"),
     COMPRESSED(4, "application/(zip|rar|tar)", ".*\\.(zip|rar|tar)", "普通压缩包"),
-    TXT(5, "(application/.*sheet|text/(plain|markdown|html))", ".*\\.(txt|md|xlsx|html)", "普通文本"),
+    TXT(5, "(application/.*sheet|text/(plain|markdown|html))", ".*\\.(txt|md|xlsx|doc|pdf|ppt|html)", "普通文本"),
     EXE(6, "application/.*program", ".*\\.(exe)", "普通安装包"),
     ;
 
