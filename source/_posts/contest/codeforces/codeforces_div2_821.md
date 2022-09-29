@@ -46,9 +46,10 @@ for _ in range(int(input().strip())):
                            dp[i - 1][3] + y,
                            dp[i - 1][4] + y)
             dp[i][3] = min(dp[i - 1][1], dp[i - 1][2])
-            dp[i][4] = min(dp[i - 1][1], dp[i - 1][2])
+            dp[i][4] = min(dp[i - 1][1] + y, dp[i - 1][2] + min(x, y))
 
     print(-1 if dp[n - 1][0] >= mx else dp[n - 1][0])
+
 
 ```
 
