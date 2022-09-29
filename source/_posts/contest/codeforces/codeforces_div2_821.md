@@ -19,7 +19,7 @@ for _ in range(int(input().strip())):
     # print(c)
 
     mx = 1 << 31
-    dp = [[mx for j in range(4)] for i in range(n)]
+    dp = [[mx for j in range(5)] for i in range(n)]
 
     if c[0] == 0:
         dp[0][0] = 0
@@ -33,14 +33,17 @@ for _ in range(int(input().strip())):
             dp[i][0] = dp[i - 1][0]
             dp[i][1] = min(dp[i - 1][1] + x, dp[i - 1][2] + y)
             dp[i][2] = min(dp[i - 1][1], dp[i - 1][2])
-            dp[i][3] = min(dp[i - 1][3] + x, dp[i - 1][3] + y)
+            dp[i][3] = min(dp[i - 1][3] + x, dp[i - 1][3] + y, dp[i - 1][4] + y)
+            dp[i][4] = min(dp[i - 1][4], dp[i - 1][3])
         else:
             dp[i][0] = min(dp[i - 1][1] + min(x, 2 * y), dp[i - 1][2] + y)
             dp[i][1] = dp[i - 1][0]
-            dp[i][2] = min(dp[i - 1][0] + y, dp[i - 1][0] + x, dp[i - 1][3] + y)
-            dp[i][3] = min(dp[i - 1][2])
-        # print(i, dp[i][0], dp[i][1], dp[i][2])
+            dp[i][2] = min(dp[i - 1][0] + y, dp[i - 1][0] + x, dp[i - 1][3] + y, dp[i - 1][4] + y)
+            dp[i][3] = min(dp[i - 1][1], dp[i - 1][2])
+            dp[i][4] = min(dp[i - 1][1], dp[i - 1][2])
+
     print(-1 if dp[n - 1][0] >= mx else dp[n - 1][0])
+
 ```
 
 ```text
