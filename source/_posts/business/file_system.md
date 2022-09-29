@@ -89,4 +89,10 @@ public enum FileType {
 }
 ```
 
-###
+### 问题排查
+
+1. 服务部署到 aliyun 后，文件上传失败
+
+现象：  
+本地调用 aliyun ftp 是ok  
+aliyun调用 aliyun ftp 失败
