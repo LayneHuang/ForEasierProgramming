@@ -101,3 +101,7 @@ aliyun调用 aliyun ftp 失败
 ```text
 FTP Code: 500, Reply String: 500 Illegal PORT command.
 ```
+
+解决方法：  
+aliyun有内外ip的区分，服务部署后，只能用内部ip去访问。
+连上云服务器后，使用 ifconfig -a 查到ip作为连接 ftp 的ip
