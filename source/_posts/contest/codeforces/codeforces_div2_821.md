@@ -42,6 +42,8 @@ for _ in range(int(input().strip())):
         # print(i, dp[i][0], dp[i][1], dp[i][2])
     print(-1 if dp[n - 1][0] >= mx else dp[n - 1][0])
 ```
+
+```text
 6
 5 8 9
 01001
@@ -61,3 +63,12 @@ for _ in range(int(input().strip())):
 5 10 1
 01100
 01100
+```
+
+
+```text
+1
+5 5 2
+11011
+00000
+```

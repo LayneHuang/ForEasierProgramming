@@ -96,3 +96,8 @@ public enum FileType {
 现象：  
 本地调用 aliyun ftp 是ok  
 aliyun调用 aliyun ftp 失败
+
+从 ftp.getReplyString() 中得到的信息是：
+```text
+FTP Code: 500, Reply String: 500 Illegal PORT command.
+```
