@@ -82,6 +82,26 @@ def get_gcd_list(num):
                 pri_cnt[j] -= pri_cnt[j] // i
 ```
 
+### 数组离散
+```python
+def li_san(nums):
+    mp = {}
+
+    if len(nums) == 0:
+        return mp
+
+    nums.sort()
+    cnt = 0
+
+    for i, x in enumerate(nums):
+        if i > 0 and x == nums[i - 1]:
+            continue
+        cnt += 1
+        mp[x] = cnt
+
+    return mp
+```
+
 ### 线段树（单点更新，区间求最）
 ```python
 t = []
