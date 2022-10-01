@@ -47,7 +47,7 @@ def get_gcd_list(num):
                 pri_cnt[j] -= pri_cnt[j] // i
 ```
 
-### 线段树单点更新，区间求最
+### 线段树（单点更新，区间求最）
 ```python
 t = []
 v = []
@@ -98,6 +98,45 @@ def query_max(root, lx, rx, ql, qr):
     return now_max
 ```
 
+### 线段树（单点更新, 区间求和）
+```python
+t = []
+
+
+def init(n):
+    global t
+    t = [0 for i in range((n + 1) << 2)]
+
+
+def up(root):
+    t[root] = t[root << 1] + t[root << 1 | 1]
+
+
+def update(root, lx, rx, pos, value):
+    if lx == rx:
+        t[root] += value
+        return
+
+    mid = (lx + rx) >> 1
+    if pos <= mid:
+        update(root << 1, lx, mid, pos, value)
+    if pos > mid:
+        update(root << 1 | 1, mid + 1, rx, pos, value)
+    up(root)
+
+
+def query_sum(root, lx, rx, ql, qr):
+    if ql <= lx and rx <= qr:
+        return t[root]
+    now_sum = 0
+    mid = (lx + rx) >> 1
+    if ql <= mid:
+        now_sum += query_sum(root << 1, lx, mid, ql, qr)
+    if qr > mid:
+        now_sum += query_sum(root << 1 | 1, mid + 1, rx, ql, qr)
+    return now_sum
+
+```
 
 ### KMP
 ```java
