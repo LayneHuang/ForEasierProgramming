@@ -3,6 +3,8 @@ title: 文件管理
 date: 2022-9-23 21:00:00
 categories: Business
 ---
+### 当前构建方案
+1.将自动生成及文件管理分成了2个文件夹(操作数据在同一个文件夹不知道会不会写并发很高?)
 
 ### 文件上传大小限制
 Spring Boot 微服务及 nginx 都需要配置上传文件大小限制参数
@@ -33,7 +35,7 @@ public enum FileType {
     VIDEO(2, ".*", ".*\\.(mp4|mp5)", "视频"),
     CONFIG(3, ".*", ".*\\.(xml|yaml)", "配置"),
     COMPRESSED(4, "application/(zip|rar|tar)", ".*\\.(zip|rar|tar)", "普通压缩包"),
-    TXT(5, "(application/.*sheet|text/(plain|markdown))", ".*\\.(txt|md|xlsx)", "普通文本"),
+    TXT(5, "(application/.*sheet|text/(plain|markdown|html))", ".*\\.(txt|md|xlsx|doc|pdf|ppt|html)", "普通文本"),
     EXE(6, "application/.*program", ".*\\.(exe)", "普通安装包"),
     ;
 
@@ -87,4 +89,19 @@ public enum FileType {
 }
 ```
 
-###
+### 问题排查
+
+服务部署到 aliyun 后，文件上传失败
+
+现象：  
+本地调用 aliyun ftp 是ok  
+aliyun调用 aliyun ftp 失败
+
+从 ftp.getReplyString() 中得到的信息是：
+```text
+FTP Code: 500, Reply String: 500 Illegal PORT command.
+```
+
+解决方法：  
+aliyun有内外ip的区分，服务部署后，只能用内部ip去访问。
+连上云服务器后，使用 ifconfig -a 查到ip作为连接 ftp 的ip
