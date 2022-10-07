@@ -8,6 +8,20 @@ categories: acm
 
 <!-- more -->
 
+### 输入模板
+```python
+import sys
+
+input = lambda: sys.stdin.readline().rstrip()
+
+# for _ in range(int(input()))
+# n = int(input())
+# n, k = map(int, input().split())
+# a = list(map(int, input().split()))
+# a = [list(map(int, input().split())) for i in range(n)]
+
+```
+
 ### 优先队列
 
 ```python
