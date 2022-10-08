@@ -37,6 +37,9 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     // 自定义URL的权限列表
     @Autowired
     private MySecurityMetaDataSource securityMetaDataSource;
+    // 自定义权限通过管理
+    @Autowired
+    private MyAccessDecisionManager accessDecisionManager;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
@@ -54,6 +57,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                     @Override
                     public <O extends FilterSecurityInterceptor> O
                     postProcess(O object) {
+                        object.setAccessDecisionManager(accessDecisionManager);
                         object.setSecurityMetadataSource(securityMetaDataSource);
                         return object;
                     }
@@ -117,7 +121,8 @@ public class MyUserDetailsService implements UserDetailsService {
 ```
 
 ### 5.自定义权限校验
-实现 FilterInvocationSecurityMetadataSource 接口, 通过 URL 获取该 URL 需要哪些角色访问
+
+URL角色获取 （实现 FilterInvocationSecurityMetadataSource 接口, 通过 URL 获取该 URL 需要哪些角色访问）
 
 ```java
 @Configuration
@@ -141,6 +146,28 @@ public class MySecurityMetaDataSource implements FilterInvocationSecurityMetadat
     @Override
     public boolean supports(Class<?> clazz) {
         return FilterInvocation.class.isAssignableFrom(clazz);
+    }
+}
+```
+
+自定义权限通过管理
+
+```java
+@Component
+public class MyAccessDecisionManager implements AccessDecisionManager {
+    @Override
+    public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
+
+    }
+
+    @Override
+    public boolean supports(ConfigAttribute attribute) {
+        return false;
+    }
+
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return false;
     }
 }
 ```
