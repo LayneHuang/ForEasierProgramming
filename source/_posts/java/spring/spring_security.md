@@ -135,6 +135,7 @@ public class MySecurityMetaDataSource implements FilterInvocationSecurityMetadat
         List<String> roles = new ArrayList<>();
         roles.add("ROLE_ADMIN");
         roles.add("ROLE_USER");
+        // Todo: 要处理一下, 当权限列表为空时抛出异常
         return SecurityConfig.createList(roles.toArray(new String[0]));
     }
 
