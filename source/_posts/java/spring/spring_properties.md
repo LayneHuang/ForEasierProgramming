@@ -38,7 +38,30 @@ spring:
       max-request-size: 1000MB
 ```
 
-在 GlobalExceptionHandler 中可以处理统一返回
+### 在 GlobalExceptionHandler 中可以处理统一返回
+
+处理上传大小超出限制
 ```
 @ExceptionHandler(value = {MaxUploadSizeExceededException.class})
+```
+
+处理检验异常
+```
+@ExceptionHandler(value = {org.springframework.web.bind.MethodArgumentNotValidException.class})
+public ResponseVo paramCheckException(MethodArgumentNotValidException e) {
+    Response res = new Response();
+    log.error(e.getMessage());
+    res.setCode(ResponseState.PARAM_ERROR.getCode());
+    if (CollectionUtils.isEmpty(e.getAllErrors())) {
+        res.setData(ResponseState.PARAM_ERROR.getMessage());
+    } else {
+        String firstMsg = e.getAllErrors().get(0).getDefaultMessage();
+        res.setData(firstMsg);
+        String msg = ResponseState.getMsgByCode(firstMsg);
+        if (StringUtils.isNotBlank(msg)) {
+            res.setData(msg);
+        }
+    }
+    return res;
+}
 ```
