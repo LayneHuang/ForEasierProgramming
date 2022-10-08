@@ -5,8 +5,11 @@ categories: Spring
 ---
 
 ### 1.Spring Security 引入
+
 在 maven 的 pom.xml 文件加入依赖，版本默认依赖 spring-boot-starter-parent 的版本
+
 ```xml
+
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-security</artifactId>
@@ -14,8 +17,11 @@ categories: Spring
 ```
 
 ### 2.启动类加入注解
+
 加上注解 `@EnableWebSecurity`
+
 ```java
+
 @SpringBootApplication
 @EnableWebSecurity
 public class DemoApplication extends SpringBootServletInitializer {
@@ -28,6 +34,7 @@ public class DemoApplication extends SpringBootServletInitializer {
 ### 3.继承 WebSecurityConfigurerAdapter 并且覆盖其中配置方法
 
 ```java
+
 @Configuration
 @Slf4j
 public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -84,9 +91,11 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 ```
 
 ### 4.获取自定义获取
+
 通过实现 UserDetailsService.loadUserByUsername() 接口，来自定义返回登陆信息
 
 ```java
+
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
@@ -125,8 +134,24 @@ public class MyUserDetailsService implements UserDetailsService {
 URL角色获取 （实现 FilterInvocationSecurityMetadataSource 接口, 通过 URL 获取该 URL 需要哪些角色访问）
 
 ```java
+
 @Configuration
 public class MySecurityMetaDataSource implements FilterInvocationSecurityMetadataSource {
+
+    private final AntPathMatcher antPathMatcher = new AntPathMatcher();
+
+    /**
+     * 比如要通过一些 swagger 的 url
+     * @param url 当前请求url
+     * @return 是否通过
+     */
+    private boolean isPermitAll(String url) {
+        List<String> permitAllList = new ArrayList<>();
+        permitAllList.add("/webjars/springfox-swagger-ui/**");
+        permitAllList.add("/swagger**");
+        permitAllList.add("/*/api-docs");
+        return permitAllList.stream().anyMatch(pattern -> antPathMatcher.match(pattern, url));
+    }
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
@@ -136,6 +161,9 @@ public class MySecurityMetaDataSource implements FilterInvocationSecurityMetadat
         roles.add("ROLE_ADMIN");
         roles.add("ROLE_USER");
         // Todo: 要处理一下, 当权限列表为空时抛出异常
+        if (CollectionUtils.isEmpty(roles) && !isPermitAll(requestURI)) {
+            throw new IllegalArgumentException("url not exist");
+        }
         return SecurityConfig.createList(roles.toArray(new String[0]));
     }
 
@@ -154,6 +182,7 @@ public class MySecurityMetaDataSource implements FilterInvocationSecurityMetadat
 自定义权限通过管理
 
 ```java
+
 @Component
 public class MyAccessDecisionManager implements AccessDecisionManager {
     @Override
@@ -176,8 +205,10 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
 ### 6.管理员失效某用户Session
 
 引入 session redis 依赖
+
 ```xml
- <dependencies>
+
+<dependencies>
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -190,6 +221,7 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
 ```
 
 配置 Spring Security 使用 redis 存储 session
+
 ```yaml
 spring:
   session:
@@ -197,7 +229,9 @@ spring:
 ```
 
 清理 redis 中的 session id
+
 ```java
+
 @Slf4j
 @Service
 public class MyUserDetailsService implements UserDetailsService {
@@ -217,7 +251,7 @@ public class MyUserDetailsService implements UserDetailsService {
 ### 7.Cookie 与 Session
 
 {% link 'Cookie与Session详解' https://www.cnblogs.com/qingshangucheng/p/16041147.html [title] %}
-文中提到 SessionId 是存在 Cookie 中的，这解析了为啥，请求中只需要传入 Cookie， 服务器依然能够识别用户信息。 
+文中提到 SessionId 是存在 Cookie 中的，这解析了为啥，请求中只需要传入 Cookie， 服务器依然能够识别用户信息。
 
 在 HttpServletRequestWrapper 封装请求的过程中，程序会从 Cookie 中读取 SessionId (实现类: CookieHttpSessionIdResolver)
 
