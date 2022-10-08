@@ -57,28 +57,34 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) {
-        // 自定义权限
-        ApplicationContext applicationContext = http.getSharedObject(ApplicationContext.class);
-        http.apply(new UrlAuthorizationConfigurer<>(applicationContext))
+        http.formLogin()
+                // 登陆成功返回
+                .successHandler(getLoginSuccessHandler())
+                // 或者用这个并在 Controller 上实现对应接口, 也OK
+//                .successForwardUrl("/login/success")
+                // 用户状态不正确(启用禁用等)
+                .failureHandler(getFailureHandler())
+                .and().exceptionHandling()
+                // 处理未登陆
+                .authenticationEntryPoint(getUnLoginHandler())
+                // 处理权限校验失败
+                .accessDeniedHandler(getAccessDeniedHandler())
+                .and().logout().permitAll()
+                // 处理登出返回
+                .logoutSuccessHandler(getLogoutSuccessHandler())
+                .and().authorizeRequests()
+                // 使用默认权限匹配
+//                .antMatchers("/login**").permitAll()
+                // 自定义权限匹配
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
-                    public <O extends FilterSecurityInterceptor> O
-                    postProcess(O object) {
+                    public <O extends FilterSecurityInterceptor> O postProcess(O object) {
                         object.setAccessDecisionManager(accessDecisionManager);
                         object.setSecurityMetadataSource(securityMetaDataSource);
                         return object;
                     }
-                });
-
-        http.formLogin()
-                .successHandler(getLoginSuccessHandler())
-                .failureHandler(getFailureHandler())
-                .and().exceptionHandling()
-                .authenticationEntryPoint(getUnLoginHandler())
-                .and().logout().permitAll()
-                .logoutSuccessHandler(getLogoutSuccessHandler())
-//                .and().authorizeRequests()
-//                .anyRequest().authenticated()
+                })
+                .anyRequest().authenticated()
                 .and().csrf().disable();
     }
 
