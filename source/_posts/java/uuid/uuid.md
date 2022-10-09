@@ -40,6 +40,15 @@ mvn clean install
 </plugin>
 ```
 
+依赖的组件
+```xml
+<dependency>
+    <groupId>commons-lang</groupId>
+    <artifactId>commons-lang</artifactId>
+    <version>2.6</version>
+</dependency>
+```
+
 5.配置UUID要用到的bean
 
 因为 UUID 要用到用到数据库，所以它要扫描到 WorkerNodeDAO 以及 WORKER_NODE.xml。
