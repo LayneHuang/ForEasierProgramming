@@ -71,6 +71,8 @@ mvn clean install
 
 因为 UUID 要用到用到数据库，所以它要扫描到 WorkerNodeDAO 以及 WORKER_NODE.xml。
 
+WORKER_NODE.xml 这个文件要加到我们自身的 mapper xml文件目录下，或者 mybatis 能够扫描到这个文件
+
 ```java
 @Configuration
 @MapperScan(value = {"com.baidu.fsg.uid.worker.dao"})
