@@ -29,15 +29,33 @@ mvn clean install
 ```
 
 4.在使用到的项目上进行构建
-注意要加上 `<includeSystemScope>true</includeSystemScope>` 标签，才能把本地包最终打进服务的包
+注意要加上 `<includeSystemScope>true</includeSystemScope>` 标签，才能把本地包最终打进服务的包  
+并且 mapper 的依赖也要导进来
 ```xml
-<plugin>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-maven-plugin</artifactId>
-    <configuration>
-        <includeSystemScope>true</includeSystemScope>
-    </configuration>
-</plugin>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <includeSystemScope>true</includeSystemScope>
+                <classifier>exec</classifier>
+                <skip>true</skip>
+            </configuration>
+        </plugin>
+    </plugins>
+    <resources>
+        <resource>
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**/*.xml</include>
+            </includes>
+        </resource>
+        <resource>
+            <directory>src/main/resources</directory>
+        </resource>
+    </resources>
+</build>
 ```
 
 依赖的组件
