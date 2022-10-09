@@ -265,3 +265,13 @@ public class MyUserDetailsService implements UserDetailsService {
 
 Session 中存储的内容  
 {% img /images/pic_session.png %}
+
+### 8.AntPathMatcher
+
+(来自于org.springframework.util)
+AntPathMatcher 可以用于功能点中配置的 pattern 与 url 进行匹配。
+
+`/**`: 用于匹配 0 或多个目录
+`/*`: 用于匹配 0 或多个字符
+
+通常都是使用 `/**` 对路径进行处理
