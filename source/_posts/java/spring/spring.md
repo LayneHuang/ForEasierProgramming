@@ -3,6 +3,10 @@ title: Spring
 date: 2020-04-02 01:48:31
 categories: Spring
 ---
+## Spring Boot 项目生成
+
+{% link '项目生成' https://start.spring.io/ [title] %}
+
 
 ## Spring Boot 配置
 
