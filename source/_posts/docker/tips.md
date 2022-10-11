@@ -11,8 +11,13 @@ categories: Docker
 docker rmi $(docker images -q)
 ```
 
-### Redis
-进入 Redis 容器
+进入容器
 ```shell
 docker exec -it redis /bin/bash
+docker exec -it redis sh
+```
+
+复制文件
+```shell
+docker cp -a emqx:/opt/emqx/etc/plugins/emqx_web_hook.conf emqx_web_hook.conf
 ```
