@@ -7,6 +7,7 @@ categories: Spring
 
 {% link 'Spring官方文档' https://spring.io/projects [title] %}  
 {% link '项目生成' https://start.spring.io/ [title] %}  
+{% link '微服务框架选型Blog' https://blog.csdn.net/get_py/article/details/123328777 [title] %}  
 
 
 ## Spring Boot 配置
