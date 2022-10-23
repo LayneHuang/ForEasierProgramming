@@ -51,6 +51,12 @@ class MyPriorityQueue:
     def show(self):
         print('que:', self.que)
 ```
+### GCD
+
+```python
+def GCD(a , b) :
+    return b if a == 0 else GCD(b%a, a) 
+```
 
 ### 质数筛
 
