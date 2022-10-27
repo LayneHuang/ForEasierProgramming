@@ -10,3 +10,7 @@ categories: hdfs
 
 <!-- more -->
 
+### hadoop winutils
+
+https://www.jianshu.com/p/6efd353c4b25  
+github.com/steveloughran/winutils  
