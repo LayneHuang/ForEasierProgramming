@@ -30,9 +30,11 @@ windows 环境还需要自己安装 ssh, 还是挺麻烦的
 ### docker部署hadoop
 
 {% link 'sequenceiq/hadoop-docker搭建' https://www.jianshu.com/p/9c9f1dc22c3b [title] %}
+{% link '菜鸟教程搭建教学' https://www.runoob.com/w3cnote/hdfs-setup.html [title] %}
 
 
 ```shell
 docker pull sequenceiq/hadoop-docker:2.7.0
+docker run -d --name myhadoop -p 50070:50070 -p 8088:8088 -p 50075:50075 789fa0a3b911
 ```
 
