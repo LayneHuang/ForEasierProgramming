@@ -45,9 +45,16 @@ vi ~/.bashrc
 
 ```text
 export HADOOP_HOME=/usr/local/hadoop
-export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbi
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 ```
+
+环境变量生效
 
 ```shell
 source ~/.bashrc
+```
+
+hdfs 测试
+```shell
+hadoop fs -ls
 ```
