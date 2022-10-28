@@ -25,4 +25,14 @@ github.com/steveloughran/winutils
 ```
 
 windows 环境还需要自己安装 ssh, 还是挺麻烦的
-{% link 'windows开启' https://blog.csdn.net/qq_44758798/article/details/125742911 [title] %}  
+{% link 'windows开启' https://blog.csdn.net/qq_44758798/article/details/125742911 [title] %}
+
+### docker部署hadoop
+
+{% link 'sequenceiq/hadoop-docker搭建' https://www.jianshu.com/p/9c9f1dc22c3b [title] %}
+
+
+```shell
+docker pull sequenceiq/hadoop-docker:2.7.0
+```
+
