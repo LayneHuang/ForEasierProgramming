@@ -57,8 +57,19 @@ export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 source ~/.bashrc
 ```
 
-hdfs 测试
+hdfs 常用命令
 
 ```shell
-hadoop fs -ls
+# 展示目录
+hadoop fs -ls [path]
+# 递归展示目录
+hadoop fs -ls -R [path]
+# 删除文件
+hadoop fs -rm [-R] [path]
+# 将本地文件 copy 到 hdfs 上
+hadoop fs -put local_file [path]
+# 复制 hdfs 文件到本地
+hadoop fs -get hdfs_file [path]
+# 查看HDFS上某文件的内容
+hadoop fs -cat [path]
 ```
