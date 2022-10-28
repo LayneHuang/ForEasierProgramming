@@ -32,9 +32,12 @@ windows 环境还需要自己安装 ssh, 还是挺麻烦的
 {% link 'sequenceiq/hadoop-docker搭建' https://www.jianshu.com/p/9c9f1dc22c3b [title] %}
 {% link '菜鸟教程搭建教学' https://www.runoob.com/w3cnote/hdfs-setup.html [title] %}
 
+hdfs其配置文件在 (/usr/local/hadoop-2.7.0/etc/hadoop) core-site.xml 和 hdfs-site.xml  
+参数 `-p 9000:9000`, 需要开放hdfs的连接
+
 ```shell
 docker pull sequenceiq/hadoop-docker:2.7.0
-docker run -d --name myhadoop -p 50070:50070 -p 8088:8088 -p 50075:50075 789fa0a3b911
+docker run -d --name myhadoop -p 50070:50070 -p 8088:8088 -p 9000:9000 -p 50075:50075 789fa0a3b911
 ```
 
 配置环境变量
@@ -55,6 +58,7 @@ source ~/.bashrc
 ```
 
 hdfs 测试
+
 ```shell
 hadoop fs -ls
 ```
