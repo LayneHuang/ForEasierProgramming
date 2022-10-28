@@ -17,7 +17,7 @@ docker rmi $(docker images -q)
 ```shell
 docker run [args]
 ```
-
+`--privileged` 容器内部的root拥有外部的root权限
 `-d` 后台运行
 
 进入容器
@@ -31,4 +31,10 @@ docker exec -it redis sh
 
 ```shell
 docker cp -a emqx:/opt/emqx/etc/plugins/emqx_web_hook.conf emqx_web_hook.conf
+```
+
+时区
+
+```shell
+-e TZ=Asia/Shanghai
 ```

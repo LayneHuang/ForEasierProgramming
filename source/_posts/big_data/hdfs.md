@@ -35,9 +35,11 @@ windows 环境还需要自己安装 ssh, 还是挺麻烦的
 hdfs其配置文件在 (/usr/local/hadoop-2.7.0/etc/hadoop) core-site.xml 和 hdfs-site.xml  
 参数 `-p 9000:9000`, 需要开放hdfs的连接
 
+{% link '端口使用详情' https://blog.csdn.net/jeffiny/article/details/78728965 [title] %}
+
 ```shell
 docker pull sequenceiq/hadoop-docker:2.7.0
-docker run -d --name myhadoop -p 50070:50070 -p 8088:8088 -p 9000:9000 -p 50075:50075 789fa0a3b911
+docker run -d --name myhadoop -e TZ=Asia/Shanghai -p 50070:50070 -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50075:50075 789fa0a3b911
 ```
 
 配置环境变量
