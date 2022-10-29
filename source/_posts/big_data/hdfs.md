@@ -32,15 +32,24 @@ windows 环境还需要自己安装 ssh, 还是挺麻烦的
 {% link 'sequenceiq/hadoop-docker搭建' https://www.jianshu.com/p/9c9f1dc22c3b [title] %}
 {% link '菜鸟教程搭建教学' https://www.runoob.com/w3cnote/hdfs-setup.html [title] %}
 {% link '阿里hadoop镜像' https://blog.csdn.net/m0_67390969/article/details/126553657 [title] %}
+{% link '集群配置' https://blog.csdn.net/qq_48961214/article/details/124495773 [title] %}
 
 hdfs其配置文件在 (/usr/local/hadoop-2.7.0/etc/hadoop) core-site.xml 和 hdfs-site.xml  
 参数 `-p 9000:9000`, 需要开放hdfs的连接
 
 {% link '端口使用详情' https://blog.csdn.net/jeffiny/article/details/78728965 [title] %}
 
+### hadoop 集群处理
+
+name node 与 2个 data node
+
 ```shell
+# docker 拉取 hadoop 镜像
 docker pull sequenceiq/hadoop-docker:2.7.0
-docker run -d --name myhadoop -e TZ=Asia/Shanghai -p 50070:50070 -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50075:50075 789fa0a3b911
+
+docker run -d --name hadoop_master -e TZ=Asia/Shanghai -p 50070:50070 -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50075:50075 789fa0a3b911
+docker run -d --name hadoop_slave0 -e TZ=Asia/Shanghai 789fa0a3b911
+docker run -d --name hadoop_slave1 -e TZ=Asia/Shanghai 789fa0a3b911
 ```
 
 配置环境变量
@@ -75,4 +84,50 @@ hadoop fs -put local_file [path]
 hadoop fs -get hdfs_file [path]
 # 查看HDFS上某文件的内容
 hadoop fs -cat [path]
+```
+
+通过修改 /etc/hosts 文件实现网络互通
+
+core-site.xml
+
+```xml
+
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://6944ba211968:9000</value>
+    </property>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>file:///home/hadoop/tmp</value>
+    </property>
+</configuration>
+```
+
+hdfs-site.xml
+
+```xml
+
+<configuration>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:///home/hadoop/hdfs/name</value>
+    </property>
+    <property>
+        <name>dfs.replication</name>
+        <value>2</value>
+    </property>
+</configuration>
+```
+
+格式化 hdfs
+
+```shell
+hdfs namenode -format
+```
+
+启动 hdfs
+
+```shell
+start-dfs.sh
 ```
