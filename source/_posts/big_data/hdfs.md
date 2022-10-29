@@ -33,6 +33,7 @@ windows 环境还需要自己安装 ssh, 还是挺麻烦的
 {% link '菜鸟教程搭建教学' https://www.runoob.com/w3cnote/hdfs-setup.html [title] %}
 {% link '阿里hadoop镜像' https://blog.csdn.net/m0_67390969/article/details/126553657 [title] %}
 {% link '集群配置' https://blog.csdn.net/qq_48961214/article/details/124495773 [title] %}
+{% link '集群配置' https://blog.csdn.net/m0_51111980/article/details/125782120 [title] %}
 
 hdfs其配置文件在 (/usr/local/hadoop-2.7.0/etc/hadoop) core-site.xml 和 hdfs-site.xml  
 参数 `-p 9000:9000`, 需要开放hdfs的连接
