@@ -35,6 +35,11 @@ windows 环境还需要自己安装 ssh, 还是挺麻烦的
 {% link '集群配置' https://blog.csdn.net/qq_48961214/article/details/124495773 [title] %}
 {% link '集群配置' https://blog.csdn.net/m0_51111980/article/details/125782120 [title] %}
 
+### JAVA API
+
+问题解决 could only be replicated to 0 nodes instead of minReplication (=1)  
+{% link 'blog' https://blog.csdn.net/qq_41837900/article/details/124850389 [title] %}
+
 hdfs其配置文件在 (/usr/local/hadoop-2.7.0/etc/hadoop) core-site.xml 和 hdfs-site.xml  
 参数 `-p 9000:9000`, 需要开放hdfs的连接
 
