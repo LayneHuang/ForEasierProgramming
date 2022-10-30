@@ -121,9 +121,22 @@ def li_san(nums):
 
     return mp
 ```
+
+### 树离散(DFS序)
+```pyhon
+def dfs(now, in_dx, out_dx):
+    global tt
+    if now:
+        v = now.val
+        tt += 1
+        in_dx[v] = tt
+        dfs(now.left, in_dx, out_dx)
+        dfs(now.right, in_dx, out_dx)
+        out_dx[v] = tt
+```
+
 ### 线段树（区间更新，区间最值）
 ```python
-tt = 0
 t = []
 lazy = []
 
@@ -158,8 +171,6 @@ def down(now):
 
 
 def update(now, l, r, a, b, v):
-    
-    print(now , l, r , a ,b)
     if a <= l and r <= b:
         global lazy, t
         t[now] = v
