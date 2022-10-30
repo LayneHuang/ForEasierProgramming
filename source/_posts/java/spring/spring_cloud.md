@@ -53,8 +53,19 @@ startup.cmd -m standalone
 </dependencies>
 ```
 
-### 在 docker 中运行也主要要加上
+### docker 
+
+在 docker 中运行也主要要加上
+```shell
 MODE=standalone
+```
+
+同时要多暴露2个端口
+```shell
+9848
+9849
+```
+
 
 ### Dubbo接入
 
