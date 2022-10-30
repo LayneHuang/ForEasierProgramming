@@ -72,5 +72,7 @@ MODE=standalone
 docker run -d --name zhong-nacos -e MODE=standalone -e TIME_ZONE=Asia/Shanghai -p 8848:8848 -p 9848:9848 -p 9849:9849 nacos/nacos-server
 ```
 
+{% img /images/pic_nacos_1.jpg %}
+
 ### Dubbo接入
 
