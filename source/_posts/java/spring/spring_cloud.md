@@ -62,10 +62,15 @@ MODE=standalone
 
 同时要多暴露2个端口
 ```shell
-9848
-9849
+# 用于客户端gRPC请求服务端口，客户端向服务器发起连接
+-p 9848:9848
+# 用于服务端gRPC请求服务端口，用于服务间同步  
+-p 9849:9849
 ```
 
+```shell script
+docker run -d --name zhong-nacos -e MODE=standalone -e TIME_ZONE=Asia/Shanghai -p 8848:8848 -p 9848:9848 -p 9849:9849 nacos/nacos-server
+```
 
 ### Dubbo接入
 
