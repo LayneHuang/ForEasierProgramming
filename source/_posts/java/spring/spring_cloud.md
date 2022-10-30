@@ -53,5 +53,8 @@ startup.cmd -m standalone
 </dependencies>
 ```
 
+### 在 docker 中运行也主要要加上
+MODE=standalone
+
 ### Dubbo接入
 
