@@ -33,6 +33,8 @@ startup.cmd -m standalone
 
 {% link 'nacos dashboard' localhost:8848/nacos/ %}
 
+初始账号密码: nacos/nacos
+
 ### maven依赖
 
 ```xml
