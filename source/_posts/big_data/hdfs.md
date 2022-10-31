@@ -35,27 +35,12 @@ windows 环境还需要自己安装 ssh, 还是挺麻烦的
 {% link '集群配置' https://blog.csdn.net/qq_48961214/article/details/124495773 [title] %}
 {% link '集群配置' https://blog.csdn.net/m0_51111980/article/details/125782120 [title] %}
 
-### JAVA API
-
-问题解决 could only be replicated to 0 nodes instead of minReplication (=1)  
-{% link 'blog' https://blog.csdn.net/qq_41837900/article/details/124850389 [title] %}
-
-hdfs其配置文件在 (/usr/local/hadoop-2.7.0/etc/hadoop) core-site.xml 和 hdfs-site.xml  
-参数 `-p 9000:9000`, 需要开放hdfs的连接
-
-{% link '端口使用详情' https://blog.csdn.net/jeffiny/article/details/78728965 [title] %}
-
 ### hadoop 集群处理
 
-name node 与 2个 data node
+拉取镜像
 
 ```shell
-# docker 拉取 hadoop 镜像
-docker pull sequenceiq/hadoop-docker:2.7.0
-
-docker run -d --name hadoop_master -e TZ=Asia/Shanghai -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50010:50010 -p 50020:50020 -p 50070:50070 -p 50075:50075 5c3cc170c6bc
-docker run -d --name hadoop_slave0 -e TZ=Asia/Shanghai 5c3cc170c6bc
-docker run -d --name hadoop_slave1 -e TZ=Asia/Shanghai 5c3cc170c6bc
+docker pull sequenceiq/hadoop-docker
 ```
 
 配置环境变量
@@ -73,6 +58,26 @@ export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
 ```shell
 source ~/.bashrc
+```
+
+镜像提交
+
+```shell
+docker commit [运行容器id] hadoop_proto
+```
+
+单节点部署
+
+```shell
+docker run -d --name hadoop_master -e TZ=Asia/Shanghai -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50010:50010 -p 50020:50020 -p 50070:50070 -p 50075:50075 hadoop_proto
+```
+
+集群部署
+
+```shell
+docker run -d --name hadoop_master -e TZ=Asia/Shanghai -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50020:50020 -p 50070:50070 -p 50075:50075 hadoop_proto
+docker run -d --name hadoop_slave0 -e TZ=Asia/Shanghai -p 50010:50010 hadoop_proto
+docker run -d --name hadoop_slave1 -e TZ=Asia/Shanghai hadoop_proto
 ```
 
 hdfs 常用命令
@@ -101,7 +106,7 @@ core-site.xml
 <configuration>
     <property>
         <name>fs.defaultFS</name>
-        <value>hdfs://6944ba211968:9000</value>
+        <value>hdfs://hadoop_master:9000</value>
     </property>
     <property>
         <name>hadoop.tmp.dir</name>
@@ -137,3 +142,21 @@ hdfs namenode -format
 ```shell
 start-dfs.sh
 ```
+
+### JAVA API
+
+问题解决 could only be replicated to 0 nodes instead of minReplication (=1)  
+{% link 'blog' https://blog.csdn.net/qq_41837900/article/details/124850389 [title] %}
+{% link 'dock&hadoop&JAVA' https://blog.csdn.net/Ice__Clean/article/details/120636167 [title] %}
+{% link '端口使用详情' https://blog.csdn.net/jeffiny/article/details/78728965 [title] %}
+
+1.映射 50010 端口
+
+2.API中加上 datanode 节点返回 hostname 配置
+
+```
+config.set("dfs.client.use.datanode.hostname", "true");
+```
+
+3.在客户端hosts文件中添加hostname解析
+{% img /images/pic_hdfs_4.jpg %}
