@@ -1,20 +1,12 @@
 ---
 title: hdfs接入
 date: 2022-10-27 21:00:00
-categories: hdfs
+categories: Hadoop
 ---
 
 # 相关资料
 
-{% link 'SpringBoot集成HDFS' https://www.jianshu.com/p/0a2d89397cbd [title] %}  
-{% link 'Hadoop下载' https://hadoop.apache.org/releases.html [title] %}  
-{% link 'Hadoop下载' https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/ [title] %}
-<!-- more -->
-
-### hadoop winutils
-
-https://www.jianshu.com/p/6efd353c4b25  
-github.com/steveloughran/winutils
+{% link 'SpringBoot集成HDFS' https://www.jianshu.com/p/0a2d89397cbd [title] %}
 
 ### 启动命令
 
@@ -149,6 +141,16 @@ start-dfs.sh
 {% link 'blog' https://blog.csdn.net/qq_41837900/article/details/124850389 [title] %}
 {% link 'dock&hadoop&JAVA' https://blog.csdn.net/Ice__Clean/article/details/120636167 [title] %}
 {% link '端口使用详情' https://blog.csdn.net/jeffiny/article/details/78728965 [title] %}
+
+日志关键字:
+
+````text
+could only be written to 0 of the 1 minReplication nodes
+````
+
+```
+DatanodeInfoWithStorage
+```
 
 1.映射 50010 端口
 
