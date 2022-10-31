@@ -65,11 +65,11 @@ docker run -d --name hadoop-master -e TZ=Asia/Shanghai -p 8088:8088 -p 9000:9000
 #### 集群部署
 
 添加网络(也可通过修改 /etc/hosts 文件实现互通,比较麻烦)  
-建立虚拟网络时要看下数组级能用的网段范围
+建立虚拟网络时要看下数组级能用的网段范围 (可以先不指定--subnet,然后用inspect看一下能用那个)
 
 ```shell
 # /16的意思是前面固定了16位
-docker network create --subnet=172.18.0.0/16 hnet
+docker network create --driver=bridge --subnet=172.19.0.0/16 hnet
 # inspect 可查看当前网络
 docker inspect hnet
 ```
@@ -122,9 +122,55 @@ hadoop-slave1
 docker 启动命令
 
 ```shell
-docker run -d --name hadoop-master -e TZ=Asia/Shanghai -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves --hostname=hadoop-master --network=hnet --ip=172.18.1.0 --add-host=hadoop-slave0:172.18.1.1 --add-host=hadoop-slave1:172.18.1.2 -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50020:50020 -p 50070:50070 -p 50075:50075 hadoop_proto
-docker run -d --name hadoop-slave0 -e TZ=Asia/Shanghai -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves --hostname=hadoop-slave0 --network=hnet --ip=172.18.1.1 --add-host=hadoop-master:172.18.1.0 --add-host=hadoop-slave1:172.18.1.2 -p 50010:50010 hadoop_proto
-docker run -d --name hadoop-slave1 -e TZ=Asia/Shanghai -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves --hostname=hadoop-slave1 --network=hnet --ip=172.18.1.2 --add-host=hadoop-master:172.18.1.0 --add-host=hadoop-slave0:172.18.1.1 hadoop_proto
+
+docker rm -f hadoop-master &> /dev/null
+echo 'hadoop-master starting'
+docker run -itd \
+                   -e TZ=Asia/Shanghai \
+                   -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
+                   -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
+                   --net=hnet \
+                   --ip=172.19.1.0 \
+                   --add-host=hadoop-slave0:172.19.1.1 \
+                   --add-host=hadoop-slave1:172.19.1.2 \
+                   -p 8088:8088 \
+                   -p 9000:9000 \
+                   -p 9870:9870 \
+                   -p 50020:50020 \
+                   -p 50070:50070 \
+                   -p 50075:50075 \
+                   --name hadoop-master \
+                   --hostname=hadoop-master \
+                   hadoop_proto &> /dev/null
+
+docker rm -f hadoop-slave0 &> /dev/null
+echo 'hadoop-slave0 starting'
+docker run -itd \
+                   -e TZ=Asia/Shanghai \
+                   -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
+                   -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
+                   --net=hnet \
+                   --ip=172.19.1.1 \
+                   --add-host=hadoop-master:172.19.1.0 \
+                   --add-host=hadoop-slave1:172.19.1.2 \
+                   -p 50010:50010 \
+                   --name hadoop-slave0 \
+                   --hostname=hadoop-slave0 \
+                   hadoop_proto &> /dev/null
+
+docker rm -f hadoop-slave1 &> /dev/null
+echo 'hadoop-slave1 starting'
+docker run -itd \
+                   -e TZ=Asia/Shanghai \
+                   -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
+                   -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
+                   --net=hnet \
+                   --ip=172.19.1.2 \
+                   --add-host=hadoop-slave0:172.19.1.1 \
+                   --add-host=hadoop-master:172.19.1.0 \
+                   --name hadoop-slave1 \
+                   --hostname=hadoop-slave1 \
+                   hadoop_proto &> /dev/null
 ```
 
 格式化 hdfs
