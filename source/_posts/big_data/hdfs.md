@@ -29,13 +29,13 @@ windows 环境还需要自己安装 ssh, 还是挺麻烦的
 
 ### hadoop 集群处理
 
-拉取镜像
+#### 拉取镜像
 
 ```shell
 docker pull sequenceiq/hadoop-docker
 ```
 
-配置环境变量
+#### 配置环境变量
 
 ```shell
 vi ~/.bashrc
@@ -46,52 +46,38 @@ export HADOOP_HOME=/usr/local/hadoop
 export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 ```
 
-环境变量生效
-
 ```shell
 source ~/.bashrc
 ```
 
-镜像提交
+#### 镜像提交
 
 ```shell
 docker commit [运行容器id] hadoop_proto
 ```
 
-单节点部署
+#### 单节点部署
 
 ```shell
 docker run -d --name hadoop_master -e TZ=Asia/Shanghai -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50010:50010 -p 50020:50020 -p 50070:50070 -p 50075:50075 hadoop_proto
 ```
 
-集群部署
+#### 集群部署
+
+添加网络(也可通过修改 /etc/hosts 文件实现互通,比较麻烦)
 
 ```shell
-docker run -d --name hadoop_master -e TZ=Asia/Shanghai -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50020:50020 -p 50070:50070 -p 50075:50075 hadoop_proto
-docker run -d --name hadoop_slave0 -e TZ=Asia/Shanghai -p 50010:50010 hadoop_proto
-docker run -d --name hadoop_slave1 -e TZ=Asia/Shanghai hadoop_proto
+# /16的意思是前面固定了16位
+docker network create --subnet=172.18.0.0/16 hnet
+# inspect 可查看当前网络
+docker inspect hnet
 ```
 
-hdfs 常用命令
+#### 集群配置变更
 
-```shell
-# 展示目录
-hadoop fs -ls [path]
-# 递归展示目录
-hadoop fs -ls -R [path]
-# 删除文件
-hadoop fs -rm [-R] [path]
-# 将本地文件 copy 到 hdfs 上
-hadoop fs -put local_file [path]
-# 复制 hdfs 文件到本地
-hadoop fs -get hdfs_file [path]
-# 查看HDFS上某文件的内容
-hadoop fs -cat [path]
-```
+把下面两个文件放入目录 /usr/local/src/hadoop/conf, 用-v覆盖docker镜像内文件
 
-通过修改 /etc/hosts 文件实现网络互通
-
-core-site.xml
+core-site.xml(貌似改不了, 只能手动覆盖)
 
 ```xml
 
@@ -121,6 +107,37 @@ hdfs-site.xml
         <value>2</value>
     </property>
 </configuration>
+```
+
+slaves 文件
+```txt
+hadoop_slave0
+hadoop_slave1
+```
+
+docker 启动命令
+
+```shell
+docker run -d --name hadoop_master -e TZ=Asia/Shanghai -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves --hostname=hadoop_master --network=hnet --ip=172.18.1.0 --add-host=hadoop_slave0:172.18.1.1 --add-host=hadoop_slave1:172.18.1.2 -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50020:50020 -p 50070:50070 -p 50075:50075 hadoop_proto
+docker run -d --name hadoop_slave0 -e TZ=Asia/Shanghai -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves --hostname=hadoop_slave0 --network=hnet --ip=172.18.1.1 --add-host=hadoop_master:172.18.1.0 --add-host=hadoop_slave1:172.18.1.2 -p 50010:50010 hadoop_proto
+docker run -d --name hadoop_slave1 -e TZ=Asia/Shanghai -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves --hostname=hadoop_slave1 --network=hnet --ip=172.18.1.2 --add-host=hadoop_master:172.18.1.0 --add-host=hadoop_slave0:172.18.1.1 hadoop_proto
+```
+
+hdfs 常用命令
+
+```shell
+# 展示目录
+hadoop fs -ls [path]
+# 递归展示目录
+hadoop fs -ls -R [path]
+# 删除文件
+hadoop fs -rm [-R] [path]
+# 将本地文件 copy 到 hdfs 上
+hadoop fs -put local_file [path]
+# 复制 hdfs 文件到本地
+hadoop fs -get hdfs_file [path]
+# 查看HDFS上某文件的内容
+hadoop fs -cat [path]
 ```
 
 格式化 hdfs
