@@ -64,7 +64,8 @@ docker run -d --name hadoop-master -e TZ=Asia/Shanghai -p 8088:8088 -p 9000:9000
 
 #### 集群部署
 
-添加网络(也可通过修改 /etc/hosts 文件实现互通,比较麻烦)
+添加网络(也可通过修改 /etc/hosts 文件实现互通,比较麻烦)  
+建立虚拟网络时要看下数组级能用的网段范围
 
 ```shell
 # /16的意思是前面固定了16位
