@@ -33,6 +33,8 @@ startup.cmd -m standalone
 
 {% link 'nacos dashboard' localhost:8848/nacos/ %}
 
+初始账号密码: nacos/nacos
+
 ### maven依赖
 
 ```xml
@@ -50,6 +52,27 @@ startup.cmd -m standalone
     </dependency>
 </dependencies>
 ```
+
+### docker 
+
+在 docker 中运行也主要要加上
+```shell
+MODE=standalone
+```
+
+同时要多暴露2个端口
+```shell
+# 用于客户端gRPC请求服务端口，客户端向服务器发起连接
+-p 9848:9848
+# 用于服务端gRPC请求服务端口，用于服务间同步  
+-p 9849:9849
+```
+
+```shell script
+docker run -d --name zhong-nacos -e MODE=standalone -e TIME_ZONE=Asia/Shanghai -p 8848:8848 -p 9848:9848 -p 9849:9849 nacos/nacos-server
+```
+
+{% img /images/pic_nacos_1.jpg %}
 
 ### Dubbo接入
 

@@ -122,6 +122,86 @@ def li_san(nums):
     return mp
 ```
 
+### 树离散(DFS序)
+```pyhon
+def dfs(now, in_dx, out_dx):
+    global tt
+    if now:
+        v = now.val
+        tt += 1
+        in_dx[v] = tt
+        dfs(now.left, in_dx, out_dx)
+        dfs(now.right, in_dx, out_dx)
+        out_dx[v] = tt
+```
+
+### 线段树（区间更新，区间最值）
+```python
+t = []
+lazy = []
+
+def init(n):
+    global t, lazy
+    t = [0 for i in range(n * 4 + 1)]
+    lazy = [-1 for i in range(n * 4 + 1)]
+
+def up(now):
+    global t
+    t[now] = max(t[now << 1], t[now << 1 | 1])
+
+
+def build(now, lx, rx):
+    if lx == rx:
+        return
+    mid = (lx + rx) >> 1
+    build(now << 1, lx, mid)
+    build(now << 1 | 1, mid + 1, rx)
+    up(now)
+
+
+def down(now):
+    global lazy, t
+    if lazy[now] == -1:
+        return
+    t[now << 1] = lazy[now]
+    lazy[now << 1] = lazy[now]
+    t[now << 1 | 1] = lazy[now]
+    lazy[now << 1 | 1] = lazy[now]
+    lazy[now] = -1
+
+
+def update(now, l, r, a, b, v):
+    if a <= l and r <= b:
+        global lazy, t
+        t[now] = v
+        lazy[now] = v
+        return
+
+    down(now)
+    mid = (l + r) >> 1
+    if b <= mid:
+        update(now << 1, l, mid, a, b, v)
+    elif a > mid:
+        update(now << 1 | 1, mid + 1, r, a, b, v)
+    else :
+        update(now << 1, l, mid, a, b, v)
+        update(now << 1 | 1, mid + 1, r, a, b, v)
+    up(now)
+
+
+def query(now, l, r, a, b):
+    if a <= l and r <= b:
+        global t
+        return t[now]
+    down(now)
+    mid = (l + r) >> 1
+    if b <= mid:
+        return query(now << 1, l, mid, a, b)
+    elif a > mid:
+        return query(now << 1 | 1, mid + 1, r, a, b)
+    else:
+        return max(query(now << 1, l, mid, a, b), query(now << 1 | 1, mid + 1, r, a, b))
+```
 ### 线段树（单点更新，区间求最）
 ```python
 t = []
