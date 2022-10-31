@@ -53,9 +53,9 @@ name node 与 2个 data node
 # docker 拉取 hadoop 镜像
 docker pull sequenceiq/hadoop-docker:2.7.0
 
-docker run -d --name hadoop_master -e TZ=Asia/Shanghai -p 50070:50070 -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50075:50075 789fa0a3b911
-docker run -d --name hadoop_slave0 -e TZ=Asia/Shanghai 789fa0a3b911
-docker run -d --name hadoop_slave1 -e TZ=Asia/Shanghai 789fa0a3b911
+docker run -d --name hadoop_master -e TZ=Asia/Shanghai -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50010:50010 -p 50020:50020 -p 50070:50070 -p 50075:50075 5c3cc170c6bc
+docker run -d --name hadoop_slave0 -e TZ=Asia/Shanghai 5c3cc170c6bc
+docker run -d --name hadoop_slave1 -e TZ=Asia/Shanghai 5c3cc170c6bc
 ```
 
 配置环境变量
