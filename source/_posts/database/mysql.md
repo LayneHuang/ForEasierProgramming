@@ -6,6 +6,11 @@ categories: Database
 
 # Tips
 
+### docker 部署
+```shell script
+docker pull mysql:8.0.18
+```
+
 ### 参数
 innodb_thread_concurrency 控制并发线程上限
 

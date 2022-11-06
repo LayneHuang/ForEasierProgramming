@@ -77,7 +77,7 @@ docker inspect hnet
 
 #### 集群配置变更
 
-把下面两个文件放入目录 /usr/local/src/hadoop/conf, 用-v覆盖docker镜像内文件
+把下面两个文件放入目录 /home/docker/hadoop/conf, 用-v覆盖docker镜像内文件
 
 core-site.xml(貌似改不了, 只能手动覆盖)
 
@@ -128,8 +128,8 @@ docker rm -f hadoop-master &> /dev/null
 echo 'hadoop-master starting'
 docker run -itd \
                    -e TZ=Asia/Shanghai \
-                   -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
-                   -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
+                   -v /home/docker/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
+                   -v /home/docker/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
                    --net=hnet \
                    --ip=172.19.1.0 \
                    --add-host=hadoop-slave0:172.19.1.1 \
@@ -148,8 +148,8 @@ docker rm -f hadoop-slave0 &> /dev/null
 echo 'hadoop-slave0 starting'
 docker run -itd \
                    -e TZ=Asia/Shanghai \
-                   -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
-                   -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
+                   -v /home/docker/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
+                   -v /home/docker/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
                    --net=hnet \
                    --ip=172.19.1.1 \
                    --add-host=hadoop-master:172.19.1.0 \
@@ -163,8 +163,8 @@ docker rm -f hadoop-slave1 &> /dev/null
 echo 'hadoop-slave1 starting'
 docker run -itd \
                    -e TZ=Asia/Shanghai \
-                   -v /usr/local/src/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
-                   -v /usr/local/src/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
+                   -v /home/docker/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
+                   -v /home/docker/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
                    --net=hnet \
                    --ip=172.19.1.2 \
                    --add-host=hadoop-slave0:172.19.1.1 \
