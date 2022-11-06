@@ -35,6 +35,12 @@ windows 环境还需要自己安装 ssh, 还是挺麻烦的
 docker pull sequenceiq/hadoop-docker
 ```
 
+#### 单节点部署
+
+```shell
+docker run -d --name hadoop-master -e TZ=Asia/Shanghai -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50010:50010 -p 50020:50020 -p 50070:50070 -p 50075:50075 hadoop_proto
+```
+
 #### 配置环境变量
 
 ```shell
@@ -56,11 +62,6 @@ source ~/.bashrc
 docker commit [运行容器id] hadoop_proto
 ```
 
-#### 单节点部署
-
-```shell
-docker run -d --name hadoop-master -e TZ=Asia/Shanghai -p 8088:8088 -p 9000:9000 -p 9870:9870 -p 50010:50010 -p 50020:50020 -p 50070:50070 -p 50075:50075 hadoop_proto
-```
 
 #### 集群部署
 
