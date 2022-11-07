@@ -266,6 +266,8 @@ public class MyUserDetailsService implements UserDetailsService {
 Session 中存储的内容  
 {% img /images/pic_session.png %}
 
+而登陆信息是通过 HttpSessionSecurityContextRepository.loadContext() 读取出来
+
 ### 8.AntPathMatcher
 
 (来自于org.springframework.util)
