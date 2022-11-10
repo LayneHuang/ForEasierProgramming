@@ -62,7 +62,6 @@ source ~/.bashrc
 docker commit [运行容器id] hadoop_proto
 ```
 
-
 #### 集群部署
 
 添加网络(也可通过修改 /etc/hosts 文件实现互通,比较麻烦)  
@@ -126,29 +125,9 @@ hadoop-slave1
 
 docker 启动命令
 
-```shell
+(hdfs-site.xml指定好数据节点目录,并且把目录挂载出来), 因为 core-site.xml 在启动的时候会被覆写, 所以master节点的启动命令放最后就OK了。
 
-docker rm -f hadoop-master &> /dev/null
-echo 'hadoop-master starting'
-docker run -itd \
-                   -e TZ=Asia/Shanghai \
-                   -v /home/docker/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
-                   -v /home/docker/hadoop/conf/core-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/core-site.xml \
-                   -v /home/docker/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
-                   -v /home/hadoop/hadoop-master:/home/hadoop \
-                   --net=hnet \
-                   --ip=172.19.1.0 \
-                   --add-host=hadoop-slave0:172.19.1.1 \
-                   --add-host=hadoop-slave1:172.19.1.2 \
-                   -p 8088:8088 \
-                   -p 9000:9000 \
-                   -p 9870:9870 \
-                   -p 50020:50020 \
-                   -p 50070:50070 \
-                   -p 50075:50075 \
-                   --name hadoop-master \
-                   --hostname=hadoop-master \
-                   hadoop_proto &> /dev/null
+```shell
 
 docker rm -f hadoop-slave0 &> /dev/null
 echo 'hadoop-slave0 starting'
@@ -181,6 +160,28 @@ docker run -itd \
                    --add-host=hadoop-master:172.19.1.0 \
                    --name hadoop-slave1 \
                    --hostname=hadoop-slave1 \
+                   hadoop_proto &> /dev/null
+
+docker rm -f hadoop-master &> /dev/null
+echo 'hadoop-master starting'
+docker run -itd \
+                   -e TZ=Asia/Shanghai \
+                   -v /home/docker/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
+                   -v /home/docker/hadoop/conf/core-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/core-site.xml \
+                   -v /home/docker/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
+                   -v /home/hadoop/hadoop-master:/home/hadoop \
+                   --net=hnet \
+                   --ip=172.19.1.0 \
+                   --add-host=hadoop-slave0:172.19.1.1 \
+                   --add-host=hadoop-slave1:172.19.1.2 \
+                   -p 8088:8088 \
+                   -p 9000:9000 \
+                   -p 9870:9870 \
+                   -p 50020:50020 \
+                   -p 50070:50070 \
+                   -p 50075:50075 \
+                   --name hadoop-master \
+                   --hostname=hadoop-master \
                    hadoop_proto &> /dev/null
 ```
 
