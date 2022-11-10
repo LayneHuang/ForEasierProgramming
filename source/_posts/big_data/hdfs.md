@@ -107,6 +107,10 @@ hdfs-site.xml
         <value>file:///home/hadoop/hdfs/name</value>
     </property>
     <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:///home/hadoop/hdfs/data</value>
+    </property>
+    <property>
         <name>dfs.replication</name>
         <value>2</value>
     </property>
@@ -129,7 +133,9 @@ echo 'hadoop-master starting'
 docker run -itd \
                    -e TZ=Asia/Shanghai \
                    -v /home/docker/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
+                   -v /home/docker/hadoop/conf/core-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/core-site.xml \
                    -v /home/docker/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
+                   -v /home/hadoop/hadoop-master:/home/hadoop \
                    --net=hnet \
                    --ip=172.19.1.0 \
                    --add-host=hadoop-slave0:172.19.1.1 \
@@ -149,7 +155,9 @@ echo 'hadoop-slave0 starting'
 docker run -itd \
                    -e TZ=Asia/Shanghai \
                    -v /home/docker/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
+                   -v /home/docker/hadoop/conf/core-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/core-site.xml \
                    -v /home/docker/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
+                   -v /home/hadoop/hadoop-slave0:/home/hadoop \
                    --net=hnet \
                    --ip=172.19.1.1 \
                    --add-host=hadoop-master:172.19.1.0 \
@@ -164,7 +172,9 @@ echo 'hadoop-slave1 starting'
 docker run -itd \
                    -e TZ=Asia/Shanghai \
                    -v /home/docker/hadoop/conf/hdfs-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/hdfs-site.xml \
+                   -v /home/docker/hadoop/conf/core-site.xml:/usr/local/hadoop-2.7.0/etc/hadoop/core-site.xml \
                    -v /home/docker/hadoop/conf/slaves:/usr/local/hadoop-2.7.0/etc/hadoop/slaves \
+                   -v /home/hadoop/hadoop-slave1:/home/hadoop \
                    --net=hnet \
                    --ip=172.19.1.2 \
                    --add-host=hadoop-slave0:172.19.1.1 \
