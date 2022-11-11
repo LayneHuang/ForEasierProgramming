@@ -106,6 +106,10 @@ hdfs-site.xml
         <value>file:///home/hadoop/hdfs/name</value>
     </property>
     <property>
+        <name>dfs.block.size</name>
+        <value>33554432</value>
+    </property>
+    <property>
         <name>dfs.datanode.data.dir</name>
         <value>file:///home/hadoop/hdfs/data</value>
     </property>
