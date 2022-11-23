@@ -17,6 +17,7 @@ docker rmi $(docker images -q)
 ```shell
 docker run [args]
 ```
+
 `--privileged` 容器内部的root拥有外部的root权限
 `-d` 后台运行
 
@@ -37,4 +38,19 @@ docker cp -a emqx:/opt/emqx/etc/plugins/emqx_web_hook.conf emqx_web_hook.conf
 
 ```shell
 -e TZ=Asia/Shanghai
+```
+
+### 以 centos 为基础并设置 jdk
+
+```shell
+FROM centos
+
+RUN mkdir /usr/local/java
+ADD jdk-8u341-linux-x64.tar.gz /usr/local/java
+RUN ln -s /usr/local/java/jdk1.8.0_341 /usr/local/java/jdk
+
+ENV JAVA_HOME /usr/local/java/jdk
+ENV JRE_HOME ${JAVA_HOME}/jre
+ENV CLASSPATH .:${JAVA_HOME}/lib:${JRE_HOME}/lib
+ENV PATH ${JAVA_HOME}/bin:$PATH
 ```
