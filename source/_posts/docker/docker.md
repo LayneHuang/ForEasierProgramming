@@ -43,7 +43,7 @@ docker cp -a emqx:/opt/emqx/etc/plugins/emqx_web_hook.conf emqx_web_hook.conf
 ### 以 centos 为基础并设置 jdk
 
 ```shell
-FROM centos
+FROM centos:centos7
 
 RUN mkdir /usr/local/java
 ADD jdk-8u341-linux-x64.tar.gz /usr/local/java
