@@ -5,6 +5,7 @@ categories: mqtt
 ---
 
 用于设备与服务器通讯的一个消息队列协议
+{% link 'EMQX官网博客' https://www.emqx.com/zh/mqtt [title] %}
 
 {% link '开源broker选型相关blog' https://www.jianshu.com/p/3e33adcb0ed5 [title] %}
 
