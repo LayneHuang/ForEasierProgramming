@@ -54,3 +54,9 @@ ENV JRE_HOME ${JAVA_HOME}/jre
 ENV CLASSPATH .:${JAVA_HOME}/lib:${JRE_HOME}/lib
 ENV PATH ${JAVA_HOME}/bin:$PATH
 ```
+
+### 通过 Dockerfile 构建镜像
+
+```shell
+docker build -t [image_name:version] [Dockerfile Path]
+```
