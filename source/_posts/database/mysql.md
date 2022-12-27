@@ -7,22 +7,41 @@ categories: Database
 # Tips
 
 ### docker 部署
+
 ```shell script
-docker pull mysql:8.0.18
+docker pull mysql:8.0.16
+```
+
+```shell
+#创建数据存储目录
+mkdir -p /data/docker_volumn/mysql/conf
+mkdir -p /data/docker_volumn/mysql/data
+mkdir -p /data/docker_volumn/mysql/mysql-files
+#设置忽略大小写
+docker run -p 3306:3306 --name=mysql \
+-v /data/docker_volumn/mysql/conf/:/etc/mysql/ \
+-v /data/docker_volumn/mysql/data:/var/lib/mysql \
+-v /data/docker_volumn/mysql/mysql-files/:/var/lib/mysql-files \
+-e MYSQL_ROOT_PASSWORD=_Admin123 \
+-d --privileged=true --restart=unless-stopped mysql:8.0.16 --lower-case-table-names=2
 ```
 
 ### 参数
+
 innodb_thread_concurrency 控制并发线程上限
 
 ### 常用查询
+
 ```mysql
 // 查询状态, LATESTDETECTED DEADLOCK 具有死锁记录
 show engine innodb status
 ```
 
 ### 分组最值查询
+
 业务上遇到一个分组(A字段)，并且需要二级排序(B,ID字段)取最值的情况。  
 最后需要通过 distinct + max 函数 group by 后，配合子查询完成
+
 ```roomsql
 SELECT T1.A, T1.B, T1.ID, T1.D FROM TABLE_NAME T1, (
     SELECT DISTINCT(T2.A), MAX(T2.ID) AS ID FROM TABLE_NAME T2, (
@@ -34,5 +53,6 @@ WHERE T1.ID = T4.ID
 ```
 
 ### 统一数据库时区
+
 后端用 timestamp 插入后, 数据库数据时间显示依然不一致
 {% link '统一时区' https://blog.csdn.net/weixin_43824829/article/details/124174247 %}
