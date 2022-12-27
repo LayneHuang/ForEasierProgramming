@@ -8,22 +8,20 @@ categories: Database
 
 ### docker 部署
 
+{% link '参考' https://www.cnblogs.com/smallmin/p/11582954.html [title] %}
+
 ```shell script
 docker pull mysql:8.0.16
 ```
 
 ```shell
-#创建数据存储目录
-mkdir -p /data/docker_volumn/mysql/conf
-mkdir -p /data/docker_volumn/mysql/data
-mkdir -p /data/docker_volumn/mysql/mysql-files
-#设置忽略大小写
-docker run -p 3306:3306 --name=mysql \
--v /data/docker_volumn/mysql/conf/:/etc/mysql/ \
--v /data/docker_volumn/mysql/data:/var/lib/mysql \
--v /data/docker_volumn/mysql/mysql-files/:/var/lib/mysql-files \
--e MYSQL_ROOT_PASSWORD=_Admin123 \
--d --privileged=true --restart=unless-stopped mysql:8.0.16 --lower-case-table-names=2
+docker rm -f mysql8
+docker run -p 3306:3306 --name=mysql8 \
+-e MYSQL_ROOT_PASSWORD=123456 \
+--mount type=bind,src=/home/mysql/conf/my.cnf,dst=/etc/mysql/my.cnf \
+--mount type=bind,src=/home/mysql/datadir,dst=/var/lib/mysql \
+--restart=on-failure:3 \
+-d mysql:8.0.16 --lower-case-table-names=2
 ```
 
 ### 参数
