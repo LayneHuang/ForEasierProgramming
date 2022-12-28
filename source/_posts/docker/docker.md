@@ -60,3 +60,10 @@ ENV PATH ${JAVA_HOME}/bin:$PATH
 ```shell
 docker build -t [image_name:version] [Dockerfile Path]
 ```
+
+
+# 服务器环境配置
+
+### nginx
+
+{% link '指南' https://www.cnblogs.com/tod4/p/16659260.html [title] %}
