@@ -53,14 +53,16 @@ startup.cmd -m standalone
 </dependencies>
 ```
 
-### docker 
+### docker
 
 在 docker 中运行也主要要加上
+
 ```shell
 MODE=standalone
 ```
 
 同时要多暴露2个端口
+
 ```shell
 # 用于客户端gRPC请求服务端口，客户端向服务器发起连接
 -p 9848:9848
@@ -70,6 +72,12 @@ MODE=standalone
 
 ```shell script
 docker run -d --name zhong-nacos -e MODE=standalone -e TIME_ZONE=Asia/Shanghai -p 8848:8848 -p 9848:9848 -p 9849:9849 nacos/nacos-server
+```
+
+配置调整
+
+```shell
+docker cp zhong-nacos:/home/nacos/bin/docker-startup.sh /home/nacos/bin/docker-startup.sh
 ```
 
 {% img /images/pic_nacos_1.jpg %}
