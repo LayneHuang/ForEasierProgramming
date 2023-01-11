@@ -86,5 +86,6 @@ docker cp zhong-nacos:/home/nacos/bin/docker-startup.sh /home/nacos/bin/docker-s
 
 {% img /images/pic_nacos_1.jpg %}
 
-### Dubbo接入
+### 服务间调用异步Session处理
+{% link '参考' https://juejin.cn/post/7101492042898866184 [title] %}
 
