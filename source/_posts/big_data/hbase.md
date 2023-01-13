@@ -38,6 +38,6 @@ docker run -it -d --name phoenix \
 -p 16000:16000 \
 -p 16010:16010 \
 -p 16020:16020 \
--v /home/hbase/data:/tmp/hbase-root/hbase/data \
-boostport/hbase-phoenix-all-in-one
+-v /home/hbase/data:/tmp \
+boostport/hbase-phoenix-all-in-one:2.0-5.0
 ```
