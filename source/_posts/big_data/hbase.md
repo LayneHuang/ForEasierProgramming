@@ -16,11 +16,22 @@ docker pull harisekhon/hbase
 docker pull boostport/hbase-phoenix-all-in-one
 ```
 
+无hadoop网络时先添加子网络
+
+```shell
+docker network create --driver=bridge --subnet=172.19.0.0/16 hnet
+```
+
 启动
 
 ```shell
+#!/bin/bash
 docker rm -f phoenix
 docker run -it -d --name phoenix \
+-e TZ=Asia/Shanghai \
+--net=hnet \
+--ip=172.19.1.5 \
+--hostname=phoenix \
 -p 2181:2181 \
 -p 8765:8765 \
 -p 15165:15165 \
