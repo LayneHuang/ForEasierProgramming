@@ -41,3 +41,5 @@ docker run -it -d --name phoenix \
 -v /home/hbase/data:/tmp \
 boostport/hbase-phoenix-all-in-one:2.0-5.0
 ```
+
+{% link 'Spring与hbase连接参考' https://blog.csdn.net/dndndnnffj/article/details/121801897 [title] %}
