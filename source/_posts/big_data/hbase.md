@@ -17,9 +17,16 @@ docker pull boostport/hbase-phoenix-all-in-one
 ```
 
 启动
+
 ```shell
+docker rm -f phoenix
 docker run -it -d --name phoenix \
--p 2181:2181 -p 8765:8765 -p 15165:15165 \
--p 16000:16000 -p 16010:16010 -p 16020:16020 \
+-p 2181:2181 \
+-p 8765:8765 \
+-p 15165:15165 \
+-p 16000:16000 \
+-p 16010:16010 \
+-p 16020:16020 \
+-v /home/hbase/data:/tmp/hbase-root/hbase/data \
 boostport/hbase-phoenix-all-in-one
 ```
