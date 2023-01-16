@@ -8,9 +8,7 @@ categories: Hadoop
 docker pull harisekhon/hbase
 ```
 
-### phoenix 版本
-
-{% link '部署参考博客' https://blog.csdn.net/lambert00001/article/details/127761406 [title] %}
+### 带上phoenix的docker版本
 
 ```shell
 docker pull boostport/hbase-phoenix-all-in-one
@@ -20,6 +18,13 @@ docker pull boostport/hbase-phoenix-all-in-one
 
 ```shell
 docker network create --driver=bridge --subnet=172.19.0.0/16 hnet
+```
+
+phoenix查询hbase
+
+```shell
+export HBASE_CONF_DIR=/opt/hbase/conf/
+/opt/phoenix-server/bin/sqlline.py localhost
 ```
 
 启动
@@ -42,4 +47,9 @@ docker run -it -d --name phoenix \
 boostport/hbase-phoenix-all-in-one:2.0-5.0
 ```
 
-{% link 'Spring与hbase连接参考' https://blog.csdn.net/dndndnnffj/article/details/121801897 [title] %}
+### 参考
+
+{% link '平台搭建参考' https://blog.csdn.net/lambert00001/article/details/127761406 [title] %}
+{% link '解决Client isNamespaceMappingEnabled' https://blog.csdn.net/u010022158/article/details/107490980 [title] %}
+{% link 'Phoenix基本语法对比' https://blog.csdn.net/pianpianxihuanni9/article/details/105241152 [title] %}
+
