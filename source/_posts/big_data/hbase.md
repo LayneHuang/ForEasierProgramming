@@ -47,6 +47,12 @@ docker run -it -d --name phoenix \
 boostport/hbase-phoenix-all-in-one:2.0-5.0
 ```
 
+### 获取配置放到spring boot程序resources中
+
+```shell
+docker cp phoenix:/opt/hbase/conf/hbase-site.xml /home/hbase/hbase-site.xml
+```
+
 ### 参考
 
 {% link '平台搭建参考' https://blog.csdn.net/lambert00001/article/details/127761406 [title] %}
