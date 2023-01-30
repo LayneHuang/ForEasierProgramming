@@ -86,6 +86,23 @@ docker cp zhong-nacos:/home/nacos/bin/docker-startup.sh /home/nacos/bin/docker-s
 
 {% img /images/pic_nacos_1.jpg %}
 
-### 服务间调用异步Session处理
-{% link '参考' https://juejin.cn/post/7101492042898866184 [title] %}
+### 服务间异步调用 session 处理
 
+{% link '参考blog' https://juejin.cn/post/7101492042898866184 [title] %}
+
+异步调用可以通过 RequestContextHolder 来获取原请求参数并设置至到异步线程中
+
+```java
+public class Demo {
+    public void call() {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            return;
+        }
+        taskExecutor.execute(() -> {
+            RequestContextHolder.setRequestAttributes(attributes);
+            // todo: do something
+        });
+    }
+}
+```
