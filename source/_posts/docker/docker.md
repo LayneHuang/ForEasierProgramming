@@ -12,6 +12,12 @@ categories: Docker
 docker rmi $(docker images -q)
 ```
 
+查看容器CPU,内存使用状态
+
+```shell
+docker stats
+```
+
 运行镜像
 
 ```shell
@@ -60,7 +66,6 @@ ENV PATH ${JAVA_HOME}/bin:$PATH
 ```shell
 docker build -t [image_name:version] [Dockerfile Path]
 ```
-
 
 # 服务器环境配置
 
