@@ -1,7 +1,7 @@
 ---
 title: Ace Editor 前端编辑器
 date: 2021-02-23 11:26:31
-categories: Website
+categories: js
 ---
 
 在项目中涉及了 json 的实时编辑。  

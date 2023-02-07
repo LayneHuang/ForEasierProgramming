@@ -1,7 +1,7 @@
 ---
 title: React & Redux相关笔记
 date: 2021-02-23 11:26:31
-categories: Website
+categories: React
 ---
 
 近期读书计划中有《深入React技术栈》，同时在之前的工作中也做过大概几个月的React开发，当时看了官方文档后就参与开发，有些比较好的特性又暂且没有用到。

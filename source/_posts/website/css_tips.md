@@ -1,7 +1,7 @@
 ---
 title: CSS
 date: 2021-02-23 11:26:31
-categories: Website
+categories: js
 ---
 
 ### 1.display flex 的用法
