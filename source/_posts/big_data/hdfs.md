@@ -117,6 +117,15 @@ hdfs-site.xml
         <name>dfs.replication</name>
         <value>2</value>
     </property>
+<!--append config-->
+    <property>
+        <name>dfs.client.block.write.replace-datanode-on-failure.enable</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>dfs.client.block.write.replace-datanode-on-failure.policy</name>
+        <value>NEVER</value>
+    </property>
 </configuration>
 ```
 
