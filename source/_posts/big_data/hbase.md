@@ -27,6 +27,14 @@ export HBASE_CONF_DIR=/opt/hbase/conf/
 /opt/phoenix-server/bin/sqlline.py localhost
 ```
 
+命令行
+```shell
+# 退出
+!quit
+# 所有表
+!tables
+```
+
 启动
 
 ```shell
