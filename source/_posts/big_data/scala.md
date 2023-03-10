@@ -23,3 +23,8 @@ try download plugin via web, if inside idea did not work.
 {% link 'idea plugin market' https://plugins.jetbrains.com/ [title] %}
 
 {% img /images/pic_scala_download.png %}
+
+# ADD global library
+
+{% img /images/pic_scala_global_lib.png %}
+
