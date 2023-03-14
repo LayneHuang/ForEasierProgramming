@@ -141,3 +141,7 @@ auth.mnesia.password_hash = sha256
 ##auth.user.3.username = name~!@#$%^&*()_+
 ##auth.user.3.password = pwsswd~!@#$%^&*()_+
 ```
+
+open the plugins in dashboard
+
+{% img /images/pic_emqx_plugins_auth.png %}
