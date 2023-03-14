@@ -107,6 +107,14 @@ web.hook.rule.client.disconnected.1  = {"action": "on_client_disconnected"}
 /opt/emqx/etc/plugins/emqx_auth_mnesia.conf
 ```
 
+{% link 'EMQX Auth Design' https://docs.emqx.com/zh/enterprise/v3.0/auth.html#mqtt-%E8%AE%A4%E8%AF%81%E8%AE%BE%E8%AE%A1 [title] %}
+
+modify emqx.conf
+
+```txt
+allow_anonymous = false
+```
+
 configure username and password
 
 ```text
