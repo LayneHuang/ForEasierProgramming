@@ -1,6 +1,6 @@
 ---
-title: React环境
+title: React Environment
 date: 2023-02-07 21:30:00
-categories: React
+categories: [ React ]
 ---
 

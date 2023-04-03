@@ -1,7 +1,7 @@
 ---
 title: hbase接入
 date: 2022-12-29 21:00:00
-categories: Hadoop
+categories: [ Hadoop ]
 ---
 
 ```shell
@@ -28,6 +28,7 @@ export HBASE_CONF_DIR=/opt/hbase/conf/
 ```
 
 命令行
+
 ```shell
 # 退出
 !quit
