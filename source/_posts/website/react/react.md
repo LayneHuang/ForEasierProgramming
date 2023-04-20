@@ -76,7 +76,8 @@ static propTypes = {
 2.componentDidMount  
 3.componentWillReceiveProps (已经被废弃了,使用 componentWillReceiveProps 替代)  
 4.componentWillUnmount  
-![生命周期图](../../../images/pic_react_life_cycle.jpg)
+
+{% img /images/pic_react_life_cycle.png %}
 
 ### 3.refs
 
