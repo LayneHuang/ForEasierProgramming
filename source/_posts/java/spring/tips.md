@@ -102,4 +102,20 @@ spring:
 
 ### 9.Yaml动态解析
 
-Refer to zhong-service YamlUtil 
+Refer to zhong-service YamlUtil
+
+### 布隆过滤器
+
+guava support a bloom filter data structure. Combine with MQ can solve the problem in distribute system.
+
+```java
+import com.google.common.hash.BloomFilter;
+
+public class Main {
+    private final BloomFilter<String> bloomFilter = BloomFilter.create(
+            Funnels.stringFunnel(Charset.defaultCharset()),
+            500,
+            0.01
+    );
+}
+```
