@@ -114,6 +114,10 @@ hdfs-site.xml
         <value>file:///home/hadoop/hdfs/data</value>
     </property>
     <property>
+        <name>dfs.datanode.use.datanode.hostname</name>
+        <value>true</value>
+    </property>
+    <property>
         <name>dfs.replication</name>
         <value>2</value>
     </property>
