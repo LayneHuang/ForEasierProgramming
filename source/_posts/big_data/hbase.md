@@ -68,3 +68,6 @@ docker cp phoenix:/opt/hbase/conf/hbase-site.xml /home/hbase/hbase-site.xml
 {% link '解决Client isNamespaceMappingEnabled' https://blog.csdn.net/u010022158/article/details/107490980 [title] %}
 {% link 'Phoenix基本语法对比' https://blog.csdn.net/pianpianxihuanni9/article/details/105241152 [title] %}
 
+### 自增序列
+
+{% link '自增序列使用' https://blog.csdn.net/a2267378/article/details/101372736 %}
