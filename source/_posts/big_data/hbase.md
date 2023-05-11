@@ -27,6 +27,12 @@ export HBASE_CONF_DIR=/opt/hbase/conf/
 /opt/phoenix-server/bin/sqlline.py localhost
 ```
 
+test sql
+
+```mysql
+select investment_code, current_price, percent from investment_record_min order by record_id desc limit 27;
+```
+
 命令行
 
 ```shell
