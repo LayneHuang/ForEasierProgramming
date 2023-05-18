@@ -54,3 +54,13 @@ WHERE T1.ID = T4.ID
 
 后端用 timestamp 插入后, 数据库数据时间显示依然不一致
 {% link '统一时区' https://blog.csdn.net/weixin_43824829/article/details/124174247 %}
+
+### binlog backup days
+
+don't forget to config binlog backup days when you are private deployment. otherwise, your disk will full soon.
+(/etc/my.cnf)
+
+```conf
+expire_logs_days=30
+max_binlog_size=1024M
+```
