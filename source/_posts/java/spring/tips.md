@@ -119,3 +119,30 @@ public class Main {
     );
 }
 ```
+
+### RestTemplate GET (The way of config Params)
+
+Example: get map location
+
+```java
+public class Main {
+
+    public void test() {
+        Map<String, String> reqParams = new HashMap<>();
+        Map<String, String> postStr = new HashMap<>();
+        postStr.put("lon", "113.95422");
+        postStr.put("lat", "22.578457");
+        postStr.put("ver", "1");
+        reqParams.put("postStr", JSON.toJSONString(postStr));
+        reqParams.put("tk", "xxxx");
+        String reqUrl = url +
+                "?tk=xxxxx" +
+                "&postStr={postStr}" +
+                "&type=geocode";
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> res = restTemplate.getForEntity(reqUrl, String.class, reqParams);
+        System.out.println(res.getBody());
+    }
+
+}
+```
