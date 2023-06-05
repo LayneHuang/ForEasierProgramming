@@ -17,5 +17,23 @@ words separated by dots. (* and # can be use)
 Headers Exchange, message are routed base on the message header attribute value instead of routing keys. The headers
 attribute is a dictionary containing arbitrary key-value pair that describe the message.
 
+### One Service (Multiple instance) how to use Fanout
 
+```java
+public class Config {
 
+    @RabbitListener(
+            bindings = @QueueBinding(
+                    value = @Queue,
+                    exchange = @Exchange(value = "#{ExchangeName}", type = ExchangeTypes.FANOUT)
+            )
+    )
+    public void solve() {
+
+    }
+}
+```
+
+@Queue will random gen a queue for spring service (if you not config attribute "name")
+
+{% img /images/pic_rabbitmq_1.png %}
