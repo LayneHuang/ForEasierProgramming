@@ -6,11 +6,10 @@ categories: [ mq ]
 
 用于设备与服务器通讯的一个消息队列协议
 
-{% link 'EMQX官网博客' https://www.emqx.com/zh/mqtt [title] %}
+{% link 'emqx official blog' https://www.emqx.com/zh/mqtt [title] %}
 
-{% link '开源broker选型相关blog' https://www.jianshu.com/p/3e33adcb0ed5 [title] %}
+{% link 'emqx official docs(v5.0)' https://www.emqx.io/docs/zh/v5.0 [title] %}
 
-{% link '常用配置相关参考blog' https://blog.csdn.net/weixin_36292503/article/details/121696714 [title] %}
 
 <!-- more -->
 
@@ -108,7 +107,8 @@ web.hook.rule.client.disconnected.1  = {"action": "on_client_disconnected"}
 /opt/emqx/etc/plugins/emqx_auth_mnesia.conf
 ```
 
-{% link 'EMQX Auth Design' https://docs.emqx.com/zh/enterprise/v3.0/auth.html#mqtt-%E8%AE%A4%E8%AF%81%E8%AE%BE%E8%AE%A1 [title] %}
+{% link 'EMQX Auth
+Design' https://docs.emqx.com/zh/enterprise/v3.0/auth.html#mqtt-%E8%AE%A4%E8%AF%81%E8%AE%BE%E8%AE%A1 [title] %}
 
 modify emqx.conf
 
@@ -154,3 +154,14 @@ auth.mnesia.password_hash = sha256
 open the plugins in dashboard
 
 {% img /images/pic_emqx_plugins_auth.png %}
+
+### Deploy in ack
+
+you can use helm in ack to deploy the EMQX cluster.
+
+1. In ack cloudshell, add hlem's emqx chats, and update it
+
+```shell
+helm repo add emqx https://repos.emqx.io/charts
+helm repo update
+```
