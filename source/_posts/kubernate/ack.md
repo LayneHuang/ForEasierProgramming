@@ -21,7 +21,8 @@ The process of creating an ack instance
 
 ### How ingress use existing SLB
 
-{% link 'AliyunDocument' https://help.aliyun.com/document_detail/151506.html?spm=a2c4g.330059.0.0.43625bbfgoKxyy [title] %}
+{% link '
+AliyunDocument' https://help.aliyun.com/document_detail/151506.html?spm=a2c4g.330059.0.0.43625bbfgoKxyy [title] %}
 
 restart nginx-ingress-lb(svc) and nginx-ingress-controller(pod), config the load balance id
 
@@ -55,4 +56,56 @@ spec:
   selector:
     # select app=ingress-nginx pods
     app: ingress-nginx
+```
+
+### 配置文件挂载
+
+在挂载emqx配置的时候尝试了很久，都挂载失败了。
+
+最后问了ChatGPT，通过ConfigMap的subpath替代方式挂载成功。 (emqx中创建节点使用某个ServiceAccount处理, oss挂载后无权限访问)
+
+默认软连接:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+    - name: my-container
+      image: my-image
+      volumeMounts:
+        - name: oss-volume
+          mountPath: /etc/config
+  volumes:
+    - name: oss-volume
+      configMap:
+        name: oss-config
+        items:
+          - key: config.yaml
+            path: config.yaml
+```
+
+文件替代：
+
+如果您想要在容器内部获得实际的配置文件而不是软链接，可以通过在pod的yaml文件中，添加subPath属性来实现。
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+    - name: my-container
+      image: my-image
+      volumeMounts:
+        - name: oss-volume
+          mountPath: /etc/config/config.yaml
+          subPath: config.yaml
+  volumes:
+    - name: oss-volume
+      configMap:
+        name: oss-config
 ```
