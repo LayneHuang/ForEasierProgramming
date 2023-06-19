@@ -66,3 +66,13 @@ systemctl restart containerd
 systemctl status containerd
 
 ```
+
+### serviceAccount & securityContext
+
+securityContext: Identity required for DevOps to enter the console
+serviceAccount: the process in pods use it.
+
+when securityContext is `{}` and serviceAccount is `rabbitmq`
+{% img /images/pic_k8s_1.png %}
+
+{% img /images/pic_k8s_2.png %}
