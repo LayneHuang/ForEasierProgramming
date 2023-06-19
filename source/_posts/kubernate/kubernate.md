@@ -40,3 +40,29 @@ containers:
     name: my-emqx-conf
   name: emqx-plugins
 ```
+
+### How to pull your private images(/etc/containerd/config.toml)
+
+{% link 'nacos k8s github' https://github.com/nacos-group/nacos-k8s [title] %}
+
+```
+[plugins."io.containerd.grpc.v1.cri".registry]
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+    # domestic
+    [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
+      endpoint = ["http://registry-vpc.cn-hangzhou.aliyuncs.com"]
+    # private
+    [plugins."io.containerd.grpc.v1.cri".registry.mirrors."your_host:port"]
+      endpoint = ["http://your_host:port"]
+  [plugins."io.containerd.grpc.v1.cri".registry.configs]
+    [plugins."io.containerd.grpc.v1.cri".registry.configs."your_host:port".tls]
+      insecure_skip_verify = true
+```
+
+restart conatinerd
+
+```shell
+systemctl restart containerd
+systemctl status containerd
+
+```
