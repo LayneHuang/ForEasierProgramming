@@ -58,13 +58,11 @@ spec:
     app: ingress-nginx
 ```
 
-### 配置文件挂载
+### Configmap mounting
 
-在挂载emqx配置的时候尝试了很久，都挂载失败了。
+Finally, ChatGPT teach me to use ConfigMap's subPath for mounting
 
-最后问了ChatGPT，通过ConfigMap的subpath替代方式挂载成功。 (emqx中创建节点使用某个ServiceAccount处理, oss挂载后无权限访问)
-
-默认软连接:
+Soft link(default):
 
 ```yaml
 apiVersion: v1
@@ -87,9 +85,10 @@ spec:
             path: config.yaml
 ```
 
-文件替代：
+File replace：
 
-如果您想要在容器内部获得实际的配置文件而不是软链接，可以通过在pod的yaml文件中，添加subPath属性来实现。
+If you want to obtain the actual configuration file inside the container instead of a soft
+link, You can achieve this by adding the `subPath` attribute in the yaml file of the pod.
 
 ```yaml
 apiVersion: v1
@@ -109,3 +108,19 @@ spec:
       configMap:
         name: oss-config
 ```
+
+### Data Mounting in ACK
+
+when i deploy the RabbitMQ StatefulSet in ACK , the pod need to do `chmod` operation in `/var/lib/rabbitmq` file.
+you can't mount it to OSS(the file mounting in OSS not support ServiceAccount to modify its attributes).
+
+FAE told me to use NAS instead of OSS. (But it's still not working, event use initContainer
+to `chmod 777 /var/lib/rabbitmq`)
+
+Finally, NAS can firstly mount to ECS, i change file attribute in ECS, and work.
+
+{% img /images/pic_ack_1.png %}
+
+run `chmod` in ECS node, And RabbitMQ start successfully.
+
+{% img /images/pic_ack_2.png %}
