@@ -8,10 +8,14 @@ categories: Spring
 （通常就是一份中文显示配置，一份英文显示配置）
 
 ### 1.创建国际化文件
-{% img /images/pic_spring_locale.png %}  
+
+{% img /images/pic_spring_locale.png %}
+
 ### 2.Spring Boot 启动配置
+
 在 .properties 中定义国际化文件路径,这个可以设置 basenames 来定义多个文件  
 (注意前缀要跟 1. 中创建的文件前缀要一样)
+
 ```properties
 spring.messages.basename=/i18n/messages
 ```
@@ -19,16 +23,20 @@ spring.messages.basename=/i18n/messages
 ### 3.获取国际化配置
 
 #### 3.1 通过 MessageSource 获取配置信息
+
 Spring Boot 注入 MessageSource，调用 getMessage(String arg, Object[] objects, Locale locale) 方法，
-就可以获取到对应语言环境配置的字段了。 
- 
+就可以获取到对应语言环境配置的字段了。
+
 #### 3.2 若 MessageSource 为 Empty
+
 我在实践的时候发现直接 Autowired MessageSource 是不行的（会报 Empty Resource，Spring Boot 并没有默认实现）  
 可能 Spring Boot 没加载到 MessageResource 作为 Bean。（MessageResource 只是个接口）  
 然后的话暂时自定义一个 Component 类去解决。   
 **还有一各要十分注意的一个事情就是**：  
 Locale 的使用，要注意国家码是否有定义（比如 Locale.CHINA 与 Locale.CHINESE 是有区别的，实际上对应的是.properties文件的后缀）。
+
 ```java
+
 @Slf4j
 @Component
 public class MyMessageResource {
@@ -70,11 +78,13 @@ public class MyMessageResource {
 ```
 
 ### 4.追加国际化配置
+
 MessageSource 只能读取配置，而不能写入。  
 找了一些资料，Java 工具包（java.util）中提供了一个 Properties 类，可以用于处理其读写。  
-需要写入的时候可以选择使用这种方式。我的实现方式是用一个静态工厂类处理不同的 Locale。  
+需要写入的时候可以选择使用这种方式。我的实现方式是用一个静态工厂类处理不同的 Locale。
 
 1 文件路径配置在 Spring Boot 系统配置的 .properties 文件中
+
 ```properties
 # 国际化配置
 locale.path=D:/workspace/DemoService/src/main/resources
@@ -84,12 +94,14 @@ spring.messages.basename=/i18n/query-messages
 2.启动时读入国际化到缓存中的 MyProperties 中  
 （用 MyProperties 的原因是 Properties 类追加时没有首先进行文末换行，所以我继承后重写了一下 store 方法）
 
-3.读写锁（ReadWriteLock）处理并发写入  
+3.读写锁（ReadWriteLock）处理并发写入
 
 4.创建时重复校验，properties 文件的配置 key 名，不能重复的。
 
 样例代码 Demo：
+
 ```java
+
 @Slf4j
 @Component
 public class MyMessageResource {
@@ -182,7 +194,7 @@ public class MyMessageResource {
             setMessage(key, value, locale);
         } catch (FileNotFoundException e) {
             log.error("{}, save message {} {} {} {} failure, file not found", filePath, key, value,
-                locale.getLanguage(), locale.getCountry());
+                    locale.getLanguage(), locale.getCountry());
         } catch (IOException e) {
             log.error(e.toString());
         } finally {
@@ -196,15 +208,22 @@ public class MyMessageResource {
 
 }
 ```
- 
+
 附上测试 Test:
+
  ```java
-@Test
-void testAddMessage() {
-    String key = "test_key";
-    String value = "test_value";
-    messageSource.saveMessage(key, value, Locale.CHINA);
-    String nowValue = messageSource.getMessage("test_key", Locale.CHINA);
-    assertEquals(value, nowValue);
+public class MyMessageResourceTest {
+    @Test
+    void testAddMessage() {
+        String key = "test_key";
+        String value = "test_value";
+        messageSource.saveMessage(key, value, Locale.CHINA);
+        String nowValue = messageSource.getMessage("test_key", Locale.CHINA);
+        assertEquals(value, nowValue);
+    }
 }
 ```
+
+### Idea Resource Bundle plugins
+
+{% img /images/pic_spring_i18n_1.png %}

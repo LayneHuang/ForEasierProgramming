@@ -54,7 +54,7 @@ containers:
     # private
     [plugins."io.containerd.grpc.v1.cri".registry.mirrors."your_host:port"]
       endpoint = ["http://your_host:port"]
-  [plugins."io.containerd.grpc.v1.cri".registry.configs]
+  [plugins."io.containerd.grpc.v1.cri".registry.configs]i1
     [plugins."io.containerd.grpc.v1.cri".registry.configs."your_host:port".tls]
       insecure_skip_verify = true
 ```
