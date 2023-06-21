@@ -77,6 +77,38 @@ public class MyMessageResource {
 }
 ```
 
+如果Spring 版本比较旧不会自动设置进 LocaleContextHolder 的话，要增加一个配置项
+
+```java
+
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+public class LocaleConfig implements WebMvcConfigurer {
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        CookieLocaleResolver localeResolver = new CookieLocaleResolver();
+        localeResolver.setCookieName("localeCookie");
+        localeResolver.setDefaultLocale(Locale.US);
+        localeResolver.setCookieMaxAge(3600);
+        return localeResolver;
+    }
+
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
+        lci.setParamName("lang");
+        return lci;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(localeChangeInterceptor());
+    }
+}
+```
+
 ### 4.追加国际化配置
 
 MessageSource 只能读取配置，而不能写入。  
