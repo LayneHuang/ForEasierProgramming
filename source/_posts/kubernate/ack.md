@@ -124,3 +124,17 @@ Finally, NAS can firstly mount to ECS, i change file attribute in ECS, and work.
 run `chmod` in ECS node, And RabbitMQ start successfully.
 
 {% img /images/pic_ack_2.png %}
+
+### front end no-cache load pic from the same url
+
+in oss, we can get the temp url just like
+
+```
+http://host/path?param1=aaa&param2=bbb
+```
+
+and we can only add the timestamp after url, front will not cache it
+
+```
+param.setUrl(param.getUrl() + "&timestamp=" + System.currentTimeMillis());
+```
