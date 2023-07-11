@@ -58,6 +58,55 @@ spec:
     app: ingress-nginx
 ```
 
+### Expose your port in SLB
+
+{% link 'EMQX deployment simple' https://blog.csdn.net/emqx_broker/article/details/111029898 [title] %}
+
+ingress use `--tcp-services-configmap` and `--udp-services-configmap` to mapping port.
+
+{% img /images/pic_ack_tcp_services.png %}
+
+nginx-ingress-controller yaml config:
+
+```yaml
+containers:
+  - args:
+      - '--tcp-services-configmap=$(POD_NAMESPACE)/tcp-services'
+      - '--udp-services-configmap=$(POD_NAMESPACE)/udp-services'
+
+```
+
+nginx-ingress-lb yaml config:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx-ingress-lb
+  name: nginx-ingress-lb
+  namespace: kube-system
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 443
+    - name: emqx-tcp
+      port: 1883
+      protocol: TCP
+      targetPort: 1883
+  selector:
+    app: ingress-nginx
+```
+
+Finally, Restart your pod(nginx-ingress-controller), and check the status in SLB
+
 ### Configmap mounting
 
 Finally, ChatGPT teach me to use ConfigMap's subPath for mounting
