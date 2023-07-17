@@ -1,7 +1,7 @@
 ---
 title: Spring Security
 date: 2022-10-8 21:00:00
-categories: Spring
+categories: [ Spring ]
 ---
 
 ### 1.Spring Security 引入
@@ -277,3 +277,13 @@ AntPathMatcher 可以用于功能点中配置的 pattern 与 url 进行匹配。
 `/*`: 用于匹配 0 或多个字符
 
 通常都是使用 `/**` 对路径进行处理
+
+### 8.HTTP headers `application/x-www-form-urlencoded` and `multipart/form-data`
+
+Spring Security use FormData in login function.
+And, what is the difference between `application/x-www-form-urlencoded` and `multipart/form-data` ?
+
+`application/x-www-form-urlencoded`: usually use for login and register.(normal text type content, key-value format,
+split by `&`)
+
+`multipart/form-data`: file upload or binary data upload.
