@@ -1,7 +1,7 @@
 ---
 title: Scala
 date: 2023-3-3 21:00:00
-categories: Scala
+categories: [ Scala ]
 ---
 
 # Download the installtion package
@@ -28,3 +28,6 @@ try download plugin via web, if inside idea did not work.
 
 {% img /images/pic_scala_global_lib.png %}
 
+# Mark the path `scala` as the root resource
+
+{% img /images/pic_scala_root_resource.png %}
