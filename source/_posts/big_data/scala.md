@@ -4,7 +4,7 @@ date: 2023-3-3 21:00:00
 categories: [ Scala ]
 ---
 
-# Download the installtion package
+# Download the installation package
 
 ```shell
 https://downloads.lightbend.com/scala/2.13.10/scala-2.13.10.zip
