@@ -106,3 +106,34 @@ EXPOSE 80
 WORKDIR /usr/local/nginx/sbin
 CMD ["./nginx","-g","daemon off;"]
 ```
+
+```
+server {
+    listen  443 ssl http2;
+    server_name  mishadecor.com www.mishadecor.com;
+
+    ssl_certificate     /etc/nginx/ssl/ca.pem;
+    ssl_certificate_key /etc/nginx/ssl/cakey.pem;
+    ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
+    ssl_ciphers EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+	client_max_body_size 1024m;
+
+    location / {
+        proxy_set_header HOST $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://142.4.0.107:3080;
+    }
+}
+
+server {
+    listen  80;
+    listen  443 ssl http2;
+    server_name  mishadecor.com www.mishadecor.com;
+	return  301 https://$host$request_uri;
+```
