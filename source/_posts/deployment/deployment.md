@@ -22,9 +22,9 @@ server
 {
     listen 80;
     listen 443 ssl http2;
-    server_name mishadecor.com;
+    server_name ${xxx}.com;
     index index.php index.html index.htm default.php default.htm default.html;
-    root /www/wwwroot/mishadecor.com;
+    root /www/wwwroot/${xxx}.com;
 
     #SSL-START SSL相关配置，请勿删除或修改下一行带注释的404规则
     #error_page 404/404.html;
@@ -33,8 +33,8 @@ server
         rewrite ^(/.*)$ https://$host$1 permanent;
     }
     #HTTP_TO_HTTPS_END
-    ssl_certificate    /www/server/panel/vhost/cert/mishadecor.com/fullchain.pem;
-    ssl_certificate_key    /www/server/panel/vhost/cert/mishadecor.com/privkey.pem;
+    ssl_certificate    /www/server/panel/vhost/cert/${xxx}.com/fullchain.pem;
+    ssl_certificate_key    /www/server/panel/vhost/cert/${xxx}.com/privkey.pem;
     ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
     ssl_ciphers EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
     ssl_prefer_server_ciphers on;
@@ -55,7 +55,7 @@ server
     #PHP-INFO-END
 
     #REWRITE-START URL重写规则引用,修改后将导致面板设置的伪静态规则失效
-    include /www/server/panel/vhost/rewrite/mishadecor.com.conf;
+    include /www/server/panel/vhost/rewrite/${xxx}.com.conf;
     #REWRITE-END
 
     #禁止访问的文件或目录
@@ -88,8 +88,8 @@ server
         access_log /dev/null;
     }
 
-    access_log  /www/wwwlogs/mishadecor.com.log;
-    error_log  /www/wwwlogs/mishadecor.com.error.log;
+    access_log  /www/wwwlogs/${xxx}.com.log;
+    error_log  /www/wwwlogs/${xxx}.com.error.log;
 }
 ```
 
@@ -110,7 +110,7 @@ CMD ["./nginx","-g","daemon off;"]
 ```
 server {
     listen  443 ssl http2;
-    server_name  mishadecor.com www.mishadecor.com;
+    server_name  ${xxx}.com www.${xxx}.com;
 
     ssl_certificate     /etc/nginx/ssl/ca.pem;
     ssl_certificate_key /etc/nginx/ssl/cakey.pem;
@@ -134,6 +134,6 @@ server {
 server {
     listen  80;
     listen  443 ssl http2;
-    server_name  mishadecor.com www.mishadecor.com;
+    server_name  ${xxx}.com www.${xxx}.com;
 	return  301 https://$host$request_uri;
 ```
