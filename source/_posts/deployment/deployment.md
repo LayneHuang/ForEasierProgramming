@@ -17,6 +17,7 @@ openssl x509 -in cert.crt -out cert.pem -outform PEM
 ```
 
 一键安装中的nignx脚本
+
 ```
 server
 {

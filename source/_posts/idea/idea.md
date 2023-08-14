@@ -1,7 +1,7 @@
 ---
 title: IDEA Tips
 date: 2020-12-29
-categories: Idea
+categories: [ Idea ]
 ---
 
 IDEA 日常使用配置
@@ -35,3 +35,9 @@ Setting -> Tools -> Terminal 中可以修改终端类型
 ### 4.Plugins
 
 {% link 'Useful Plugins' https://blog.csdn.net/Wxin0721/article/details/126551750 [title] %}
+
+#### tobnine
+
+it helps you to code easily.
+
+{% img /images/pic_idea_tobnine.png %}
