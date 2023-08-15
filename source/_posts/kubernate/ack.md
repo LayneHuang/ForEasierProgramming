@@ -1,7 +1,7 @@
 ---
-title: Ack
+title: ack
 date: 2023-06-13 21:40:00
-categories: [ Kubernetes, AliyunAck ]
+categories: [ k8s, AliyunAck ]
 ---
 
 The process of creating an ack instance

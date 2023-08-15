@@ -1,7 +1,7 @@
 ---
 title: Kubernetes Tips
 date: 2021-12-06 16:40:00
-categories: [ Kubernetes ]
+categories: [ k8s ]
 ---
 
 ### Kubernetes 常用命令
