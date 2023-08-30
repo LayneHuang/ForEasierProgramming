@@ -60,3 +60,7 @@ flink:1.16.0-scala_2.12 taskmanage
 Base on `Chandy-Lamport` algorithm (Asynchronous Barrier Snapshotting technique) to save `State` to ensure Fault
 Tolerance.
 
+### Savepoint
+
+After i modify my Flink code and resubmit the job, Flink will generate a new JobID for us.
+We can use savepoint to reload the previous data in our new Job.
