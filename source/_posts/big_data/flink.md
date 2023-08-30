@@ -54,3 +54,9 @@ flink:1.16.0-scala_2.12 taskmanage
     </dependency>
 </dependencies>
 ```
+
+### Checkpoint
+
+Base on `Chandy-Lamport` algorithm (Asynchronous Barrier Snapshotting technique) to save `State` to ensure Fault
+Tolerance.
+
