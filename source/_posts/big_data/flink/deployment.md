@@ -82,6 +82,59 @@ data:
     rest.bind-address: 0.0.0.0
     blob.server.port: 6124
     query.server.port: 6125
+    execution.checkpointing.interval: 1min
+    execution.checkpointing.max-concurrent-checkpoints: 1
+    execution.checkpointing.min-pause: 0
+    execution.checkpointing.mode: AT_LEAST_ONCE
+    execution.checkpointing.timeout: 1min
+    execution.checkpointing.tolerable-failed-checkpoints: 0
+    execution.checkpointing.unaligned: false
+    state.checkpoints.dir: file:///data/checkpoint
+  log4j-console.properties: |+
+    # Allows this configuration to be modified at runtime. The file will be checked every 30 seconds.
+    monitorInterval=30
+    # This affects logging for both user code and Flink
+    rootLogger.level = INFO
+    rootLogger.appenderRef.console.ref = ConsoleAppender
+    rootLogger.appenderRef.rolling.ref = RollingFileAppender
+    # Uncomment this if you want to _only_ change Flink's logging
+    # logger.flink.name = org.apache.flink
+    # logger.flink.level = INFO
+    # The following lines keep the log level of common libraries/connectors on
+    # log level INFO. The root logger does not override this. You have to manually
+    # change the log levels here.
+    logger.akka.name = akka
+    logger.akka.level = INFO
+    logger.kafka.name= org.apache.kafka
+    logger.kafka.level = INFO
+    logger.hadoop.name = org.apache.hadoop
+    logger.hadoop.level = INFO
+    logger.zookeeper.name = org.apache.zookeeper
+    logger.zookeeper.level = INFO
+    logger.shaded_zookeeper.name = org.apache.flink.shaded.zookeeper3
+    logger.shaded_zookeeper.level = INFO
+    # Log all infos to the console
+    appender.console.name = ConsoleAppender
+    appender.console.type = CONSOLE
+    appender.console.layout.type = PatternLayout
+    appender.console.layout.pattern = %d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %-60c %x - %m%n
+    # Log all infos in the given rolling file
+    appender.rolling.name = RollingFileAppender
+    appender.rolling.type = RollingFile
+    appender.rolling.append = true
+    appender.rolling.fileName = ${sys:log.file}
+    appender.rolling.filePattern = ${sys:log.file}.%i
+    appender.rolling.layout.type = PatternLayout
+    appender.rolling.layout.pattern = %d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %-60c %x - %m%n
+    appender.rolling.policies.type = Policies
+    appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
+    appender.rolling.policies.size.size=100MB
+    appender.rolling.policies.startup.type = OnStartupTriggeringPolicy
+    appender.rolling.strategy.type = DefaultRolloverStrategy
+    appender.rolling.strategy.max = ${env:MAX_LOG_FILE_NUMBER:-10}
+    # Suppress the irrelevant (wrong) warnings from the Netty channel handler
+    logger.netty.name = org.jboss.netty.channel.DefaultChannelPipeline
+    logger.netty.level = OFF
 ```
 
 #### Service
@@ -132,7 +185,7 @@ spec:
       containers:
         - name: jobmanager
           image: flink:1.17.0-scala_2.12
-          args: ["jobmanager"]
+          args: [ "jobmanager" ]
           ports:
             - containerPort: 6123
               name: rpc
@@ -157,6 +210,8 @@ spec:
             items:
               - key: flink-conf.yaml
                 path: flink-conf.yaml
+              - key: log4j-console.properties
+                path: log4j-console.properties
 ```
 
 taskmanager
@@ -179,29 +234,31 @@ spec:
         component: taskmanager
     spec:
       containers:
-      - name: taskmanager
-        image: flink:1.17.0-scala_2.12
-        args: ["taskmanager"]
-        ports:
-        - containerPort: 6122
-          name: rpc
-        - containerPort: 6125
-          name: query-state
-        livenessProbe:
-          tcpSocket:
-            port: 6122
-          initialDelaySeconds: 30
-          periodSeconds: 60
-        volumeMounts:
-        - name: flink-config-volume
-          mountPath: /opt/flink/conf/
-        securityContext:
-          runAsUser: 9999
+        - name: taskmanager
+          image: flink:1.17.0-scala_2.12
+          args: [ "taskmanager" ]
+          ports:
+            - containerPort: 6122
+              name: rpc
+            - containerPort: 6125
+              name: query-state
+          livenessProbe:
+            tcpSocket:
+              port: 6122
+            initialDelaySeconds: 30
+            periodSeconds: 60
+          volumeMounts:
+            - name: flink-config-volume
+              mountPath: /opt/flink/conf/
+          securityContext:
+            runAsUser: 9999
       volumes:
-      - name: flink-config-volume
-        configMap:
-          name: flink-config
-          items:
-          - key: flink-conf.yaml
-            path: flink-conf.yaml
+        - name: flink-config-volume
+          configMap:
+            name: flink-config
+            items:
+              - key: flink-conf.yaml
+                path: flink-conf.yaml
+              - key: log4j-console.properties
+                path: log4j-console.properties
 ```
