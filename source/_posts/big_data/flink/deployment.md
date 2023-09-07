@@ -97,12 +97,6 @@ data:
     rootLogger.level = INFO
     rootLogger.appenderRef.console.ref = ConsoleAppender
     rootLogger.appenderRef.rolling.ref = RollingFileAppender
-    # Uncomment this if you want to _only_ change Flink's logging
-    # logger.flink.name = org.apache.flink
-    # logger.flink.level = INFO
-    # The following lines keep the log level of common libraries/connectors on
-    # log level INFO. The root logger does not override this. You have to manually
-    # change the log levels here.
     logger.akka.name = akka
     logger.akka.level = INFO
     logger.kafka.name= org.apache.kafka
@@ -261,4 +255,20 @@ spec:
                 path: flink-conf.yaml
               - key: log4j-console.properties
                 path: log4j-console.properties
+```
+
+### ingress
+
+upload size limit
+```yaml
+  annotations:
+    # nginx.ingress.kubernetes.io/cors-allow-headers: >-
+      #lang,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization
+    # nginx.ingress.kubernetes.io/cors-allow-methods: 'PUT,GET,POST,OPTIONS'
+    # nginx.ingress.kubernetes.io/cors-allow-origin: '*'
+    # nginx.ingress.kubernetes.io/enable-cors: 'true'
+    nginx.ingress.kubernetes.io/proxy-body-size: 500m
+    nginx.ingress.kubernetes.io/proxy-max-temp-file-size: 1024m
+    # nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # nginx.ingress.kubernetes.io/service-weight: ''
 ```
