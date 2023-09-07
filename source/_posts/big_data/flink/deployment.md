@@ -84,7 +84,8 @@ data:
     # scheduler-mode: reactive
     execution.checkpointing.enabled: true
     execution.checkpointing.interval: 10s
-    state.backend: rocksdb
+    # state.backend: rocksdb
+    state.backend.type: rocksdb
     state.checkpoints.num-retained: 1
     state.checkpoints.dir: file:///opt/flink/checkpoints
     state.backend.local-recovery: true
@@ -202,7 +203,7 @@ jobmanager
 
 ```yaml
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   namespace: my-flink
   name: flink-jobmanager
@@ -218,6 +219,11 @@ spec:
         app: flink
         component: jobmanager
     spec:
+      serviceAccount: flink
+      serviceAccountName: flink
+      securityContext:
+        runAsUser: 9999
+        fsGroup: 9999
       containers:
         - name: jobmanager
           image: apache/flink:1.17.0-scala_2.12
@@ -237,6 +243,8 @@ spec:
           volumeMounts:
             - name: flink-config-volume
               mountPath: /opt/flink/conf
+            - name: flink-checkpoints
+              mountPath: /opt/flink/checkpoints
           securityContext:
             runAsUser: 9999
       volumes:
@@ -248,58 +256,12 @@ spec:
                 path: flink-conf.yaml
               - key: log4j-console.properties
                 path: log4j-console.properties
+        - name: flink-checkpoints
+          persistentVolumeClaim:
+            claimName: flink-nas-pvc
 ```
 
 taskmanager
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: flink-taskmanager
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: flink
-      component: taskmanager
-  template:
-    metadata:
-      labels:
-        app: flink
-        component: taskmanager
-    spec:
-      containers:
-        - name: taskmanager
-          image: apache/flink:1.17.0-scala_2.12
-          args: [ "taskmanager" ]
-          ports:
-            - containerPort: 6122
-              name: rpc
-            - containerPort: 6125
-              name: query-state
-          livenessProbe:
-            tcpSocket:
-              port: 6122
-            initialDelaySeconds: 30
-            periodSeconds: 60
-          volumeMounts:
-            - name: flink-config-volume
-              mountPath: /opt/flink/conf/
-          securityContext:
-            runAsUser: 9999
-      volumes:
-        - name: flink-config-volume
-          configMap:
-            name: flink-config
-            items:
-              - key: flink-conf.yaml
-                path: flink-conf.yaml
-              - key: log4j-console.properties
-                path: log4j-console.properties
-```
-
-stateful
 
 ```yaml
 apiVersion: v1
@@ -329,8 +291,8 @@ spec:
         app: flink
         component: taskmanager
     spec:
-      serviceAccount: rabbitmq
-      serviceAccountName: rabbitmq
+      serviceAccount: flink
+      serviceAccountName: flink
       securityContext:
         runAsUser: 9999
         fsGroup: 9999
@@ -371,7 +333,7 @@ spec:
                 path: log4j-console.properties
         - name: flink-checkpoints
           persistentVolumeClaim:
-            claimName: flink-taskmanager-nas-pvc
+            claimName: flink-nas-pvc
 ```
 
 ### ingress
