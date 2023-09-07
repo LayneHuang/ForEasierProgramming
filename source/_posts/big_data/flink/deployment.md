@@ -39,6 +39,9 @@ flink:1.16.0-scala_2.12 taskmanager
 
 ### K8S
 
+{% link 'official
+document' https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/deployment/resource-providers/standalone/kubernetes/ [title] %}
+
 #### ConfigMap
 
 default `flink-conf.yaml` in docker image
@@ -266,10 +269,11 @@ spec:
 ### ingress
 
 upload size limit
+
 ```yaml
   annotations:
     # nginx.ingress.kubernetes.io/cors-allow-headers: >-
-      #lang,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization
+    #lang,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization
     # nginx.ingress.kubernetes.io/cors-allow-methods: 'PUT,GET,POST,OPTIONS'
     # nginx.ingress.kubernetes.io/cors-allow-origin: '*'
     # nginx.ingress.kubernetes.io/enable-cors: 'true'
