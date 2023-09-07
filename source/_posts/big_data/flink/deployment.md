@@ -73,26 +73,16 @@ metadata:
 data:
   flink-conf.yaml: |+
     jobmanager.rpc.address: jobmanager-service
-    jobmanager.rpc.port: 6123
-    jobmanager.bind-host: 0.0.0.0
-    jobmanager.memory.process.size: 1600m
-    taskmanager.bind-host: 0.0.0.0
-    taskmanager.memory.process.size: 2048m
     taskmanager.numberOfTaskSlots: 2
-    parallelism.default: 2
-    jobmanager.execution.failover-strategy: region
-    rest.address: 0.0.0.0
-    rest.bind-address: 0.0.0.0
     blob.server.port: 6124
-    query.server.port: 6125
-    execution.checkpointing.interval: 1min
-    execution.checkpointing.max-concurrent-checkpoints: 1
-    execution.checkpointing.min-pause: 0
-    execution.checkpointing.mode: AT_LEAST_ONCE
-    execution.checkpointing.timeout: 1min
-    execution.checkpointing.tolerable-failed-checkpoints: 0
-    execution.checkpointing.unaligned: false
-    state.checkpoints.dir: file:///data/checkpoint
+    jobmanager.rpc.port: 6123
+    taskmanager.rpc.port: 6122
+    queryable-state.proxy.ports: 6125
+    jobmanager.memory.process.size: 1600m
+    taskmanager.memory.process.size: 1728m
+    parallelism.default: 2
+    scheduler-mode: reactive
+    execution.checkpointing.interval: 10s
   log4j-console.properties: |+
     # This affects logging for both user code and Flink
     rootLogger.level = INFO
