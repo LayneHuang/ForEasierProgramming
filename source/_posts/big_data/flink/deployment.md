@@ -85,6 +85,7 @@ data:
     execution.checkpointing.enabled: true
     execution.checkpointing.interval: 10s
     state.backend: rocksdb
+    state.checkpoints.num-retained: 1
     state.checkpoints.dir: file:///opt/flink/checkpoints
     state.backend.local-recovery: true
     process.taskmanager.working-dir: /opt/flink/checkpoints
