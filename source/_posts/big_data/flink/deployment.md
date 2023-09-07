@@ -90,6 +90,7 @@ data:
     state.checkpoints.dir: file:///opt/flink/checkpoints
     state.backend.local-recovery: true
     process.taskmanager.working-dir: /opt/flink/checkpoints
+    web.upload.dir: /opt/flink/checkpoints/uploadJars
   log4j-console.properties: |+
     # This affects logging for both user code and Flink
     rootLogger.level = INFO
