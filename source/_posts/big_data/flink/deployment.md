@@ -187,7 +187,7 @@ spec:
     spec:
       containers:
         - name: jobmanager
-          image: flink:1.17.0-scala_2.12
+          image: apache/flink:1.17.0-scala_2.12
           args: [ "jobmanager" ]
           ports:
             - containerPort: 6123
@@ -238,7 +238,7 @@ spec:
     spec:
       containers:
         - name: taskmanager
-          image: flink:1.17.0-scala_2.12
+          image: apache/flink:1.17.0-scala_2.12
           args: [ "taskmanager" ]
           ports:
             - containerPort: 6122
