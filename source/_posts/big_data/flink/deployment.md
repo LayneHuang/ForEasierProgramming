@@ -81,8 +81,13 @@ data:
     jobmanager.memory.process.size: 1600m
     taskmanager.memory.process.size: 1728m
     parallelism.default: 2
-    scheduler-mode: reactive
+    # scheduler-mode: reactive
+    execution.checkpointing.enabled: true
     execution.checkpointing.interval: 10s
+    state.backend: rocksdb
+    state.checkpoints.dir: file:///opt/flink/checkpoints
+    state.backend.local-recovery: true
+    process.taskmanager.working-dir: /opt/flink/checkpoints
   log4j-console.properties: |+
     # This affects logging for both user code and Flink
     rootLogger.level = INFO
@@ -151,6 +156,43 @@ spec:
   selector:
     app: flink
     component: jobmanager
+```
+
+### RABC
+
+```yaml
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flink
+  namespace: my-flink
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: flink
+  namespace: my-flink
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "endpoints" ]
+    verbs: [ "get" ]
+  - apiGroups: [ "" ]
+    resources: [ "events" ]
+    verbs: [ "create" ]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: flink
+  namespace: my-flink
+subjects:
+  - kind: ServiceAccount
+    name: flink
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flink
 ```
 
 ### POD
@@ -254,6 +296,81 @@ spec:
                 path: flink-conf.yaml
               - key: log4j-console.properties
                 path: log4j-console.properties
+```
+
+stateful
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: taskmanager-hl
+spec:
+  clusterIP: None
+  selector:
+    app: flink
+    component: taskmanager
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: flink-taskmanager
+spec:
+  serviceName: taskmanager-hl
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flink
+      component: taskmanager
+  template:
+    metadata:
+      labels:
+        app: flink
+        component: taskmanager
+    spec:
+      serviceAccount: rabbitmq
+      serviceAccountName: rabbitmq
+      securityContext:
+        runAsUser: 9999
+        fsGroup: 9999
+      containers:
+        - name: taskmanager
+          image: apache/flink:1.17.0-scala_2.12
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          args: [ "taskmanager", "-Dtaskmanager.resource-id=$(POD_NAME)" ]
+          ports:
+            - containerPort: 6122
+              name: rpc
+            - containerPort: 6125
+              name: query-state
+            - containerPort: 6121
+              name: metrics
+          livenessProbe:
+            tcpSocket:
+              port: 6122
+            initialDelaySeconds: 30
+            periodSeconds: 60
+          volumeMounts:
+            - name: flink-config-volume
+              mountPath: /opt/flink/conf/
+            - name: flink-checkpoints
+              mountPath: /opt/flink/checkpoints
+      volumes:
+        - name: flink-config-volume
+          configMap:
+            name: flink-config
+            items:
+              - key: flink-conf.yaml
+                path: flink-conf.yaml
+              - key: log4j-console.properties
+                path: log4j-console.properties
+        - name: flink-checkpoints
+          persistentVolumeClaim:
+            claimName: flink-taskmanager-nas-pvc
 ```
 
 ### ingress
