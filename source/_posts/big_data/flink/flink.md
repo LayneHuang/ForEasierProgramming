@@ -35,3 +35,28 @@ Tolerance.
 
 After i modify my Flink code and resubmit the job, Flink will generate a new JobID for us.
 We can use savepoint to reload the previous data in our new Job.
+
+Trigger a savepoint
+
+```shell
+bin/flink savepoint :jobId [:targetDir]
+```
+
+Cancel job with savepoint
+
+```shell
+bin/flink cancel -s [:targetDir] :jobId
+
+```
+
+Resume from savepoint
+
+```shell
+bin/flink run -s :savepointPath [:runArgs]
+```
+
+Disposing savepoint
+
+```shell
+bin/flink savepoint -d :savepointPath
+```
