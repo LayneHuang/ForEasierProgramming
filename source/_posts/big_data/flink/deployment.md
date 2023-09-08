@@ -87,10 +87,11 @@ data:
     # state.backend: rocksdb
     state.backend.type: rocksdb
     state.checkpoints.num-retained: 1
-    state.checkpoints.dir: file:///opt/flink/checkpoints
+    state.checkpoints.dir: file:///opt/flink/data/checkpoints
+    state.savepoints.dir: file:///opt/flink/data/savepoints
     state.backend.local-recovery: true
-    process.taskmanager.working-dir: /opt/flink/checkpoints
-    web.upload.dir: /opt/flink/checkpoints/uploadJars
+    process.taskmanager.working-dir: /opt/flink/data/task
+    web.upload.dir: /opt/flink/data/uploadJars
   log4j-console.properties: |+
     # This affects logging for both user code and Flink
     rootLogger.level = INFO
