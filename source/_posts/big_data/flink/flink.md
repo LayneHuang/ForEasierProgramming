@@ -31,6 +31,13 @@ Flink
 Base on `Chandy-Lamport` algorithm (Asynchronous Barrier Snapshotting technique) to save `State` to ensure Fault
 Tolerance.
 
+you must config the follow parameter in flink-conf.yaml.
+otherwise, checkpoints will be deleted after JobManager restart or shutdown
+
+```yaml
+execution.checkpointing.externalized-checkpoint-retention: RETAIN_ON_CANCELLATION
+```
+
 ### Savepoint
 
 After i modify my Flink code and resubmit the job, Flink will generate a new JobID for us.

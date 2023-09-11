@@ -84,6 +84,7 @@ data:
     # scheduler-mode: reactive
     execution.checkpointing.enabled: true
     execution.checkpointing.interval: 10s
+    execution.checkpointing.externalized-checkpoint-retention: RETAIN_ON_CANCELLATION
     # state.backend: rocksdb
     state.backend.type: rocksdb
     state.checkpoints.num-retained: 1
