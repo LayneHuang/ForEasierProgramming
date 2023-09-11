@@ -60,3 +60,7 @@ Disposing savepoint
 ```shell
 bin/flink savepoint -d :savepointPath
 ```
+
+`tips`:
+You need to pay attention to the `Parallelism` you had set in that job (and run with that args).
+Otherwise, it will restart failure by savepoint. 
