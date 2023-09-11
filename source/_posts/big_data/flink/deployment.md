@@ -228,7 +228,7 @@ spec:
         fsGroup: 9999
       containers:
         - name: jobmanager
-          image: apache/flink:1.17.0-scala_2.12
+          image: flink:1.17.0-scala_2.12
           args: [ "jobmanager" ]
           ports:
             - containerPort: 6123
@@ -245,8 +245,8 @@ spec:
           volumeMounts:
             - name: flink-config-volume
               mountPath: /opt/flink/conf
-            - name: flink-checkpoints
-              mountPath: /opt/flink/checkpoints
+            - name: flink-data
+              mountPath: /opt/flink/data
           securityContext:
             runAsUser: 9999
       volumes:
@@ -258,7 +258,7 @@ spec:
                 path: flink-conf.yaml
               - key: log4j-console.properties
                 path: log4j-console.properties
-        - name: flink-checkpoints
+        - name: flink-data
           persistentVolumeClaim:
             claimName: flink-nas-pvc
 ```
@@ -300,7 +300,7 @@ spec:
         fsGroup: 9999
       containers:
         - name: taskmanager
-          image: apache/flink:1.17.0-scala_2.12
+          image: flink:1.17.0-scala_2.12
           env:
             - name: POD_NAME
               valueFrom:
@@ -322,8 +322,8 @@ spec:
           volumeMounts:
             - name: flink-config-volume
               mountPath: /opt/flink/conf/
-            - name: flink-checkpoints
-              mountPath: /opt/flink/checkpoints
+            - name: flink-data
+              mountPath: /opt/flink/data
       volumes:
         - name: flink-config-volume
           configMap:
@@ -333,7 +333,7 @@ spec:
                 path: flink-conf.yaml
               - key: log4j-console.properties
                 path: log4j-console.properties
-        - name: flink-checkpoints
+        - name: flink-data
           persistentVolumeClaim:
             claimName: flink-nas-pvc
 ```
