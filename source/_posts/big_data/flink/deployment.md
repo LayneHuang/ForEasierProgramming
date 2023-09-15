@@ -37,6 +37,9 @@ docker run -d \
 flink:1.16.0-scala_2.12 taskmanager
 ```
 
+when us modify savepoints, checkpoints and upload dir position.
+we need to make sure the folder has authority to modify.(use cmd `chmod` to deal with that)
+
 ### K8S
 
 {% link 'official
