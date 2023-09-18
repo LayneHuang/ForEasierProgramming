@@ -165,3 +165,8 @@ you can use helm in ack to deploy the EMQX cluster.
 helm repo add emqx https://repos.emqx.io/charts
 helm repo update
 ```
+
+```shell
+kubectl create namespace my-emqx
+helm install -n my-emqx emqx emqx/emqx --set service.type=NodePort
+```
