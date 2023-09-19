@@ -92,38 +92,100 @@ kubernetes   ClusterIP   10.100.0.1   <none>        443/TCP   7d
 
 ### CREATE ELB
 
-
 use helm to create aws-load-balancer-controller
 
 ```shell
+curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy_us-gov.json
 
 echo 'download ok'
 
+## use iam_policy.json or iam_policy_us-gov.json depend on your region
 aws iam create-policy \
-    --policy-name AWSLoadBalancerControllerIAMPolicy \
-    --policy-document file://iam_policy.json
+  --policy-name AWSLoadBalancerControllerIAMPolicy \
+  --policy-document file://iam_policy.json
 
 echo 'create prolicy finished'
 
-eksctl create iamserviceaccount \
-  --cluster=my-cluster \
-  --namespace=kube-system \
-  --name=aws-load-balancer-controller \
+## create associate-iam-oidc-oidc if not exist
+eksctl utils associate-iam-oidc-provider --cluster $cluster_name --approve
+
+## use aws cli and kubectl to create role
+oidc_id=$(aws eks describe-cluster --name my-cluster --query "cluster.identity.oidc.issuer" --output text | cut -d '/' -f 5)
+aws iam list-open-id-connect-providers | grep $oidc_id | cut -d "/" -f4
+
+aws iam create-role \
   --role-name AmazonEKSLoadBalancerControllerRole \
-  --attach-policy-arn=arn:aws:iam::111122223333:policy/AWSLoadBalancerControllerIAMPolicy \
-  --approve
+  --assume-role-policy-document file://"load-balancer-role-trust-policy.json"
+
+### attach-role-policy
+aws iam attach-role-policy \
+  --policy-arn arn:aws:iam::${account_id}:policy/AWSLoadBalancerControllerIAMPolicy \
+  --role-name AmazonEKSLoadBalancerControllerRole
+
+kubectl apply -f aws-load-balancer-controller-service-account.yaml
 
 echo 'create iam finished'
 
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update eks
+
+## if install tips : Error: INSTALLATION FAILED: cannot re-use a name that is still in use
+helm delete aws-alb-ingress-controller -n kube-system
+helm delete aws-load-balancer-controller -n kube-system
+
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   -n kube-system \
-  --set region=region-name \
-  --set vpcId=vpc \
-  --set clusterName=name \
+  --set region=${regionCode} \
+  --set vpcId=${vpcId} \
+  --set clusterName=${clusterName} \
   --set serviceAccount.create=false \
   --set serviceAccount.name=aws-load-balancer-controller
 
 echo 'create elb finished'
 
+kubectl get deployment -n kube-system aws-load-balancer-controller
+
+```
+
+#### load-balancer-role-trust-policy.json
+
+replace: ${account_id},${region-code},${oidc_id} below
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::${account_id}:oidc-provider/oidc.eks.${region-code}.amazonaws.com/id/${oidc_id}"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "oidc.eks.${region-code}.amazonaws.com/id/${oidc_id}:aud": "sts.amazonaws.com",
+          "oidc.eks.${region-code}.amazonaws.com/id/${oidc_id}:sub": "system:serviceaccount:kube-system:aws-load-balancer-controller"
+        }
+      }
+    }
+  ]
+}
+```
+
+#### aws-load-balancer-controller-service-account.yaml
+
+replace: ${account_id}
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: aws-load-balancer-controller
+  name: aws-load-balancer-controller
+  namespace: kube-system
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::${account_id}:role/AmazonEKSLoadBalancerControllerRole
 ```
