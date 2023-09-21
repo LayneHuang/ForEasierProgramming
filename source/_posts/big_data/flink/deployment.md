@@ -146,7 +146,7 @@ data:
 #### Service
 
 ```yaml
-
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -164,6 +164,17 @@ spec:
   selector:
     app: flink
     component: jobmanager
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: my-flink
+  name: taskmanager-hl
+spec:
+  clusterIP: None
+  selector:
+    app: flink
+    component: taskmanager
 ```
 
 ### RABC
@@ -270,19 +281,11 @@ spec:
 taskmanager
 
 ```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: taskmanager-hl
-spec:
-  clusterIP: None
-  selector:
-    app: flink
-    component: taskmanager
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  namespace: my-flink
   name: flink-taskmanager
 spec:
   serviceName: taskmanager-hl
