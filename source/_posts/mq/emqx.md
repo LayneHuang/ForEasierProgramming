@@ -170,3 +170,19 @@ helm repo update
 kubectl create namespace my-emqx
 helm install -n my-emqx emqx emqx/emqx --set service.type=NodePort
 ```
+
+emqx-acl-cm.yaml
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-emqx-conf
+  namespace: my-emqx
+data:
+  acl.conf: |-
+    {allow, {username, {re, "^dashboard$"}}, subscribe, ["$SYS/#"]}.
+    {allow, {ipaddr, "127.0.0.1"}, all, ["$SYS/#", "#"]}.
+    {deny, all, subscribe, ["$SYS/#", {eq, "#"}]}.
+    {allow, all}.
+```
