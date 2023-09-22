@@ -6,6 +6,8 @@ categories: [ k8s, eks ]
 
 The process of creating an eks instance
 
+<!-- more -->
+
 ### install kubectl cli and eksctl
 
 Because Aws-eks haven't `Visual dashboard for K8s`,
@@ -189,3 +191,14 @@ metadata:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::${account_id}:role/AmazonEKSLoadBalancerControllerRole
 ```
+
+### 多端口监听
+
+部署MQTT服务时，需要对外暴漏 TCP:1883 端口
+
+与集群内服务使用的ALB不一样，需要额外部署`NLB负载均衡器`
+{% link 'nlb aws official doc' https://docs.aws.amazon.com/zh_cn/eks/latest/userguide/network-load-balancing.html [title] %}
+
+{% img /images/pic_aws_eks_lb.png %}
+
+nlb与alb不同, 通过在 service 中指定 annotations, alb controller就会帮我们自动创建好负载均衡器
