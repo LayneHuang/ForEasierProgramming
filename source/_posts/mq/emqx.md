@@ -167,8 +167,18 @@ helm repo update
 ```
 
 ```shell
-kubectl create namespace my-emqx
-helm install -n my-emqx emqx emqx/emqx --set service.type=NodePort
+
+helm repo add emqx https://repos.emqx.io/charts
+helm repo update
+
+helm install emqx emqx/emqx --set service.type=NodePort
+
+kubectl apply -f emqx-acl-cm.yaml
+## kubectl get cm emqx-env -o yaml > emqx-env.yaml
+kubectl apply -f emqx-env.yaml
+
+## kubectl get statefulset emqx -o yaml > emqx-statefulset.yaml
+kubectl apply -f emqx-statefulset.yaml
 ```
 
 emqx-acl-cm.yaml
