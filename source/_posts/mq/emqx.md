@@ -177,7 +177,7 @@ emqx-acl-cm.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: my-emqx-conf
+  name: emqx-acl-cm
   namespace: my-emqx
 data:
   acl.conf: |-
