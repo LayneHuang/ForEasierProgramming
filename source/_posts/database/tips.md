@@ -1,7 +1,7 @@
 ---
 title: 数据库小Tips
 date: 2020-12-29 11:03:31
-categories: Database
+categories: [ Database ]
 ---
 
 数据库语句基本喜欢用大写, 下划线分割的形式

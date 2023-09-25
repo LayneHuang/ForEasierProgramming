@@ -1,7 +1,7 @@
 ---
 title: Postman
 date: 2021-02-22 11:10:31
-tags: PostMan
+tags: [ PostMan ]
 ---
 
 ### 1.公用 Cookies 配置

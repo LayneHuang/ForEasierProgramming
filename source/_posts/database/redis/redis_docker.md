@@ -1,7 +1,7 @@
 ---
 title: Docker 搭建 Redis
 date: 2021-12-06 16:40:00
-categories: Redis
+categories: [ Redis ]
 ---
 
 ```shell script

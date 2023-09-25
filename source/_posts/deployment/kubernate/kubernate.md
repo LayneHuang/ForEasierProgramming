@@ -50,10 +50,12 @@ nacos.core.auth.server.identity.key=${NACOS_AUTH_IDENTITY_KEY:}
 nacos.core.auth.server.identity.value=${NACOS_AUTH_IDENTITY_VALUE:}
 ```
 
-so, we add this 2 configure to --env when we start up images
+so, we add this 2 configure to --env when we start up images (also can set it to configmap)
 
 ```yaml
 env:
+  - name: NACOS_AUTH_ENABLE
+    value: "true"
   - name: NACOS_AUTH_IDENTITY_KEY
     value: "indentityKey"
   - name: NACOS_AUTH_IDENTITY_VALUE
