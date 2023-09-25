@@ -36,19 +36,22 @@ copy pod's application.properties
 kubectl cp nacos-0:/home/nacos/conf/application.properties /home/nacos/application.properties
 ```
 
-we can find 2 configure parameter in that:
+we can find 3 configure parameter in that:
 
 ```yaml
+nacos.core.auth.plugin.nacos.token.secret.key=${NACOS_AUTH_TOKEN:}
 nacos.core.auth.server.identity.key=${NACOS_AUTH_IDENTITY_KEY:}
 nacos.core.auth.server.identity.value=${NACOS_AUTH_IDENTITY_VALUE:}
 ```
 
-so, we add this 2 configure to --env when we start up images (also can set it to configmap)
+so, we add this 4 configure to --env when we start up images (also can set it to configmap)
 
 ```yaml
 env:
   - name: NACOS_AUTH_ENABLE
     value: "true"
+  - name: NACOS_AUTH_TOKEN
+    value: "SecretKey012345678901234567890123456789012345678901234567890123456789"
   - name: NACOS_AUTH_IDENTITY_KEY
     value: "identityKey"
   - name: NACOS_AUTH_IDENTITY_VALUE
@@ -152,6 +155,11 @@ spec:
           env:
             - name: NACOS_REPLICAS
               value: "3"
+            - name: NACOS_AUTH_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: auth.identity.token
             - name: NACOS_AUTH_ENABLE
               valueFrom:
                 configMapKeyRef:
