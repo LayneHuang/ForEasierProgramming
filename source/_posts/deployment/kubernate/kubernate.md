@@ -11,57 +11,6 @@ categories: [ k8s ]
 kubectl -n [namespace] apply -f [service/deployment].yaml
 ```
 
-### nacos-k8s
-
-use nacos-quick-start.yaml for deployment, and change nacos(mysql config map)
-
-{% link 'nacos-k8s Official Documents' https://nacos.io/zh-cn/docs/use-nacos-with-kubernetes.html [title] %}
-{% link 'nacos k8s github' https://github.com/nacos-group/nacos-k8s [title] %}
-
-open nacos dashboard auth:
-
-After version2.2.1 nacos's application.properties will remove default value of auth.
-We have to mount config map to application.properties
-
-{% img /images/pic_nacos_k8s_conf.png %}
-
-```yaml
-### 开启鉴权
-nacos.core.auth.enabled=true
-
-  ### 关闭使用user-agent判断服务端请求并放行鉴权的功能
-nacos.core.auth.enable.userAgentAuthWhite=false
-
-  ### 配置自定义身份识别的key（不可为空）和value（不可为空）
-nacos.core.auth.server.identity.key=example
-nacos.core.auth.server.identity.value=example
-```
-
-copy pod's application.properties
-
-```shell
-kubectl cp nacos-0:/home/nacos/conf/application.properties /home/nacos/application.properties
-```
-
-we can find 2 configure parameter in that:
-
-```yaml
-nacos.core.auth.server.identity.key=${NACOS_AUTH_IDENTITY_KEY:}
-nacos.core.auth.server.identity.value=${NACOS_AUTH_IDENTITY_VALUE:}
-```
-
-so, we add this 2 configure to --env when we start up images (also can set it to configmap)
-
-```yaml
-env:
-  - name: NACOS_AUTH_ENABLE
-    value: "true"
-  - name: NACOS_AUTH_IDENTITY_KEY
-    value: "indentityKey"
-  - name: NACOS_AUTH_IDENTITY_VALUE
-    value: "indentityValue"
-```
-
 ### --privileged=true
 
 when container need file modify auth (as the same usage of --privileged=true in docker)
