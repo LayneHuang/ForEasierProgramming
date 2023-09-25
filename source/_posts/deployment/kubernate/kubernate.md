@@ -18,6 +18,22 @@ use nacos-quick-start.yaml for deployment, and change nacos(mysql config map)
 {% link 'nacos-k8s Official Documents' https://nacos.io/zh-cn/docs/use-nacos-with-kubernetes.html [title] %}
 {% link 'nacos k8s github' https://github.com/nacos-group/nacos-k8s [title] %}
 
+open nacos dashboard auth:
+
+After version2.2.1 nacos's application.properties will remove default value of auth.
+We have to mount config map to application.properties
+```yaml
+### 开启鉴权
+nacos.core.auth.enabled=true
+
+  ### 关闭使用user-agent判断服务端请求并放行鉴权的功能
+nacos.core.auth.enable.userAgentAuthWhite=false
+
+  ### 配置自定义身份识别的key（不可为空）和value（不可为空）
+nacos.core.auth.server.identity.key=example
+nacos.core.auth.server.identity.value=example
+```
+
 ### --privileged=true
 
 when container need file modify auth (as the same usage of --privileged=true in docker)
