@@ -22,6 +22,9 @@ open nacos dashboard auth:
 
 After version2.2.1 nacos's application.properties will remove default value of auth.
 We have to mount config map to application.properties
+
+{% img /images/pic_nacos_k8s_conf.png %}
+
 ```yaml
 ### 开启鉴权
 nacos.core.auth.enabled=true
@@ -32,6 +35,29 @@ nacos.core.auth.enable.userAgentAuthWhite=false
   ### 配置自定义身份识别的key（不可为空）和value（不可为空）
 nacos.core.auth.server.identity.key=example
 nacos.core.auth.server.identity.value=example
+```
+
+copy pod's application.properties
+
+```shell
+kubectl cp nacos-0:/home/nacos/conf/application.properties /home/nacos/application.properties
+```
+
+we can find 2 configure parameter in that:
+
+```yaml
+nacos.core.auth.server.identity.key=${NACOS_AUTH_IDENTITY_KEY:}
+nacos.core.auth.server.identity.value=${NACOS_AUTH_IDENTITY_VALUE:}
+```
+
+so, we add this 2 configure to --env when we start up images
+
+```yaml
+env:
+  - name: NACOS_AUTH_IDENTITY_KEY
+    value: "indentityKey"
+  - name: NACOS_AUTH_IDENTITY_VALUE
+    value: "indentityValue"
 ```
 
 ### --privileged=true
