@@ -19,6 +19,29 @@ attribute is a dictionary containing arbitrary key-value pair that describe the 
 
 ### One Service (Multiple instance) how to use Fanout
 
+#### One of the Service will receive the msg
+
+determine the queue's name
+
+```java
+public class Config {
+
+    @RabbitListener(
+            bindings = @QueueBinding(
+                    value = @Queue(value= "#{QueueName}"),
+                    exchange = @Exchange(value = "#{ExchangeName}", type = ExchangeTypes.FANOUT)
+            )
+    )
+    public void solve() {
+
+    }
+}
+```
+
+#### All Services receive the same msg at the same time
+
+@Queue will random gen a queue for spring service (if you not config attribute "name")
+
 ```java
 public class Config {
 
@@ -34,6 +57,5 @@ public class Config {
 }
 ```
 
-@Queue will random gen a queue for spring service (if you not config attribute "name")
-
 {% img /images/pic_rabbitmq_1.png %}
+
