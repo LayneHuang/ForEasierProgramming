@@ -70,4 +70,26 @@ bin/flink savepoint -d :savepointPath
 
 `tips`:
 You need to pay attention to the `Parallelism` you had set in that job (and run with that args).
-Otherwise, it will restart failure by savepoint. 
+Otherwise, it will restart failure by savepoint.
+
+### Security for Flink Dashboard
+
+Flink haven't security authentication itself. only can use nginx
+
+``` conf
+server {
+    listen 80;
+    server_name example.com;
+
+    location / {
+        auth_basic "Restricted Access";
+        auth_basic_user_file "/path/to/passwords";
+    }
+}
+```
+
+or you can disable submit page of Flink
+
+```yaml
+web.submit.enable: false
+```
