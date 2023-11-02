@@ -106,3 +106,35 @@ public class Demo {
     }
 }
 ```
+
+如果有过滤器通过token就能完成鉴权的话, 可以利用Feign接口的`@RequestHeader`配置token
+
+```
+// WebConfigure中, authenticationFilter 进行token读取 
+http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+```
+
+invoke
+
+```java
+public class Simple {
+    public void callAsync() {
+        String token = getLoginUserInfo().getToken();
+        String params = "test";
+        executor.execute(() -> asyncFunc(token, params));
+    }
+}
+```
+
+api
+
+```java
+@Component
+@FeignClient(name = "test-service")
+public interface TestService {
+
+    @PostMapping(value = "/test/asyncFunc")
+    Response asyncFunc(@RequestHeader(value = "Authorization") String token,
+                       @RequestBody String params);
+}
+```
