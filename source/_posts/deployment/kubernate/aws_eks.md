@@ -96,6 +96,8 @@ kubernetes   ClusterIP   10.100.0.1   <none>        443/TCP   7d
 
 use helm to create aws-load-balancer-controller
 
+if command `eksctl` exist error, Check ERROR Stack in `CloudFormation` in aws web
+
 ```shell
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy_us-gov.json
@@ -197,7 +199,8 @@ metadata:
 部署MQTT服务时，需要对外暴漏 TCP:1883 端口
 
 与集群内服务使用的ALB不一样，需要额外部署`NLB负载均衡器`
-{% link 'nlb aws official doc' https://docs.aws.amazon.com/zh_cn/eks/latest/userguide/network-load-balancing.html [title] %}
+{% link 'nlb aws official
+doc' https://docs.aws.amazon.com/zh_cn/eks/latest/userguide/network-load-balancing.html [title] %}
 
 {% img /images/pic_aws_eks_lb.png %}
 
