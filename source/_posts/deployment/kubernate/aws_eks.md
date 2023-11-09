@@ -194,6 +194,16 @@ metadata:
     eks.amazonaws.com/role-arn: arn:aws:iam::${account_id}:role/AmazonEKSLoadBalancerControllerRole
 ```
 
+### 子网标签配置
+
+```yaml
+kubernetes.io/cluster/my-cluster: owned
+### 公网 (通常是这个)
+kubernetes.io/role/elb: 1
+### 私网
+kubernetes.io/role/internal-elb: 1
+```
+
 ### 多端口监听
 
 部署MQTT服务时，需要对外暴漏 TCP:1883 端口
