@@ -1,52 +1,49 @@
 ---
-title: Docker tips
+title: Docker
 date: 2021-06-25 16:40:00
-categories: Docker
+categories: [ Docker ]
 ---
 
-### Docker常用命令
-
-删除所有镜像
+### Common CMD
 
 ```shell
-docker rmi $(docker images -q)
-```
-
-查看容器CPU,内存使用状态
-
-```shell
+### 查看容器CPU,内存使用状态
 docker stats
-```
 
-运行镜像
+### 删除所有镜像
+docker rmi $(docker images -q)
 
-```shell
+### 运行镜像
 docker run [args]
-```
+### 容器内部的root拥有外部的root权限
+--privileged
+### 后台运行
+-d
+### 时区设置
+-e TZ=Asia/Shanghai
 
-`--privileged` 容器内部的root拥有外部的root权限
-`-d` 后台运行
-
-进入容器
-
-```shell
+### 进入容器
 docker exec -it redis /bin/bash
 docker exec -it redis sh
+
+### 复制文件
+docker cp -a image-name:/filePath /localPath
+
+### 保存镜像到本地
+docker save -o output.tar image-name:tag
+
+### 加载本地镜像
+docker load -i saved-image.tar
+
+### 登录到 docker 镜像仓库
+docker login your-registry-url
+
+### 镜像推送到镜像仓库
+docker push image-name:tag
+
 ```
 
-复制文件
-
-```shell
-docker cp -a emqx:/opt/emqx/etc/plugins/emqx_web_hook.conf emqx_web_hook.conf
-```
-
-时区
-
-```shell
--e TZ=Asia/Shanghai
-```
-
-### 以 centos 为基础并设置 jdk
+### Configure JDK base on Centos
 
 ```shell
 FROM centos:centos7
@@ -61,14 +58,8 @@ ENV CLASSPATH .:${JAVA_HOME}/lib:${JRE_HOME}/lib
 ENV PATH ${JAVA_HOME}/bin:$PATH
 ```
 
-### 通过 Dockerfile 构建镜像
+### Build Docker Image By Dockerfile
 
 ```shell
 docker build -t [image_name:version] [Dockerfile Path]
 ```
-
-# 服务器环境配置
-
-### nginx
-
-{% link '指南' https://www.cnblogs.com/tod4/p/16659260.html [title] %}
