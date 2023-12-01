@@ -73,3 +73,6 @@ public class EmptyObjectSerializer implements ObjectSerializer {
     }
 }
 ```
+
+### 泛型如 ? extend TreeNode 这种字段在反序列化时怎么处理才不丢失字段
+

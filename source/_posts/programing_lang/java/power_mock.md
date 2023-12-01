@@ -1,7 +1,7 @@
 ---
 title: Power Mockito 单元测试
 date: 2020-11-24 14:20:00
-categories: Unit Test
+categories: [ Unit Test ]
 ---
 
 {% link 'github地址' https://github.com/powermock/powermock/wiki/Mockito %}

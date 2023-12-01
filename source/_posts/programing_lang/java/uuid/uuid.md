@@ -1,7 +1,7 @@
 ---
 title: UUID 引入
 date: 2022-08-19 21:00:00
-categories: UUID
+categories: [ UUID ]
 ---
 
 因为要用到 baidu 的long类型的UUID生成器，目前github上只提供本地包引入的方式

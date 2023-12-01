@@ -1,7 +1,7 @@
 ---
 title: Java 基础简单汇总
 date: 2020-11-16 23:21:31
-categories: Java
+categories: [ Java ]
 ---
 
 ### 1.函数式接口
