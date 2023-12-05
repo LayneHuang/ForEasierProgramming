@@ -69,3 +69,11 @@ when securityContext is `{}` and serviceAccount is `rabbitmq`
 {% img /images/pic_k8s_1.png %}
 
 {% img /images/pic_k8s_2.png %}
+
+### Problem: Back-off restarting failed container in pod
+
+Add the follow cmd in your pod, ensure pod will not stop soon after container started
+
+```yaml
+command: [ "/bin/bash", "-ce", "tail -f /dev/null" ]
+```
