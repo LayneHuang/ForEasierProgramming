@@ -4,9 +4,30 @@ date: 2021-03-16 20:21:31
 categories: [ Database ]
 ---
 
-# Tips
+# 1.Query Optimization
 
-### docker 部署
+### Efficiency between = and != in inner joins SQL queries
+
+In some business data queries, we always need to consider inner joins [Company or Organization] table.
+And we always set org status to an integer value[to distinguish enable 0 , freeze 1, or more ...].
+but most status are in enable status.
+
+Common case:
+
+```sql
+select * form table_a a inner join org_info org on a.org_id = b.org_id and b.org_status = 0 
+```
+
+Better case (Chat Gpt Explain):
+(Because, the dataset of not 0 status is much smaller than that of 0)
+
+```sql
+select * form table_a a inner join org_info org on a.org_id = b.org_id and b.org_status != 1 and b.org_status != 2 
+```
+
+# 2.Tips
+
+### Deployment with Docker
 
 {% link '参考' https://www.cnblogs.com/smallmin/p/11582954.html [title] %}
 
@@ -24,11 +45,11 @@ docker run -p 3306:3306 --name=mysql8 \
 -d mysql:8.0.16 --lower-case-table-names=2
 ```
 
-### 参数
+### Parameters
 
 innodb_thread_concurrency 控制并发线程上限
 
-### 常用查询
+### Common Queries
 
 ```mysql
 # 查询状态, LATESTDETECTED DEADLOCK 具有死锁记录
@@ -64,3 +85,4 @@ don't forget to config binlog backup days when you are private deployment. other
 expire_logs_days=30
 max_binlog_size=1024M
 ```
+
