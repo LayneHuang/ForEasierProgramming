@@ -1,7 +1,7 @@
 ---
 title: Java 虚拟机基本原理
 date: 2020-04-27 20:44:31
-categories: Java
+categories: [ Java ]
 ---
 
 ## JVM 如何处理异常的？

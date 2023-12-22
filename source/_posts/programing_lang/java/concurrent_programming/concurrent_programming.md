@@ -1,8 +1,7 @@
 ---
 title: Java 并发编程
 date: 2020-04-27 20:44:31
-tags:
-categories: Java
+categories: [ Java ]
 ---
 阅读笔记，图文记录自极客时间《Java并发编程实战》
 

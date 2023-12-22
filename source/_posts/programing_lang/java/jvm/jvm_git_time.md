@@ -1,7 +1,7 @@
 ---
 title: 深入拆解 Java 虚拟机
 date: 2020-04-27 20:44:31
-categories: Java
+categories: [ Java ]
 ---
 来自于极客时间《深入拆解 Java 虚拟机》。
 

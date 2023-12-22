@@ -1,15 +1,15 @@
 ---
 title: Linux 常用命令
 date: 2020-06-11 17:58:00
-tags: tips
+tags: [ linux ]
 ---
 
-#    
+#      
 
 ### 1.日志抓取
 
 ```shell script
-tail -f --line=50 filename| grep "key word"
+tail -f --line=50 filename | grep "key word"
 ```
 
 ### 2.查找当前目录下文件

@@ -48,39 +48,4 @@ AES-GCM、SHA-256、DSA、ECDSA加密位数高的推荐使用
 
 ### RSA加密例子
 
-```java
-public class RSAUtil {
-
-    public static String encryption(String content, String publicKey) throws Exception {
-        byte[] decodeBase64 = Base64.decode(publicKey);
-        PublicKey rsa = KeyFactory.getInstance("RSA")
-                .generatePublic(new X509EncodedKeySpec(decodeBase64));
-        Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.ENCRYPT_MODE, rsa);
-        return Base64.encode(cipher.doFinal(content.getBytes()));
-    }
-
-    public static String decryption(String encryptedContent, String privateKey) throws Exception {
-        byte[] publicKeyByte = Base64.decode(encryptedContent);
-        byte[] privateKeyByte = Base64.decode(privateKey);
-        RSAPrivateKey generatePublic = (RSAPrivateKey) KeyFactory
-                .getInstance("RSA")
-                .generatePrivate(new PKCS8EncodedKeySpec(privateKeyByte));
-        Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.DECRYPT_MODE, generatePublic);
-        return new String(cipher.doFinal(publicKeyByte));
-    }
-
-    public static void genKeyPair() throws NoSuchAlgorithmException {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(1024);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        PrivateKey privateK = keyPair.getPrivate();
-        PublicKey publicK = keyPair.getPublic();
-        String privateKey = Base64.encode(privateK.getEncoded());
-        String publicKey = Base64.encode(publicK.getEncoded());
-        System.out.println("public key: " + publicKey);
-        System.out.println("private key" + privateKey);
-    }
-}
-```
+Simple: zhong-service RSAUtil

@@ -1,7 +1,7 @@
 ---
 title: Maven Tips
 date: 2020-05-25 16:23:00
-categories: Maven
+categories: [ Maven ]
 ---
 
 通常用 Spring Initializr 初始化项目时，选用 Maven 作为依赖工具后，一般情况都会配置好了。  

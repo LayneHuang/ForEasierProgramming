@@ -1,8 +1,7 @@
 ---
 title: Java 并发编程 (基础篇)
 date: 2020-04-27 20:44:31
-tags:
-categories: Java
+categories: [ Java ]
 ---
 
 ## 1.可见性、原子性和有序性

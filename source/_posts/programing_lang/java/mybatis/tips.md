@@ -1,7 +1,7 @@
 ---
 title: mybatis tips
 date: 2021-02-19 14:08:31
-categories: Java
+categories: [ Java ]
 ---
 
 [mybatis 官网](https://mybatis.org/mybatis-3/zh/index.html)
