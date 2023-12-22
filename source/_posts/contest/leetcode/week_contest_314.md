@@ -1,7 +1,7 @@
 ---
 title: leetcode 314
 date: 2022-10-09 21:00:00
-categories: acm
+categories: [acm]
 tag: leetcode
 ---
 

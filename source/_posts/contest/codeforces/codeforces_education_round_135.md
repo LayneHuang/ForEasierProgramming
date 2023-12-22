@@ -1,8 +1,8 @@
 ---
 title: Codeforces education round 135
 date: 2022-09-13 21:00:00
-categories: acm
-tag: Codeforces
+categories: [acm]
+tag: [Codeforces]
 ---
 
 {% link '#education round 135' https://codeforces.com/contest/1721 [title] %}

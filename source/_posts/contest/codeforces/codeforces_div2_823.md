@@ -1,8 +1,8 @@
 ---
 title: Codeforces 823 div2
 date: 2022-09-26 21:00:00
-categories: acm
-tag: Codeforces
+categories: [acm]
+tag: [Codeforces]
 ---
 
 {% link '#823 div2' https://codeforces.com/contest/1730 [title] %}

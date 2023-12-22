@@ -8,7 +8,7 @@ Flink
 
 <!-- more -->
 
-### maven dependencies
+### Maven dependencies
 
 ```xml
 

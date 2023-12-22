@@ -76,3 +76,40 @@ public class EmptyObjectSerializer implements ObjectSerializer {
 
 ### 泛型如 ? extend TreeNode 这种字段在反序列化时怎么处理才不丢失字段
 
+### Date Formatter
+
+how we deal with toJsonString in date
+
+toJsonString (default):
+
+```json
+{
+  "startTime": "2023-12-18 10:55:17.198"
+}
+```
+
+but the format above can't adapter the zone of system to display time in different country.
+so, we need to rewrite the Object write of `Date.class`
+
+```java
+public class Test {
+    public static void main(String... args) {
+        TestDto dto = new TestDto();
+        Date now = new Date();
+        dto.setNow(now);
+        System.out.println(now);
+        System.out.println(now.toInstant().atZone(ZoneId.of("Asia/Shanghai")).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        JSON.register(Date.class, (ObjectWriter<Date>) (jsonWriter, object, fieldName, fieldType, features) -> jsonWriter.writeString(((Date) object).toInstant().atZone(ZoneId.of("Asia/Shanghai")).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
+        System.out.println(JSON.toJSONString(dto));
+    }
+}
+
+```
+
+result:
+
+```text
+Mon Dec 18 12:04:50 CST 2023
+2023-12-18T12:04:50.86+08:00
+{"now":"2023-12-18T12:04:50.86+08:00"}
+```

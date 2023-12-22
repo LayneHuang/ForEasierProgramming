@@ -77,3 +77,14 @@ Add the follow cmd in your pod, ensure pod will not stop soon after container st
 ```yaml
 command: [ "/bin/bash", "-ce", "tail -f /dev/null" ]
 ```
+
+another way:
+
+```yaml
+command:
+  - /bin/bash
+  - '-ce'
+  - tail -f /dev/null
+```
+
+

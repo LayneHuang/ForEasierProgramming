@@ -43,7 +43,8 @@ we need to make sure the folder has authority to modify.(use cmd `chmod` to deal
 ### K8S
 
 {% link 'official
-document' https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/deployment/resource-providers/standalone/kubernetes/ [title] %}
+document' https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/deployment/resource-providers/standalone/kubernetes/ [title]
+%}
 
 #### ConfigMap
 
@@ -177,7 +178,7 @@ spec:
     component: taskmanager
 ```
 
-### RABC
+#### RABC
 
 ```yaml
 ---
@@ -214,9 +215,9 @@ roleRef:
   name: flink
 ```
 
-### POD
+#### POD
 
-jobmanager
+1.JobManager
 
 ```yaml
 apiVersion: apps/v1
@@ -278,7 +279,7 @@ spec:
             claimName: flink-nas-pvc
 ```
 
-taskmanager
+2.TaskManager
 
 ```yaml
 ---
@@ -313,6 +314,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+          command: [ "/bin/bash", "-ce", "tail -f /dev/null" ]
           args: [ "taskmanager", "-Dtaskmanager.resource-id=$(POD_NAME)" ]
           ports:
             - containerPort: 6122
@@ -345,7 +347,7 @@ spec:
             claimName: flink-nas-pvc
 ```
 
-### ingress
+#### ingress
 
 upload size limit
 

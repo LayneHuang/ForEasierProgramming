@@ -1,7 +1,7 @@
 ---
 title: acm模板
 date: 2022-07-22 10:47:00
-categories: acm
+categories: [acm]
 ---
 
 切题用到的 python 模板, leetcode, codeforces 用

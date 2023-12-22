@@ -1,8 +1,8 @@
 ---
 title: Codeforces 696 div2
 date: 2021-01-29 11:58:00
-categories: acm
-tag: Codeforces
+categories: [acm]
+tag: [Codeforces]
 ---
 
 {% link '#681 div2' http://codeforces.com/contest/1474 [title] %}

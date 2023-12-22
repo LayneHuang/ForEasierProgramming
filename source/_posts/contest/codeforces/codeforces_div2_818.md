@@ -1,8 +1,8 @@
 ---
 title: Codeforces 770 div2
 date: 2022-09-07 21:00:00
-categories: acm
-tag: Codeforces
+categories: [acm]
+tag: [Codeforces]
 ---
 
 {% link '#818 div2' https://codeforces.com/contest/1717 [title] %}
