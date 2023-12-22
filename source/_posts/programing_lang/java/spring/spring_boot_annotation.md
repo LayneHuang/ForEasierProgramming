@@ -1,7 +1,7 @@
 ---
 title: Spring Boot 注解
 date: 2022-08-15 21:00:00
-categories: Spring
+categories: [ Spring ]
 ---
 
 关于各种注解的用法

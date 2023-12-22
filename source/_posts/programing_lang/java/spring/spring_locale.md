@@ -1,7 +1,7 @@
 ---
 title: Spring Boot 国际化
 date: 2020-04-02 01:48:31
-categories: Spring
+categories: [ Spring ]
 ---
 
 在处理不同语言环境的情况下，需要不同的字段显示。

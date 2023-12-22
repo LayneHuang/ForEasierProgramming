@@ -1,7 +1,7 @@
 ---
-title: Nginx Tips
+title: nginx
 date: 2022-8-11 21:40:00
-categories: Nginx
+categories: [ nginx ]
 ---
 
 ### 1.前端 History 模式重定向配置
@@ -17,7 +17,7 @@ location @rewrites {
 }
 ```
 
-### docker部署
+### Docker
 
 {% link 'docker部署指南' https://www.cnblogs.com/tod4/p/16659260.html [title] %}
 {% link '配置' https://blog.csdn.net/qq_46312987/article/details/118895520 [title] %}

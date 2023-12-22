@@ -1,7 +1,7 @@
 ---
 title: Spring Cloud
 date: 2022-10-13 21:00:00
-categories: Spring
+categories: [ Spring ]
 ---
 
 Spring Cloud Alibaba 各组件接入

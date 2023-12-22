@@ -94,17 +94,23 @@ spring-boot-starter-web中内置了tomcat,所以目前在docker是直接用java 
 
 ### 8.返回时区统一配置
 
+Spring Controller Response:
+
 ```yaml
 spring:
   jackson:
     time-zone: GMT+8
 ```
 
-### 9.Yaml动态解析
+Json(alibaba fastjson2):
+
+Check in `fastjson` Data Format
+
+### 9.Yaml Resource Decode
 
 Refer to zhong-service YamlUtil
 
-### 布隆过滤器
+### BloomFilter
 
 guava support a bloom filter data structure. Combine with MQ can solve the problem in distribute system.
 

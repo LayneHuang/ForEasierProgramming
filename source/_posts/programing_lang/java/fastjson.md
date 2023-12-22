@@ -106,6 +106,24 @@ public class Test {
 
 ```
 
+Configuration in Spring Bean:
+
+```java
+
+@Component
+public class JsonConfig {
+
+    @Value("${zoneId:Asia/Shanghai}")
+    private String zoneId;
+
+    @PostConstruct
+    public void init() {
+        JSON.register(Date.class, (ObjectWriter<Date>) (jsonWriter, object, fieldName, fieldType, features) -> jsonWriter.writeString(((Date) object).toInstant().atZone(ZoneId.of(zoneId)).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
+    }
+
+}
+```
+
 result:
 
 ```text

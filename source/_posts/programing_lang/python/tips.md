@@ -1,7 +1,7 @@
 ---
-title: Python 基础简单汇总
+title: Python Basic
 date: 2022-09-11 21:21:21
-categories: Python
+categories: [ Python ]
 ---
 
 ### 字符、数字之间转换

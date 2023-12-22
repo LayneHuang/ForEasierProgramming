@@ -7,18 +7,22 @@ categories: [ UUID ]
 因为要用到 baidu 的long类型的UUID生成器，目前github上只提供本地包引入的方式
 
 1.首先从GITHUB上将项目clone下来
+
 ```shell
 git clone https://github.com/baidu/uid-generator.git
 ```
 
 2.打包
+
 ```shell
 mvn clean install
 ```
 
 3.按照引入方式将本地包引入
 放到相应目录后，添加 maven 依赖，本地包导入方式文章列表中也有
+
 ```xml
+
 <dependency>
     <groupId>com.generator</groupId>
     <artifactId>uid-generator</artifactId>
@@ -31,7 +35,9 @@ mvn clean install
 4.在使用到的项目上进行构建
 注意要加上 `<includeSystemScope>true</includeSystemScope>` 标签，才能把本地包最终打进服务的包  
 并且 mapper 的依赖也要导进来
+
 ```xml
+
 <build>
     <plugins>
         <plugin>
@@ -59,7 +65,9 @@ mvn clean install
 ```
 
 依赖的组件
+
 ```xml
+
 <dependency>
     <groupId>commons-lang</groupId>
     <artifactId>commons-lang</artifactId>
@@ -74,6 +82,7 @@ mvn clean install
 WORKER_NODE.xml 这个文件要加到我们自身的 mapper xml文件目录下，或者 mybatis 能够扫描到这个文件
 
 ```java
+
 @Configuration
 @MapperScan(value = {"com.baidu.fsg.uid.worker.dao"})
 public class UidConfig {
@@ -97,9 +106,12 @@ public class UidConfig {
 }
 ```
 
-要注意一下的是 UidConfig 加上 @MapperScan(value = {"com.baidu.fsg.uid.worker.dao"}) 会影响 SpringBoot 配置自身的 mapper 扫描。
+要注意一下的是 UidConfig 加上 @MapperScan(value = {"com.baidu.fsg.uid.worker.dao"}) 会影响 SpringBoot 配置自身的 mapper
+扫描。
 估计是因为 注解 优先级 大于 外部化properties配置，所以在SpringBootApplication主启动类加上扫描注解。
+
 ```java
+
 @SpringBootApplication
 @MapperScan(value = {"com.demo.mapper"})
 public class DemoApplication extends SpringBootServletInitializer {
