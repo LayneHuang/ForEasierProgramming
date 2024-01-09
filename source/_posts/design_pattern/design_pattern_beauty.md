@@ -1,7 +1,7 @@
 ---
 title: 设计模式之美
 date: 2020-04-02 01:46:00
-categories: 设计模式
+categories: [ DesignPatterns ]
 ---
 
 这个也是来自于极客时间《设计模式之美》,以及《Head First设计模式》的阅读笔记。

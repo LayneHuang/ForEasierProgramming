@@ -1,7 +1,7 @@
 ---
 title: 设计模式之美 (结构型)
 date: 2020-04-02 01:46:00
-categories: 设计模式
+categories: [ DesignPatterns ]
 ---
 
 ## 代理模式

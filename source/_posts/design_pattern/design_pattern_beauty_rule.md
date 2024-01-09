@@ -1,7 +1,7 @@
 ---
 title: 设计模式之美 (设计原则)
 date: 2020-04-02 01:46:00
-categories: 设计模式
+categories: [ DesignPatterns ]
 ---
 
 设计原则包括SOLID,KISS,YAGNI,DRY,LOD等  
