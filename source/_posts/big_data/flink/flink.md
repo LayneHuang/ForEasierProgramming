@@ -93,3 +93,11 @@ or you can disable submit page of Flink
 ```yaml
 web.submit.enable: false
 ```
+
+### Least Data Sum (seem like LRU)
+
+if some keys have no data arrive in source, how can we trigger the SlidingWindows(EventTime) to finish the calculation ?
+
+1. Watermark's function `withIdleness()` can help us to trigger calculation **once**. But it can't open the
+   window in next range.
+2. Use `registerEventTimeTimer()` and overwrite `onTimer()` to generate a **empty** element to trigger new window. 
