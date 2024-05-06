@@ -19,7 +19,7 @@ attribute is a dictionary containing arbitrary key-value pair that describe the 
 
 ### One Service (Multiple instance) how to use Fanout
 
-#### One of the Service will receive the msg
+#### One of the Service will receive the msg (LoadBalance)
 
 determine the queue's name
 
@@ -28,7 +28,7 @@ public class Config {
 
     @RabbitListener(
             bindings = @QueueBinding(
-                    value = @Queue(value= "#{QueueName}"),
+                    value = @Queue(value = "#{QueueName}"),
                     exchange = @Exchange(value = "#{ExchangeName}", type = ExchangeTypes.FANOUT)
             )
     )
