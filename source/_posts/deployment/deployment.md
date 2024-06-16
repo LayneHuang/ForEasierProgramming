@@ -6,6 +6,11 @@ categories: [ Deployment ]
 
 ### SSL Certificate Generation
 
+{% link '
+AliyunSSL' https://help.aliyun.com/zh/ssl-certificate/user-guide/install-certificates/?spm=a2c4g.11186623.0.0.40c470b0no85tf [title] %}
+
+证书签名请求(需要提交到CA机构验证): csr.pem
+
 ```shell
 openssl req -utf8 -out csr.pem -key cakey.pem -new -sha256
 ```
@@ -13,6 +18,8 @@ openssl req -utf8 -out csr.pem -key cakey.pem -new -sha256
 ```shell 
 openssl req -new -x509 -key cakey.pem -days 394
 ```
+
+Format change
 
 ```shell
 openssl x509 -in cert.crt -out cert.pem -outform PEM
@@ -35,7 +42,7 @@ server {
     listen 443 ssl http2;
     server_name  ${xxx}.com www.${xxx}.com;
 
-    ssl_certificate           /etc/nginx/ssl/ca.pem;
+    ssl_certificate           /etc/nginx/ssl/cert.pem;
     ssl_certificate_key       /etc/nginx/ssl/cakey.pem;
     ssl_protocols             TLSv1.1 TLSv1.2 TLSv1.3;
     ssl_ciphers               EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
