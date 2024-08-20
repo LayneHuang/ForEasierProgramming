@@ -4,9 +4,11 @@ date: 2020-11-16 23:21:31
 categories: [ Java ]
 ---
 
+{% link 'Alibaba Java 编程规范' https://edu.aliyun.com/course/417 [title] %}
+
 ### 1.函数式接口
 
-用到 Comparator 时看到它有注解定义 @FunctionalInterface （函数式接口）而函数式接口具有以下特点(与普通接口不同的点):  
+用到 Comparator 时看到它有注解定义 @FunctionalInterface （函数式接口）而函数式接口具有以下特点(与普通接口不同的点):
 
 1.接口有且仅有一个抽象方法  
 2.允许定义静态方法  
@@ -19,21 +21,21 @@ categories: [ Java ]
 // 正确的函数式接口
 @FunctionalInterface
 public interface TestInterface {
- 
+
     // 抽象方法
     public void sub();
- 
+
     // java.lang.Object中的public方法
     public boolean equals(Object var1);
- 
+
     // 默认方法
-    public default void defaultMethod(){
-    
+    public default void defaultMethod() {
+
     }
- 
+
     // 静态方法
-    public static void staticMethod(){
- 
+    public static void staticMethod() {
+
     }
 }
 
@@ -42,19 +44,22 @@ public interface TestInterface {
 public interface TestInterface2 {
 
     void add();
-    
+
     void sub();
 }
 ```
+
 所以 Comparator 接口就给出了许多默认方法，比如整数排序，浮点数排序，自然序，逆序排序的默认方法。   
 在 Comparator.comparing() 这个静态方法基本上支持对 对象 的排序。  
 （应用场景：给出默认方法，不需要开发者再独自去实现这个单独的接口）  
 如 Runnable , Callable 都是函数式接口。
 
 ### 2.finally
+
 如果 try 语句块提前 return ， finally 就会在 return 之前执行 ( a 传入大于 0 的值)  
 否则就在 try{} 语句后执行，在 Step 4 之前执行。
 若有 Exception ， Step 2 就会在 Step 3 之前执行。
+
 ```java
 public class Sample {
     public static void solve(int a) {
@@ -63,25 +68,26 @@ public class Sample {
             if (a > 0) {
                 return;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("Step 2.catch Exception 执行");
         } finally {
             System.out.println("Step 3.finally 执行");
         }
         System.out.println("Step 4.后面语句执行");
-    }   
+    }
 }
 ```
 
 ### 3.getCanonicalPath
 
 1.getAbsolutePath():  
-返回的是定义时的路径对应的相对路径，但不会处理“.”和“..”的情况    
+返回的是定义时的路径对应的相对路径，但不会处理“.”和“..”的情况
 
 2.getCanonicalPath():  
-返回的是规范化的绝对路径，相当于将getAbsolutePath()中的“.”和“..”解析成对应的正确的路径  
+返回的是规范化的绝对路径，相当于将getAbsolutePath()中的“.”和“..”解析成对应的正确的路径
 
 举例如下：
+
 ```java
 public class Sample {
     public void solve() {
@@ -101,6 +107,7 @@ public class Sample {
 ```
 
 ### 4.子类覆盖父类的成员变量
+
 ```java
 public class Main {
 
@@ -128,6 +135,7 @@ public class Main {
     }
 }
 ```
+
 对应的输出是:  
 1  
 100  
@@ -136,9 +144,11 @@ public class Main {
 这个在 5.3 里面有解释
 
 ### [5.静态代码块](https://www.cnblogs.com/ysocean/p/8194428.html)
+
 通常正常人都不会写静态代码块这个东西（还真别说，就是有这样写的）
+
 ```java
-public class Main{
+public class Main {
 
     static class Father {
         public static int m = 1;
@@ -167,41 +177,47 @@ public class Main{
     }
 }
 ```
+
 这里输出的还是 1， 父类的静态变量 m 并没有被子类的静态代码块覆盖。    
 将子类的
 
 静态代码块的一些特性：  
 1.类被加载的时候执行。  
-2.跟静态方法相同的是，不能访问普通变量，但静态方法属于被动执行，而静态代码块属于主动执行。  
+2.跟静态方法相同的是，不能访问普通变量，但静态方法属于被动执行，而静态代码块属于主动执行。
 
 #### 5.1 构造代码块
+
 构造代码块即静态代码块去掉了 static，它在构造函数执行之前执行（每次创建对象都会执行一次）
 
 #### 5.2 父子类执行顺序
-静态代码块 > 构造代码块 > 构造函数 > 普通代码块  
+
+静态代码块 > 构造代码块 > 构造函数 > 普通代码块
+
 ```java
 public class SuperClass {
-    static{
+    static {
         System.out.println("父类静态代码块");
     }
+
     {
         System.out.println("父类构造代码块");
     }
-    public SuperClass(){
+
+    public SuperClass() {
         System.out.println("父类构造函数");
     }
 }
 
 public class SubClass extends SuperClass {
-    static{
+    static {
         System.out.println("子类静态代码块");
     }
-     
+
     {
         System.out.println("子类构造代码块");
     }
-     
-    public SubClass(){
+
+    public SubClass() {
         System.out.println("子类构造函数");
     }
 
@@ -212,7 +228,9 @@ public class SubClass extends SuperClass {
     }
 }
 ```
+
 结果：
+
 ```text
 父类静态代码块
 子类静态代码块
@@ -228,8 +246,9 @@ public class SubClass extends SuperClass {
 ```
 
 #### 5.3 [覆盖和隐藏](https://blog.csdn.net/u013771764/article/details/81430303)
+
 ```java
-public class Main4{
+public class Main4 {
 
     static class Father {
         public static int m = 1;
@@ -260,20 +279,26 @@ public class Main4{
     }
 }
 ```
+
 这个明显就是隐藏了子类的静态变量
 
 ### 6.安全随机数生成
+
 java.Security.SecureRandom()
 
 ### 7.只引用类静态 final 变量 类并未被加载
+
 正确来说应该是类被加载了，但是还没被初始化
+
 ```java
 class Show {
     public static final String SOMETHING = "haha";
+
     static {
         System.out.println("init");
-    }   
+    }
 }
+
 class Test {
     public static void main(String[] args) {
         System.out.println(Show.SOMETHING);
@@ -282,20 +307,26 @@ class Test {
 ```
 
 ### 8.ArrayList 中元素添加 transient 的作用
-{% img /images/pic_java_base_info.png %}  
-1. ArrayList 重写了 readObject(), writeObject() 方法  
+
+{% img /images/pic_java_base_info.png %}
+
+1. ArrayList 重写了 readObject(), writeObject() 方法
 2. 防止扩用猴
 
 ### 9.CSRF、LDAP、ORNL是啥？
 
 ### 10.JAVA数组翻转
+
 ```
 Collections.reverse(arrayList);
 ```
+
 ### 11.JSON 对于数组的转换
+
 ```
 List<String> list = JSON.parseObject(v, new TypeReference<List<String>>(){})
 List<String> list = JSON.parseArray(str, String.class);
 ```
-在进行 DTO -> Bean 之间的转换时, 如果对象包含子对象或者数组的情况下, 
+
+在进行 DTO -> Bean 之间的转换时, 如果对象包含子对象或者数组的情况下,
 BeanUtils 仅仅是一个浅拷贝, 这个时候可以用 fastjson 做一下对象拷贝
