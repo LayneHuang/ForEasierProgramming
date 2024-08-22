@@ -63,3 +63,24 @@ ENV PATH ${JAVA_HOME}/bin:$PATH
 ```shell
 docker build -t [image_name:version] [Dockerfile Path]
 ```
+
+### Chinese Domestic mirror
+
+location: /etc/docker/daemon.json
+
+```json
+{
+  "registry-mirrors": [
+    "https://registry.docker-cn.com",
+    "https://docker.mirrors.ustc.edu.cn",
+    "https://hub-mirror.c.163.com",
+    "https://mirror.baidubce.com",
+    "https://ccr.ccs.tencentyun.com"
+  ]
+}
+```
+
+```shell
+sudo systemctl daemon-reload		#重启daemon进程
+sudo systemctl restart docker		#重启docker
+```
