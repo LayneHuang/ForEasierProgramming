@@ -1,16 +1,17 @@
 ---
+
 title: Docker
 date: 2021-06-25 16:40:00
 categories: [ Docker ]
 ---
 
-### Common CMD
+### Command
 
 ```shell
-### 查看容器CPU,内存使用状态
+### Chceck CPU or memery status
 docker stats
 
-### 删除所有镜像
+### Remove all the images
 docker rmi $(docker images -q)
 
 ### 运行镜像
@@ -43,7 +44,7 @@ docker push image-name:tag
 
 ```
 
-### Configure JDK base on Centos
+### Configure JDK base on CentOS
 
 ```shell
 FROM centos:centos7
@@ -58,7 +59,7 @@ ENV CLASSPATH .:${JAVA_HOME}/lib:${JRE_HOME}/lib
 ENV PATH ${JAVA_HOME}/bin:$PATH
 ```
 
-### Build Docker Image By Dockerfile
+### Build Docker Image By Docker file
 
 ```shell
 docker build -t [image_name:version] [Dockerfile Path]
@@ -66,7 +67,7 @@ docker build -t [image_name:version] [Dockerfile Path]
 
 ### Chinese Domestic mirror
 
-location: /etc/docker/daemon.json
+add configuration to `/etc/docker/daemon.json`
 
 ```json
 {
@@ -80,7 +81,9 @@ location: /etc/docker/daemon.json
 }
 ```
 
+restart service
+
 ```shell
-sudo systemctl daemon-reload		#重启daemon进程
-sudo systemctl restart docker		#重启docker
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 ```
