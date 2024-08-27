@@ -4,7 +4,15 @@ date: 2021-03-16 20:21:31
 categories: [ Database ]
 ---
 
-# 1.Query Optimization
+# Create Database
+
+```my
+CREATE DATABASE demo_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+
+
+# 1. Query Optimization
 
 ### Efficiency between = and != in inner joins SQL queries
 
@@ -25,7 +33,7 @@ Better case (Chat Gpt Explain):
 select * form table_a a inner join org_info org on a.org_id = b.org_id and b.org_status != 1 and b.org_status != 2 
 ```
 
-# 2.Tips
+# 2. Tips
 
 ### Deployment with Docker
 

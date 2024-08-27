@@ -14,7 +14,7 @@ AliyunSSL' https://help.aliyun.com/zh/ssl-certificate/user-guide/install-certifi
 ```shell
 openssl req -utf8 -out csr.pem -key cakey.pem -new -sha256
 ```
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
 ```shell 
 openssl req -new -x509 -key cakey.pem -days 394
 ```
@@ -65,4 +65,5 @@ server {
     listen 80;
     server_name  ${xxx}.com www.${xxx}.com;
 	return 301   https://www.${xxx}.com;
+}
 ```

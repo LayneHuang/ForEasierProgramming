@@ -4,33 +4,34 @@ date: 2023-08-15 21:30:00
 categories: [ nacos, k8s ]
 ---
 
-### deployment
+## deployment
 
 use nacos-quick-start.yaml for deployment, and change nacos(mysql config map)
 
-{% link 'nacos-k8s Official Documents' https://nacos.io/zh-cn/docs/use-nacos-with-kubernetes.html [title] %}
-{% link 'nacos k8s github' https://github.com/nacos-group/nacos-k8s [title] %}
+[Nacos K8S Official Documents](https://nacos.io/zh-cn/docs/use-nacos-with-kubernetes.html)
 
-open nacos dashboard auth:
+[Nacos K8S Github](https://github.com/nacos-group/nacos-k8s)
+
+open nacos dashboard Authorization:
 
 After version2.2.1 nacos's application.properties will remove default value of auth.
 We have to mount config map to application.properties
 
-{% img /images/pic_nacos_k8s_conf.png %}
+<img src="../../../../images/pic_nacos_k8s_conf.png" alt="config map" style="zoom:75%;" />
 
 ```yaml
 ### 开启鉴权
 nacos.core.auth.enabled=true
 
-  ### 关闭使用user-agent判断服务端请求并放行鉴权的功能
+### 关闭使用user-agent判断服务端请求并放行鉴权的功能
 nacos.core.auth.enable.userAgentAuthWhite=false
 
-  ### 配置自定义身份识别的key（不可为空）和value（不可为空）
+### 配置自定义身份识别的key（不可为空）和value（不可为空）
 nacos.core.auth.server.identity.key=example
 nacos.core.auth.server.identity.value=example
 ```
 
-copy pod's application.properties
+copy pod's `application.properties`
 
 ```shell
 kubectl cp nacos-0:/home/nacos/conf/application.properties /home/nacos/application.properties

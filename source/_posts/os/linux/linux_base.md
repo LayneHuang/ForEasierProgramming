@@ -4,8 +4,6 @@ date: 2020-06-11 17:58:00
 tags: [ linux ]
 ---
 
-#      
-
 ### 1.日志抓取
 
 ```shell script
