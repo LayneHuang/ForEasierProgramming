@@ -15,3 +15,10 @@ GRANT ALL PRIVILEGES ON nacos_db.* TO 'nacos'@'%';
 FLUSH PRIVILEGES;
 ```
 
+
+
+## Dockerfile
+
+Check `/demo-service/script/deployment/docker/middleware/nacos/build.sh`
+
+Don't forget to add `-e SPRING_DATASOURCE_PLATFORM=mysql` to your Dockerfile if using MySQL as your DB  
