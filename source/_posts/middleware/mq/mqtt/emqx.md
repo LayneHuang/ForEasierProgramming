@@ -4,37 +4,37 @@ date: 2022-10-11 21:30:00
 categories: [ mq ]
 ---
 
+
+
 用于设备与服务器通讯的一个消息队列协议
 
-{% link 'emqx official blog' https://www.emqx.com/zh/mqtt [title] %}
+[EMQX Official Blog](https://www.emqx.com/zh/mqtt)
 
-{% link 'emqx official docs(v5.0)' https://www.emqx.io/docs/zh/v5.0 [title] %}
+[EMQX Official Docs(v5.0)](https://docs.emqx.com/zh/emqx/v5.0/)
 
-<!-- more -->
 
-最后使用的服务器 broker 是 EMQ X。    
+
+最后使用的服务器 broker 是 EMQ X。
 Client 可以下载 MQTT X。
 
 [MQTT X](https://mqttx.app/)
 
-EMQ X有相关的 Dashboard，会比直接在后台使用命令行方便。  
-地址: {host}:18083  
+EMQ X有相关的 Dashboard，会比直接在后台使用命令行方便。
+Dashboard地址:  `{host}:18083`  
 
 ![MQTT Dashboard](../../../../images/pic_emqx_1.png)
 
 
 
-### EMQ X Docker 部署
+## Docker Deployment
 
-{% link '参考blog' https://blog.csdn.net/lzsm_/article/details/125307471 [title] %}
-
-先从 docker 中拉镜像
+pull images
 
 ```shell
-docker pull emqx/emqx:4.4.4
+docker pull emqx/emqx
 ```
 
-运行镜像(最后参数为镜像ID)
+run container
 
 ```shell
 docker run -d --name emqx \
@@ -48,12 +48,13 @@ docker run -d --name emqx \
 emqx/emqx:latest
 ```
 
-### Spring 相关接入
 
-maven依赖
+
+## Spring Dependencies
+
+maven
 
 ```xml
-
 <dependencies>
     <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -70,7 +71,9 @@ maven依赖
 </dependencies>
 ```
 
-### WebHook接入
+
+
+## WebHook
 
 服务器需要管理设备上下线状态。
 
@@ -106,24 +109,59 @@ web.hook.rule.client.disconnected.1  = {"action": "on_client_disconnected"}
 
 最后在 dashboard 中启动 webhook (暂不知道能否在配置文件中开启)
 
-### 修改 dashboard 密码
+### Dashboard login username and Password(Modify)
 
 ```shell
 ./bin/emqx_ctl admins passwd admin 123456
 ```
 
-### Security
+
+
+## Security
+
+### 1.Authentication
+
+EMQX auth chain
+
+![MQTT认证器](../../../../images/pic_emqx_authentication.png)
+
+
+
+### Authentication Chain Order
+
+```
+# emqx.conf
+
+# Specific global authentication chain for all MQTT listeners
+authentication = [
+  ...
+]
+
+listeners.tcp.default {
+  ...
+  enable_authn = true
+  # Specific authentication chain for the specified MQTT listener
+  authentication = [
+    ...
+  ]
+}
+
+gateway.stomp {
+  ...
+  enable_authn = true
+  # Specific global authenticator for all STOMP listeners
+  authentication = {
+    ...
+  }
+}
+```
+
+
+
+#### Local intern DB config
 
 ```shell
 /opt/emqx/etc/plugins/emqx_auth_mnesia.conf
-```
-
-[EMQX Auth Design](https://docs.emqx.com/zh/enterprise/v3.0/auth.html#mqtt-%E8%AE%A4%E8%AF%81%E8%AE%BE%E8%AE%A1)
-
-modify emqx.conb
-
-```txt
-allow_anonymous = false
 ```
 
 configure username and password
@@ -161,13 +199,21 @@ auth.mnesia.password_hash = sha256
 ##auth.user.3.password = pwsswd~!@#$%^&*()_+
 ```
 
-open the plugins in dashboard
+#### Close anonyous authenticator
 
-{% img /images/pic_emqx_plugins_auth.png %}
+modify `/etc/emqx.conf`
+
+```txt
+allow_anonymous = false
+```
+
+open the plugins in Dashboard
 
 ![auth plugins](../../../../images/pic_emqx_plugins_auth.png)
 
-### Deploy in ack
+
+
+##  Aliyun ACK Deployment
 
 you can use helm in ack to deploy the EMQX cluster.
 

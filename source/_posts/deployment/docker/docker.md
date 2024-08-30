@@ -43,6 +43,8 @@ docker push image-name:tag
 
 ```
 
+
+
 ### Configure JDK base on CentOS
 
 ```shell
@@ -58,11 +60,15 @@ ENV CLASSPATH .:${JAVA_HOME}/lib:${JRE_HOME}/lib
 ENV PATH ${JAVA_HOME}/bin:$PATH
 ```
 
+
+
 ### Build Docker Image By Docker file
 
 ```shell
 docker build -t [image_name:version] [Dockerfile Path]
 ```
+
+
 
 ### Chinese Domestic mirror
 
@@ -79,6 +85,22 @@ add configuration to `/etc/docker/daemon.json`
   ]
 }
 ```
+
+```json
+{
+    "registry-mirrors": [
+        "https://do.nark.eu.org",
+        "https://dc.j8.work",
+        "https://docker.m.daocloud.io",
+        "https://dockerproxy.com",
+        "https://docker.mirrors.ustc.edu.cn",
+        "https://docker.nju.edu.cn",
+        "https://5jh5ygud.mirror.aliyuncs.com"
+    ]
+}
+```
+
+
 
 restart service
 
