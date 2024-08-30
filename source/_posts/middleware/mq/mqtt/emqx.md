@@ -22,6 +22,8 @@ Client 可以下载 MQTT X。
 EMQ X有相关的 Dashboard，会比直接在后台使用命令行方便。
 Dashboard地址:  `{host}:18083`  
 
+目前选择比较新的版本 5.6.1
+
 ![MQTT Dashboard](../../../../images/pic_emqx_1.png)
 
 
@@ -45,7 +47,7 @@ docker run -d --name emqx \
 -p 8883:8883 \
 -p 18083:18083 \
 -v /home/emqx/data:/opt/emqx/data \
-emqx/emqx:latest
+emqx/emqx:5.6.1
 ```
 
 
@@ -127,75 +129,25 @@ EMQX auth chain
 
 
 
-### MySQL's Authentication init SQL
+#### Local intern DB config (Default，Deprecated in 5.6.1)
 
-MQTT user table
+modify `/etc/emqx.conf`  to close
 
-Refer To: `/demo-service/mysql/ddl/emqx.sql`
-
-DB connect account (just like nacos):
-
-```mysql
-CREATE USER 'emqx'@'%' IDENTIFIED BY 'your_password_here';
-# don't need to create db
-GRANT ALL PRIVILEGES ON demo_db.mqtt_user TO 'emqx'@'%';
-FLUSH PRIVILEGES;
+```txt
+allow_anonymous = false
 ```
 
+open the plugins in Dashboard
+
+![auth plugins](../../../../images/pic_emqx_plugins_auth.png)
 
 
-### Redis's Authentication init Command
-
-```shell
-HSET mqtt_user:emqx_u is_superuser 1
-HSET mqtt_user:emqx_u salt slat_foo123
-HSET mqtt_user:emqx_u password_hash 44edc2d57cde8d79c98145003e105b90a14f1460b79186ea9cfe83942fc5abb5
-```
-
-
-
-### Authentication Chain Order
-
-![emqx_authentication_chain_order](../../../../images/pic_emqx_authentication_chain.png)
-
-
-
-```
-# emqx.conf
-
-# Specific global authentication chain for all MQTT listeners
-authentication = [
-  ...
-]
-
-listeners.tcp.default {
-  ...
-  enable_authn = true
-  # Specific authentication chain for the specified MQTT listener
-  authentication = [
-    ...
-  ]
-}
-
-gateway.stomp {
-  ...
-  enable_authn = true
-  # Specific global authenticator for all STOMP listeners
-  authentication = {
-    ...
-  }
-}
-```
-
-
-
-#### Local intern DB config
 
 ```shell
 /opt/emqx/etc/plugins/emqx_auth_mnesia.conf
 ```
 
-configure username and password
+Config username and password
 
 ```text
 ## Password hash.
@@ -230,17 +182,71 @@ auth.mnesia.password_hash = sha256
 ##auth.user.3.password = pwsswd~!@#$%^&*()_+
 ```
 
-#### Close anonyous authenticator
 
-modify `/etc/emqx.conf`
 
-```txt
-allow_anonymous = false
+#### MySQL's Authentication init SQL
+
+MQTT user table
+
+Refer To: `/demo-service/mysql/ddl/emqx.sql`
+
+DB connect account (just like nacos):
+
+```mysql
+CREATE USER 'emqx'@'%' IDENTIFIED BY 'your_password_here';
+# don't need to create db
+GRANT ALL PRIVILEGES ON demo_db.mqtt_user TO 'emqx'@'%';
+FLUSH PRIVILEGES;
 ```
 
-open the plugins in Dashboard
 
-![auth plugins](../../../../images/pic_emqx_plugins_auth.png)
+
+#### Redis's Authentication init Command
+
+```shell
+HSET mqtt_user:emqx_u is_superuser 1
+HSET mqtt_user:emqx_u salt slat_foo123
+HSET mqtt_user:emqx_u password_hash 44edc2d57cde8d79c98145003e105b90a14f1460b79186ea9cfe83942fc5abb5
+```
+
+
+
+![pic_emqx_auth_redis](../../../../images/pic_emqx_auth_redis.png)
+
+
+
+#### Authentication Chain Order
+
+![emqx_authentication_chain_order](../../../../images/pic_emqx_authentication_chain.png)
+
+
+
+```
+# emqx.conf
+
+# Specific global authentication chain for all MQTT listeners
+authentication = [
+  ...
+]
+
+listeners.tcp.default {
+  ...
+  enable_authn = true
+  # Specific authentication chain for the specified MQTT listener
+  authentication = [
+    ...
+  ]
+}
+
+gateway.stomp {
+  ...
+  enable_authn = true
+  # Specific global authenticator for all STOMP listeners
+  authentication = {
+    ...
+  }
+}
+```
 
 
 
