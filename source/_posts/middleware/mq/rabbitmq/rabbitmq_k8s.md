@@ -1,5 +1,5 @@
 ---
-title: Rabbit MQ K8S
+title: RabbitMQ K8S
 date: 2023-08-15 21:30:00
 categories: [ mq, k8s ]
 ---

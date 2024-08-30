@@ -10,16 +10,19 @@ categories: [ mq ]
 
 {% link 'emqx official docs(v5.0)' https://www.emqx.io/docs/zh/v5.0 [title] %}
 
-
 <!-- more -->
 
 最后使用的服务器 broker 是 EMQ X。    
-Client 可以下载 MQTT X。  
-{% link 'MQTT X' https://mqttx.app/ [title] %}
+Client 可以下载 MQTT X。
+
+[MQTT X](https://mqttx.app/)
 
 EMQ X有相关的 Dashboard，会比直接在后台使用命令行方便。  
 地址: {host}:18083  
-{% img /images/pic_emqx_1.png %}
+
+![MQTT Dashboard](../../../../images/pic_emqx_1.png)
+
+
 
 ### EMQ X Docker 部署
 
@@ -34,7 +37,15 @@ docker pull emqx/emqx:4.4.4
 运行镜像(最后参数为镜像ID)
 
 ```shell
-docker run -d --name emqx -p 1883:1883 -p 8081:8081 -p 8083:8083 -p 8084:8084 -p 8883:8883 -p 18083:18083 68440db9c488
+docker run -d --name emqx \
+-p 1883:1883 \
+-p 8081:8081 \
+-p 8083:8083 \
+-p 8084:8084 \
+-p 8883:8883 \
+-p 18083:18083 \
+-v /home/emqx/data:/opt/emqx/data \
+emqx/emqx:latest
 ```
 
 ### Spring 相关接入
@@ -63,7 +74,7 @@ maven依赖
 
 服务器需要管理设备上下线状态。
 
-{% link '参考blog' https://blog.csdn.net/An1090239782/article/details/124817608 [title] %}
+[设备上下线-参考blog](https://blog.csdn.net/An1090239782/article/details/124817608)
 
 先把容器中 etc/plugins/emqx_web_hook.conf copy 出来
 
@@ -73,7 +84,7 @@ docker cp -a emqx:/opt/emqx/etc/plugins/emqx_web_hook.conf emqx_web_hook.conf
 
 编辑配置, 将上下线的打开
 
-{% img /images/pic_emqx_2.png %}
+![MQTT Dashboard](../../../../images/pic_emqx_2.png)
 
 ```conf
 web.hook.url = http://localhost/service/mqtt/webhook
@@ -107,10 +118,9 @@ web.hook.rule.client.disconnected.1  = {"action": "on_client_disconnected"}
 /opt/emqx/etc/plugins/emqx_auth_mnesia.conf
 ```
 
-{% link 'EMQX Auth
-Design' https://docs.emqx.com/zh/enterprise/v3.0/auth.html#mqtt-%E8%AE%A4%E8%AF%81%E8%AE%BE%E8%AE%A1 [title] %}
+[EMQX Auth Design](https://docs.emqx.com/zh/enterprise/v3.0/auth.html#mqtt-%E8%AE%A4%E8%AF%81%E8%AE%BE%E8%AE%A1)
 
-modify emqx.conf
+modify emqx.conb
 
 ```txt
 allow_anonymous = false
@@ -154,6 +164,8 @@ auth.mnesia.password_hash = sha256
 open the plugins in dashboard
 
 {% img /images/pic_emqx_plugins_auth.png %}
+
+![auth plugins](../../../../images/pic_emqx_plugins_auth.png)
 
 ### Deploy in ack
 

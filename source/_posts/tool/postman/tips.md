@@ -26,3 +26,4 @@ Fiddler {% link '配置教程' https://www.cnblogs.com/woaixuexi9999/p/9247705.h
 {% img /images/pic_postman3.png %}  
 使用的时候, 用 ```{{变量名}}``` 代替变量
 {% img /images/pic_postman4.png %}  
+

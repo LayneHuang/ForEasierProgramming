@@ -17,6 +17,8 @@ words separated by dots. (* and # can be use)
 Headers Exchange, message are routed base on the message header attribute value instead of routing keys. The headers
 attribute is a dictionary containing arbitrary key-value pair that describe the message.
 
+
+
 ### One Service (Multiple instance) how to use Fanout
 
 #### One of the Service will receive the msg (LoadBalance)
@@ -57,5 +59,7 @@ public class Config {
 }
 ```
 
-{% img /images/pic_rabbitmq_1.png %}
+
+
+![rabbitmq-dashboard](../../../../images/pic_rabbitmq_1.png)
 
