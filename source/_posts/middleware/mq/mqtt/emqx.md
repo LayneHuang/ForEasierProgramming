@@ -127,7 +127,38 @@ EMQX auth chain
 
 
 
+### MySQL's Authentication init SQL
+
+MQTT user table
+
+Refer To: `/demo-service/mysql/ddl/emqx.sql`
+
+DB connect account (just like nacos):
+
+```mysql
+CREATE USER 'emqx'@'%' IDENTIFIED BY 'your_password_here';
+# don't need to create db
+GRANT ALL PRIVILEGES ON demo_db.mqtt_user TO 'emqx'@'%';
+FLUSH PRIVILEGES;
+```
+
+
+
+### Redis's Authentication init Command
+
+```shell
+HSET mqtt_user:emqx_u is_superuser 1
+HSET mqtt_user:emqx_u salt slat_foo123
+HSET mqtt_user:emqx_u password_hash 44edc2d57cde8d79c98145003e105b90a14f1460b79186ea9cfe83942fc5abb5
+```
+
+
+
 ### Authentication Chain Order
+
+![emqx_authentication_chain_order](../../../../images/pic_emqx_authentication_chain.png)
+
+
 
 ```
 # emqx.conf
